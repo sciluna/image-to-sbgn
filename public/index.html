@@ -1,0 +1,42 @@
+<!DOCTYPE>
+
+<html>
+
+<head>
+	<title>image-to-sbgn demo</title>
+
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+	<link href="css/style.css" rel="stylesheet"> 
+</head>
+
+<body>
+	<h1>image-to-sbgn demo</h1>
+
+	<div id="menuSection">
+		<label for="samples">Sample image:</label>
+		<select name="samples" id="samples">
+			<option value="" disabled selected>Select</option>
+		  <option value="sample1">Sample 1</option>
+		  <option value="sample2">Sample 2</option>
+		  <option value="sample3">Sample 3</option>
+			<option value="sample4">Sample 4</option>
+		</select>
+
+		<input id='imageInput' type='file' accept='image/*'><br><br>
+		<img id='inputImage' style="height:300px; width:690px;"><br><br>
+
+		<button id="generateSBGNML">Generate SBGNML</button><br><br>
+		<textarea id="sbgnmlText" rows="20" cols="83"></textarea>
+		<br>
+	</div>
+	<div id="cySection">
+		<button id="generateCyGraph">Visualize SBGNML</button>
+		<button id="applyLayout">Apply layout</button><br><br>
+		<div id="cy"></div>
+	</div>
+
+	<script src="dist/bundle.umd.js"></script>
+
+</body>
+
+</html>
