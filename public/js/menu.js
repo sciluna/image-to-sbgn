@@ -70,9 +70,9 @@ document.getElementById("processData").addEventListener("click", function () {
 	generateCyGraph();
 }); */
 
-/* document.getElementById("applyLayout").addEventListener("click", function () {
+document.getElementById("applyLayout").addEventListener("click", function () {
 	cy.layout({ name: 'fcose', randomize: false }).run();
-}); */
+});
 
 // evaluate positions
 let communicate = async function (pngBase64, userInputText) {
@@ -83,7 +83,7 @@ let communicate = async function (pngBase64, userInputText) {
 		"question": 'This image shows a biological network. I want you to evaluate this image, produce the corresponding SBGN Process Description representation and return the resulting SBGNML content. Take your time and think carefully about the node and relation types. Here are some considerations to take into account: - Make sure that each glyph has a bbox and each arc has source and target defined (This is important.). - Nodes are represented as rectangles in the image except process, and, or, not, empty set nodes. - Nodes can have the following classes: macromolecule, simple chemical, complex, compartment, process, unspecified entity, nucleic acid feature, perturbing agent, and, or, not, empty set in SBGN. - There can be nested nodes (nodes inside nodes). In these cases progress from outer rectangle to the inner ones. - If a node does have an inner node then classify the outer node as complex. - Try to infer class of each node, which does not have an inner node, based on its label inside or from its shape in case of empty set. - Edges can have the following classes: consumption, production, modulation, catalysis, stimulation, inhibition, necessary stumilation. - If there is a direct line with an arrow at the end from one node to another, then represent this line with two SBGN edges (one consumption and one production) with a process node in between. - If there are dots between nodes that connect edges, apply the following: a- Classify dot as a process node and assign a bbox for it. b- If there is a line between a node and a dot without arrow at the ends, classify that line as consumption edge. c- If there is a line between a dot and a node with an arrow on the node side, classify that line as production edge. d- If there is a line between a dot and a node with an arrow on the dot side, try to infer edge class from the text next to the line. While generating your answer, please describe what made you come to your conclusion (thoughts). Also state your final conclusion as SBGNML text (answer).' + userInput + ' Whenever you are not sure you are kindly asked to make an informed guess about the node/edge class as best as you can. Here is the patient image:',
 		"image": pngBase64
 	};
-	console.log(data);
+
 	let response = await sendRequestToGPT(data);
 	let resultJSON = JSON.parse(response);
 	let sbgnmlText = resultJSON.answer;

@@ -52195,9 +52195,9 @@
   	generateCyGraph();
   }); */
 
-  /* document.getElementById("applyLayout").addEventListener("click", function () {
+  document.getElementById("applyLayout").addEventListener("click", function () {
   	cy.layout({ name: 'fcose', randomize: false }).run();
-  }); */
+  });
 
   // evaluate positions
   let communicate = async function (pngBase64, userInputText) {

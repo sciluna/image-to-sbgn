@@ -39,3 +39,9 @@ h1 {
   border-radius: 3px;
   cursor: pointer;
 }
+
+#applyLayout:hover {
+  background-color: #eaeaea !important;
+  border-radius: 3px;
+  cursor: pointer;
+}
