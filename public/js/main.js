@@ -1,1 +1,1 @@
-import {sendRequest} from "./menu";
+import {sendRequestToGPT} from "./menu";
