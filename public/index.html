@@ -24,14 +24,14 @@
 				</div>
 			</div>
 			<div class="row" style="padding-bottom: 0; padding-top: 0;">
-				<div class="five wide column">
+				<div class="four wide column">
 					<h3 class="ui header">File</h3>
 					<div class="ui small form">
 						<div class="field">
 					 <!--   <label id="load-file" class="underline">Open File...</label> -->
 							<div class="inline fields">
 								<label>Open Sample:</label>
-								<div class="five wide field" style="width: 37%!important;">
+								<div class="eight wide field">
 									<select required id="samples">
 										<option value="">Select...</option>
 										<option value="sample1">Sample 1</option>
@@ -54,14 +54,14 @@
 					<div class="ui form">
 						<div class="field">
 							<div id="imageInput" class="ui segment" style="width: auto; height: 225px; margin-top: -3px; padding: 0px;">
-								<img style="cursor:pointer; padding: 0px !important;" class="ui centered huge image" id="inputImage">
+								<img id="inputImage" draggable="true" style="cursor:pointer; padding: 0px !important;" class="ui centered huge image" >
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="four wide column">
+				<div class="five wide column">
 					<div class="ui basic input">
-						<textarea id="userInputText" rows="11" cols="30" placeholder="Enter your comment here..."></textarea>
+						<textarea id="userInputText" rows="11" cols="40" placeholder="Please enter a description about the map..."></textarea>
 					</div>
 				</div>
 				<div class="center aligned sixteen wide column" style="margin-top: 0; border-top: 0px !important;">
@@ -69,32 +69,22 @@
 				</div>
 			</div>
 			<div class="two column row"  style="padding-bottom: 0; padding-top: 0">
-				<div class="six wide column" style="margin-top: 11.5px">
+				<div class="ten wide column" style="margin-top: 11.5px; padding-left: 7px;">
 					<div class="ui form">
 						<div class="field">
 							<div class="inline fields">
-								<h3 class="ui header" style="margin-bottom: -3px; margin-right: 7.5px">SBGNML</h3>
-								<img class="ui image" id="downloadSbgnml" src="img/download.svg" title="Download SBGNML" style="height: 25px; width: 25px; padding: 2.5px">
-							</div>
-							<textarea id="sbgnmlText" rows="19" style="font-size: 10pt"></textarea>
-						</div>  
-					</div>
-				</div>
-				<div class="eight wide column" style="margin-top: 11.5px; padding-left: 7px;">
-					<div class="ui form">
-						<div class="field">
-							<div class="inline fields">
-								<h3 class="ui header" style="margin-bottom: -3px; margin-right: 7.5px; padding: 2.5px;">Graph</h3>
+								<h3 class="ui header" style="margin-bottom: -3px; margin-right: 7.5px; padding: 2.5px;">Graph View</h3>
+								<img class="ui image" id="downloadSbgnml" src="img/download.svg" title="Download as SBGNML" style="height: 25px; width: 25px; padding: 2.5px">&nbsp;
 								<img class="ui image" id="applyLayout" src="img/layout.svg" title="Apply Layout" style="height: 25px; width: 25px; padding: 2.5px;"> 
 							</div>
 							<div id="cy"></div>
 						</div>
 					</div>
 				</div>
-				<div class="two wide column" style="margin-top: 11.5px; padding-left: 0px;">
+				<div class="six wide column" style="margin-top: 11.5px; padding-left: 0px;">
 					<div class="field">
 						<div class="inline fields">
-							<h3 class="ui header" style="margin-bottom: -3px; margin-right: 7.5px; padding: 2.5px;">Object</h3>
+							<h3 class="ui header" style="margin-bottom: -3px; margin-right: 7.5px; padding: 2.5px;">Object View</h3>
 							<div class="ui segment" style="height: 350px;">
 								<p></p>
 							</div>

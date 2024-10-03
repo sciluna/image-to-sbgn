@@ -168,7 +168,7 @@
 
   var _window = typeof window === 'undefined' ? null : window; // eslint-disable-line no-undef
 
-  var navigator = _window ? _window.navigator : null;
+  var navigator$1 = _window ? _window.navigator : null;
   _window ? _window.document : null;
   var typeofstr = _typeof('');
   var typeofobj = _typeof({});
@@ -248,7 +248,7 @@
     return object(obj) && fn$6(obj.then);
   };
   var ms = function ms() {
-    return navigator && navigator.userAgent.match(/msie|trident|edge/i);
+    return navigator$1 && navigator$1.userAgent.match(/msie|trident|edge/i);
   }; // probably a better way to detect this...
 
   var memoize$1 = function memoize(fn, keyFn) {
@@ -52126,6 +52126,20 @@
   var sbgnmlToCytoscapeExports = sbgnmlToCytoscape.exports;
   var convert = /*@__PURE__*/getDefaultExportFromCjs(sbgnmlToCytoscapeExports);
 
+  var FileSaver_min = {exports: {}};
+
+  (function (module, exports) {
+  	(function(a,b){b();})(commonjsGlobal,function(){function b(a,b){return "undefined"==typeof b?b={autoBom:!1}:"object"!=typeof b&&(console.warn("Deprecated: Expected third argument to be a object"),b={autoBom:!b}),b.autoBom&&/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(a.type)?new Blob(["\uFEFF",a],{type:a.type}):a}function c(a,b,c){var d=new XMLHttpRequest;d.open("GET",a),d.responseType="blob",d.onload=function(){g(d.response,b,c);},d.onerror=function(){console.error("could not download file");},d.send();}function d(a){var b=new XMLHttpRequest;b.open("HEAD",a,!1);try{b.send();}catch(a){}return 200<=b.status&&299>=b.status}function e(a){try{a.dispatchEvent(new MouseEvent("click"));}catch(c){var b=document.createEvent("MouseEvents");b.initMouseEvent("click",!0,!0,window,0,0,0,80,20,!1,!1,!1,!1,0,null),a.dispatchEvent(b);}}var f="object"==typeof window&&window.window===window?window:"object"==typeof self&&self.self===self?self:"object"==typeof commonjsGlobal&&commonjsGlobal.global===commonjsGlobal?commonjsGlobal:void 0,a=f.navigator&&/Macintosh/.test(navigator.userAgent)&&/AppleWebKit/.test(navigator.userAgent)&&!/Safari/.test(navigator.userAgent),g=f.saveAs||("object"!=typeof window||window!==f?function(){}:"download"in HTMLAnchorElement.prototype&&!a?function(b,g,h){var i=f.URL||f.webkitURL,j=document.createElement("a");g=g||b.name||"download",j.download=g,j.rel="noopener","string"==typeof b?(j.href=b,j.origin===location.origin?e(j):d(j.href)?c(b,g,h):e(j,j.target="_blank")):(j.href=i.createObjectURL(b),setTimeout(function(){i.revokeObjectURL(j.href);},4E4),setTimeout(function(){e(j);},0));}:"msSaveOrOpenBlob"in navigator?function(f,g,h){if(g=g||f.name||"download","string"!=typeof f)navigator.msSaveOrOpenBlob(b(f,h),g);else if(d(f))c(f,g,h);else {var i=document.createElement("a");i.href=f,i.target="_blank",setTimeout(function(){e(i);});}}:function(b,d,e,g){if(g=g||open("","_blank"),g&&(g.document.title=g.document.body.innerText="downloading..."),"string"==typeof b)return c(b,d,e);var h="application/octet-stream"===b.type,i=/constructor/i.test(f.HTMLElement)||f.safari,j=/CriOS\/[\d]+/.test(navigator.userAgent);if((j||h&&i||a)&&"undefined"!=typeof FileReader){var k=new FileReader;k.onloadend=function(){var a=k.result;a=j?a:a.replace(/^data:[^;]*;/,"data:attachment/file;"),g?g.location.href=a:location=a,g=null;},k.readAsDataURL(b);}else {var l=f.URL||f.webkitURL,m=l.createObjectURL(b);g?g.location=m:location.href=m,g=null,setTimeout(function(){l.revokeObjectURL(m);},4E4);}});f.saveAs=g.saveAs=g,(module.exports=g);});
+
+  	
+  } (FileSaver_min));
+
+  var FileSaver_minExports = FileSaver_min.exports;
+
+  let base64data = "";
+  let userInputText = "";
+  let sbgnmlText = "";
+
   document.getElementById("samples").addEventListener("change", function (event) {
   	let sample = event.target.value;
   	let filename = "";
@@ -52144,9 +52158,6 @@
   	loadSample('../../examples/' + filename);
   });
 
-  let base64data = "";
-  let userInputText = "";
-
   let loadSample = function (fname) {
   	cy.remove(cy.elements());
   	fetch(fname).then(function (res) {
@@ -52159,7 +52170,7 @@
   			output.src = base64data;
   			output.style.removeProperty('width');
   			output.style.maxHeight = "100%";
-  			document.getElementById("sbgnmlText").value = "";
+  			sbgnmlText = "";
   		};
       reader.readAsDataURL(blob);
     }));
@@ -52178,22 +52189,22 @@
       output.src = base64data;
   		output.style.removeProperty('width');
   		output.style.maxHeight = "100%";
-  		document.getElementById("sbgnmlText").value = "";
+  		sbgnmlText = "";
     };
     reader.readAsDataURL(input.files[0]);
   });
 
-  document.getElementById("processData").addEventListener("click", function () {
-  	userInputText = document.getElementById("userInputText").value;
-  	document.getElementById("sbgnmlText").value = "";
-  	cy.remove(cy.elements());
-  	//console.log(userInputText);
-  	communicate(base64data, userInputText);
+  document.getElementById("downloadSbgnml").addEventListener("click", function () {
+  	let blob = new Blob([sbgnmlText], {type: "text/xml"});
+  	FileSaver_minExports.saveAs(blob, "newFile.sbgnml");
   });
 
-  /* document.getElementById("generateCyGraph").addEventListener("click", function () {
-  	generateCyGraph();
-  }); */
+  document.getElementById("processData").addEventListener("click", function () {
+  	userInputText = document.getElementById("userInputText").value;
+  	sbgnmlText = "";
+  	cy.remove(cy.elements());
+  	communicate(base64data, userInputText);
+  });
 
   document.getElementById("applyLayout").addEventListener("click", function () {
   	cy.layout({ name: 'fcose', randomize: false }).run();
@@ -52201,26 +52212,30 @@
 
   // evaluate positions
   let communicate = async function (pngBase64, userInputText) {
-  	let userInput = userInputText != "" ? " Please also consider this commnent before starting evaluation: '" + userInputText + "'" : "";
+
+  /* 	let data = {
+  		comment: 'This image shows a biological network. I want you to evaluate this image, produce the corresponding SBGN Process Description representation and return the resulting SBGNML content. Take your time and think carefully about the node and relation types. Here are some considerations to take into account: - Make sure that each glyph has a bbox and each arc has source and target defined (This is important.). - Nodes are represented as rectangles in the image except process, and, or, not, empty set nodes. - Nodes can have the following classes: macromolecule, simple chemical, complex, compartment, process, unspecified entity, nucleic acid feature, perturbing agent, and, or, not, empty set in SBGN. - There can be nested nodes (nodes inside nodes). In these cases progress from outer rectangle to the inner ones. - If a node does have an inner node then classify the outer node as complex. - Try to infer class of each node, which does not have an inner node, based on its label inside or from its shape in case of empty set. - Edges can have the following classes: consumption, production, modulation, catalysis, stimulation, inhibition, necessary stumilation. - If there is a direct line with an arrow at the end from one node to another, then represent this line with two SBGN edges (one consumption and one production) with a process node in between. - If there are dots between nodes that connect edges, apply the following: a- Classify dot as a process node and assign a bbox for it. b- If there is a line between a node and a dot without arrow at the ends, classify that line as consumption edge. c- If there is a line between a dot and a node with an arrow on the node side, classify that line as production edge. d- If there is a line between a dot and a node with an arrow on the dot side, try to infer edge class from the text next to the line. While generating your answer, please describe what made you come to your conclusion (thoughts). Also state your final conclusion as SBGNML text (answer).' + userInput + ' Whenever you are not sure you are kindly asked to make an informed guess about the node/edge class as best as you can. Here is the patient image:',
+  		image: pngBase64
+  	}; */
+
   	let data = {
-  		"question": 'This image shows a biological network. I want you to evaluate this image, produce the corresponding SBGN Process Description representation and return the resulting SBGNML content. Take your time and think carefully about the node and relation types. Here are some considerations to take into account: - Make sure that each glyph has a bbox and each arc has source and target defined (This is important.). - Nodes are represented as rectangles in the image except process, and, or, not, empty set nodes. - Nodes can have the following classes: macromolecule, simple chemical, complex, compartment, process, unspecified entity, nucleic acid feature, perturbing agent, and, or, not, empty set in SBGN. - There can be nested nodes (nodes inside nodes). In these cases progress from outer rectangle to the inner ones. - If a node does have an inner node then classify the outer node as complex. - Try to infer class of each node, which does not have an inner node, based on its label inside or from its shape in case of empty set. - Edges can have the following classes: consumption, production, modulation, catalysis, stimulation, inhibition, necessary stumilation. - If there is a direct line with an arrow at the end from one node to another, then represent this line with two SBGN edges (one consumption and one production) with a process node in between. - If there are dots between nodes that connect edges, apply the following: a- Classify dot as a process node and assign a bbox for it. b- If there is a line between a node and a dot without arrow at the ends, classify that line as consumption edge. c- If there is a line between a dot and a node with an arrow on the node side, classify that line as production edge. d- If there is a line between a dot and a node with an arrow on the dot side, try to infer edge class from the text next to the line. While generating your answer, please describe what made you come to your conclusion (thoughts). Also state your final conclusion as SBGNML text (answer).' + userInput + ' Whenever you are not sure you are kindly asked to make an informed guess about the node/edge class as best as you can. Here is the patient image:',
-  		"image": pngBase64
+  		comment: userInputText,
+  		image: pngBase64
   	};
-  	console.log(data);
+
   	let response = await sendRequestToGPT(data);
   	let resultJSON = JSON.parse(response);
-  	let sbgnmlText = resultJSON.answer;
+  	sbgnmlText = resultJSON.answer;
   	console.log(sbgnmlText);
   	sbgnmlText = sbgnmlText.replaceAll('\"', '"');
   	sbgnmlText = sbgnmlText.replaceAll('\n', '');
   	sbgnmlText = sbgnmlText.replaceAll('empty set', 'source and sink');
   	console.log(sbgnmlText);
-  	document.getElementById("sbgnmlText").value = sbgnmlText;
   	await generateCyGraph();
   };
 
   let sendRequestToGPT = async function (data){
-  	let url = "http://localhost:4000/";
+  	let url = "http://localhost:4000/gpt/";
   	const settings = {
   		method: 'POST',
   		headers: {
@@ -52243,7 +52258,6 @@
   };
 
   let generateCyGraph = async function () {
-  	let sbgnmlText = document.getElementById("sbgnmlText").value;
   	let cyGraph = convert(sbgnmlText);
   	cy.remove(cy.elements());
   	cy.add(cyGraph);
@@ -52269,8 +52283,10 @@
   	});
   	data = JSON.stringify(data);
   	//console.log(data);
+  	//let url = "http://localhost:4000/anno/";
   	let url = "http://grounding.indra.bio/ground_multi";
   	const settings = {
+  		mode:  'no-cors',
   		method: 'POST',
   		headers: {
   			Accept: 'application/json',
@@ -52279,7 +52295,7 @@
   		body: data
   	};
 
-  	await fetch(url, settings)
+  	let res = await fetch(url, settings)
   	.then(response => response.json())
   	.then(result => {
   		return result;
@@ -52287,7 +52303,7 @@
   	.catch(e => {
   		console.log("Error!");
   	});
-  	//console.log(res);
+  	console.log(res);
   };
 
 }));
