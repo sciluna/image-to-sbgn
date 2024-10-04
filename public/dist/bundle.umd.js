@@ -52136,9 +52136,9 @@
 
   var FileSaver_minExports = FileSaver_min.exports;
 
-  let base64data = "";
-  let userInputText = "";
-  let sbgnmlText = "";
+  let base64data;
+  let userInputText;
+  let sbgnmlText;
 
   document.getElementById("samples").addEventListener("change", function (event) {
   	let sample = event.target.value;
@@ -52170,7 +52170,7 @@
   			output.src = base64data;
   			output.style.removeProperty('width');
   			output.style.maxHeight = "100%";
-  			sbgnmlText = "";
+  			sbgnmlText = undefined;
   		};
       reader.readAsDataURL(blob);
     }));
@@ -52189,7 +52189,7 @@
       output.src = base64data;
   		output.style.removeProperty('width');
   		output.style.maxHeight = "100%";
-  		sbgnmlText = "";
+  		sbgnmlText = undefined;
     };
     reader.readAsDataURL(input.files[0]);
   });
@@ -52199,11 +52199,18 @@
   	FileSaver_minExports.saveAs(blob, "newFile.sbgnml");
   });
 
-  document.getElementById("processData").addEventListener("click", function () {
-  	userInputText = document.getElementById("userInputText").value;
-  	sbgnmlText = "";
-  	cy.remove(cy.elements());
-  	communicate(base64data, userInputText);
+  document.getElementById("processData").addEventListener("click", function (e) {
+  	if(base64data !== undefined) {
+  		userInputText = document.getElementById("userInputText").value;
+  		sbgnmlText = undefined;
+  		cy.remove(cy.elements());
+  		e.currentTarget.style.backgroundColor = "#f2711c";
+  		e.currentTarget.className += " loading";
+  		communicate(base64data, userInputText);
+  	}
+  	else {
+  		document.getElementById("file-type").textContent = "You must first load a valid file!";
+  	}
   });
 
   document.getElementById("applyLayout").addEventListener("click", function () {
@@ -52298,6 +52305,8 @@
   			cyNode.data("identifierData", value);
   		});
   	});
+  	document.getElementById("processData").style.backgroundColor = "#d67664";
+  	document.getElementById("processData").classList.remove("loading");
   };
 
   let mapIdentifiers = async function(nodesToQuery) {
