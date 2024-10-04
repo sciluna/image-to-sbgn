@@ -84,7 +84,7 @@ document.getElementById("processData").addEventListener("click", function () {
 });
 
 document.getElementById("applyLayout").addEventListener("click", function () {
-	cy.layout({ name: 'fcose', randomize: false }).run();
+	cy.layout({ name: 'fcose', randomize: false, initialEnergyOnIncremental: 0.5}).run();
 });
 
 // evaluate positions
@@ -150,7 +150,31 @@ let generateCyGraph = async function () {
 	nodesToQuery = nodesToQuery.map(node => {
 		return node.data("label");
 	});
-	await mapIdentifiers(nodesToQuery);
+	let identifiers = await mapIdentifiers(nodesToQuery);
+
+	let identifiersMap = new Map();
+	identifiers.forEach(item => {
+		item.forEach(data => {
+			if (data.score >= 0.6) {
+				let query = data.match.query;
+				let content = {db: data.term.db, id: data.term.id, url: data.url};
+				if (identifiersMap.has(query)) {
+					identifiersMap.set(query, identifiersMap.get(query).push(content));
+				} else {
+					identifiersMap.set(query, [content]);
+				}
+			}
+		});
+	});
+	console.log(identifiersMap);
+	identifiersMap.forEach((value, key, map) => {
+		let cyNodes = cy.nodes().filter(node => {
+			return node.data('label') == key;
+		});
+		cyNodes.forEach(cyNode => {
+			cyNode.data("identifierData", value);
+		});
+	});
 };
 
 let mapIdentifiers = async function(nodesToQuery) {
@@ -160,10 +184,9 @@ let mapIdentifiers = async function(nodesToQuery) {
 	});
 	data = JSON.stringify(data);
 	//console.log(data);
-	//let url = "http://localhost:4000/anno/";
-	let url = "http://grounding.indra.bio/ground_multi";
+	let url = "http://localhost:4000/anno/";
+	//let url = "http://grounding.indra.bio/ground_multi";
 	const settings = {
-		mode:  'no-cors',
 		method: 'POST',
 		headers: {
 			Accept: 'application/json',
@@ -172,7 +195,7 @@ let mapIdentifiers = async function(nodesToQuery) {
 		body: data
 	};
 
-	let res = await fetch(url, settings)
+	let identifiers = await fetch(url, settings)
 	.then(response => response.json())
 	.then(result => {
 		return result;
@@ -180,5 +203,72 @@ let mapIdentifiers = async function(nodesToQuery) {
 	.catch(e => {
 		console.log("Error!");
 	});
-	console.log(res);
+
+	return identifiers;
 };
+
+ let generateObjectContent = function(nodeLabel, identifierData) {
+  // Create the main div element
+  const div = document.createElement('div');
+	div.setAttribute("id", "objectData");
+
+  // Loop through the dataArray and generate content for each object
+  identifierData.forEach((dataItem) => {
+    // Create a title for the id
+    const title = document.createElement('h3');
+    title.textContent = nodeLabel;
+    div.appendChild(title);
+
+    // Create a table with Fomantic UI classes
+    const table = document.createElement('table');
+    table.className = 'ui celled table';
+
+    // Create a table body
+    const tbody = document.createElement('tbody');
+
+    // Create a row for each object in dataArray
+    const row = document.createElement('tr');
+
+    const dbCell = document.createElement('td');
+    dbCell.textContent = dataItem.db;
+
+    const idCell = document.createElement('td');
+    const link = document.createElement('a');
+    link.href = dataItem.url;
+    link.textContent = dataItem.id;
+		link.target = '_blank';
+    idCell.appendChild(link);
+
+    row.appendChild(dbCell);
+    row.appendChild(idCell);
+    tbody.appendChild(row);
+
+    table.appendChild(tbody);
+    div.appendChild(table);
+  });
+
+  return div;
+};
+
+cy.on("select", "node", function(evt){
+	let node = evt.target;
+	if(node.data("label") && node.data("label") != "" && node.data("identifierData")) {
+		let objectContent = generateObjectContent(node.data("label"), node.data("identifierData"));
+		let objectView = document.getElementById("objectView");
+		objectView.appendChild(objectContent);
+	}
+});
+
+cy.on("unselect", "node", function(evt){
+	let objectView = document.getElementById("objectView");
+	if(objectView.querySelector("#objectData") != null) {
+		let objectData = document.getElementById("objectData");
+		objectView.removeChild(objectData);
+	}
+});
+
+document.getElementById("inputImage").addEventListener("click", function () {
+  let imageContent = document.getElementById("imageContent");
+  imageContent.src = base64data;
+  $('#imageModal').modal({inverted: true}).modal('show');
+});

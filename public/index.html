@@ -12,13 +12,11 @@
 </head>
 
 <body>
-	<!-- <h1>image-to-sbgn demo</h1> -->
-
 	<div class="ui container">
 		<div class="ui vertically divided grid">
-			<div class="row" style="padding-bottom: 0; padding-top: 0;  margin-top: 15px;"> 
+			<div class="row" style="padding-bottom: 0; margin-top: 10px;"> 
 				<div class="column">
-					<h2 class="ui padded center aligned header" style="margin-top: 15px;">
+					<h2 class="ui padded center aligned header" style="margin-top: 5px;">
 						Image-to-SBGN Converter
 					</h2>
 				</div>
@@ -61,7 +59,7 @@
 				</div>
 				<div class="five wide column">
 					<div class="ui basic input">
-						<textarea id="userInputText" rows="11" cols="40" placeholder="Please enter a description about the map..."></textarea>
+						<textarea id="userInputText" rows="11" cols="40" placeholder="Please enter some info about the map:&#10;- What is it about...&#10;- More details about interactions...&#10;- Info about unclear parts in the image..."></textarea>
 					</div>
 				</div>
 				<div class="center aligned sixteen wide column" style="margin-top: 0; border-top: 0px !important;">
@@ -69,29 +67,34 @@
 				</div>
 			</div>
 			<div class="two column row"  style="padding-bottom: 0; padding-top: 0">
-				<div class="ten wide column" style="margin-top: 11.5px; padding-left: 7px;">
+				<div class="eleven wide column" style="margin-top: 11.5px; padding-left: 7px;">
 					<div class="ui form">
 						<div class="field">
-							<div class="inline fields">
+							<div class="inline fields" style="margin-bottom: 10px;"">
 								<h3 class="ui header" style="margin-bottom: -3px; margin-right: 7.5px; padding: 2.5px;">Graph View</h3>
-								<img class="ui image" id="downloadSbgnml" src="img/download.svg" title="Download as SBGNML" style="height: 25px; width: 25px; padding: 2.5px">&nbsp;
+								<img class="ui image" id="downloadSbgnml" src="img/download.svg" title="Download as SBGNML" style="height: 25px; width: 25px; padding: 2.5px;">&nbsp;
 								<img class="ui image" id="applyLayout" src="img/layout.svg" title="Apply Layout" style="height: 25px; width: 25px; padding: 2.5px;"> 
 							</div>
 							<div id="cy"></div>
 						</div>
 					</div>
 				</div>
-				<div class="six wide column" style="margin-top: 11.5px; padding-left: 0px;">
+				<div class="five wide column" style="margin-top: 11.5px; padding-left: 0px;">
 					<div class="field">
 						<div class="inline fields">
 							<h3 class="ui header" style="margin-bottom: -3px; margin-right: 7.5px; padding: 2.5px;">Object View</h3>
-							<div class="ui segment" style="height: 350px;">
-								<p></p>
+							<div class="ui segment" id="objectView" style="height: 350px; margin-top: 12px;">
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
+
+	<div class="ui modal" id="imageModal">
+		<div class="image content">
+			<img class="image" id="imageContent">
 		</div>
 	</div>
 

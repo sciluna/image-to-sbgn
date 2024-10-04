@@ -87,7 +87,6 @@ app.post('/anno', async (req, res) => {
 	let body = "";
 	req.on('data', async (data) => {
 		body += data;
-		console.log(body);
 	});
 
 	req.on('end', async () => {
@@ -109,8 +108,6 @@ app.post('/anno', async (req, res) => {
 		.catch(e => {
 			console.log("Error!");
 		});
-		console.log(result);
-		console.log(JSON.stringify(result, null, 2));
 		return res.status(200).send(JSON.stringify(result, null, 2));
 	});
 });

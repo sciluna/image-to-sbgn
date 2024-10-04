@@ -4,9 +4,14 @@
   width: 700;
 }
 
-img {
+#inputImage {
   max-width: 100%;
   max-height: 300px;
+}
+
+#imageContent {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 #cySection {
@@ -45,3 +50,4 @@ h1 {
   border-radius: 3px;
   cursor: pointer;
 }
+
