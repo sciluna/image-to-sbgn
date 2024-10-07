@@ -14,6 +14,7 @@ let cy = window.cy = cytoscape({
 let base64data;
 let userInputText;
 let sbgnmlText;
+let img2sbgn = !(location.hostname === "localhost");
 
 document.getElementById("samples").addEventListener("change", function (event) {
 	let sample = event.target.value;
@@ -115,6 +116,9 @@ let communicate = async function (pngBase64, userInputText) {
 
 let sendRequestToGPT = async function (data){
 	let url = "http://localhost:4000/gpt/";
+	if(!img2sbgn) {
+		url = "http://ec2-54-224-126-212.compute-1.amazonaws.com/gpt/";
+	}
 	const settings = {
 		method: 'POST',
 		headers: {
@@ -187,9 +191,10 @@ let mapIdentifiers = async function(nodesToQuery) {
 		data.push({text: item});
 	});
 	data = JSON.stringify(data);
-	//console.log(data);
 	let url = "http://localhost:4000/anno/";
-	//let url = "http://grounding.indra.bio/ground_multi";
+	if(!img2sbgn) {
+		url = "http://ec2-54-224-126-212.compute-1.amazonaws.com/anno/";
+	}
 	const settings = {
 		method: 'POST',
 		headers: {
