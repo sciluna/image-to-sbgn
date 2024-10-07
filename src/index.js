@@ -38,11 +38,17 @@ app.post('/gpt', async (req, res) => {
 		let comment = body["comment"];
 		let image = body["image"];
 	
-		let stylesheetImage = convert(path.join(__dirname, "images/sbgn_stylesheet.png"));
+		let stylesheetImage = convertImage(path.join(__dirname, "assets/sbgn_stylesheet.png"));
+		let firstSampleImage = convertImage(path.join(__dirname, "assets/Vitamins_B6_activation_to_pyridoxal_phosphate.png"));
+		let secondSampleImage = convertImage(path.join(__dirname, "assets/Activated_STAT1alpha_induction_of_the_IRF1_gene.png"));
 
-		let userPrompt = "Now, based on what you’ve learned, generate the SBGNML for this hand-drawn SBGN diagram. Please note that macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with 'glyph' tag in SBGNML and consumption, production, modulation, simulation, catalysis, inhibition, necessary stimulation edges are represented with 'arc' tag in SBGNML. Make sure that each element in the graph has the currect tag. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON.";
+		let firstSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/Vitamins_B6_activation_to_pyridoxal_phosphate.sbgn"));
+		let secondSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/Activated_STAT1alpha_induction_of_the_IRF1_gene.sbgn"));
+
+		let userPrompt = "Now, based on what you have learned, generate the SBGNML for this hand-drawn SBGN diagram. Please note that macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with 'glyph' tag in SBGNML and consumption, production, modulation, simulation, catalysis, inhibition, necessary stimulation edges are represented with 'arc' tag in SBGNML. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON.";
+		let userPromptWithComment = userPrompt;
 		if(comment) {
-			userPrompt += " Additionally, please also consider the following comment during your process: " + comment;
+			userPromptWithComment = userPrompt + " Additionally, please also consider the following comment during your process: " + comment;
 		}
 	
 		let messagesArray = [
@@ -61,6 +67,32 @@ app.post('/gpt', async (req, res) => {
 				role: "user", 
 				content: [
 					{type: 'text', text: userPrompt}, 
+					{type: 'image_url', image_url: {
+            "url": firstSampleImage
+          }}
+				]
+			},
+			{ 
+				role: "assistant", 
+				content: '{"answer": ' + firstSampleSBGNML + '}'
+			},
+			{ 
+				role: "user", 
+				content: [
+					{type: 'text', text: userPrompt}, 
+					{type: 'image_url', image_url: {
+            "url": secondSampleImage 
+          }}
+				]
+			},
+			{ 
+				role: "assistant", 
+				content: '{"answer": ' + secondSampleSBGNML + '}'
+			},
+			{ 
+				role: "user", 
+				content: [
+					{type: 'text', text: userPromptWithComment}, 
 					{type: 'image_url', image_url: {
             "url": image
           }}
@@ -112,17 +144,23 @@ app.post('/anno', async (req, res) => {
 	});
 });
 
-const convert = (imgPath) => {
+const convertImage = (imgPath) => {
 	// read image file
 	let data = fs.readFileSync(imgPath);
 
 	// convert image file to base64-encoded string
 	const base64Image = Buffer.from(data, 'binary').toString('base64');
-	//console.log(base64Image);
 
 	// combine all strings
 	const base64ImageStr = `data:image/png;base64,${base64Image}`;
 	return base64ImageStr;
-}
+};
+
+const convertSBGNML = (sbgnmlPath) => {
+	// read sbgnml file
+	let data = fs.readFileSync(sbgnmlPath);
+
+	return data;
+};
 
 export { port, app }

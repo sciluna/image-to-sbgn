@@ -52144,16 +52144,13 @@
   	let sample = event.target.value;
   	let filename = "";
   	if(sample == "sample1") {
-  		filename = "glycolysis_sbgn.png";
+  		filename = "sample1.png";
   	}
   	else if(sample == "sample2") {
-  		filename = "repressilator.png";
+  		filename = "sample2.png";
   	}
   	else if(sample == "sample3") {
-  		filename = "stat1alpha.png";
-  	}
-  	else if(sample == "sample4") {
-  		filename = "glycolysis_2.png";
+  		filename = "sample3.png";
   	}
   	loadSample('../../examples/' + filename);
   });
