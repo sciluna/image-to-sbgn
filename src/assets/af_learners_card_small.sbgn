@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<sbgn xmlns="http://sbgn.org/libsbgn/0.2">
+  <map language="hybrid sbgn">
+    <glyph id="nwtN_07429732-69bb-4bc3-8e1d-94246b0aebaf" class="phenotype">
+      <label text="LABEL"/>
+      <bbox x="-245.45179143321366" y="260.7635555265844" w="80" h="40"/>
+    </glyph>
+    <glyph id="nwtN_f6f25e29-abee-45ed-aa43-a5b47ae7212e" class="tag">
+      <bbox x="-222.95179143321366" y="350.4239211227821" w="35" h="35"/>
+    </glyph>
+    <glyph id="9e837abd-c4bb-fa2b-3baf-96d565cd8002" class="biological activity">
+      <label text="positive influence"/>
+      <bbox x="167.05026696779385" y="259.01695741805537" w="150" h="40"/>
+    </glyph>
+    <glyph id="b7ac2fe1-926c-08e4-0df1-7cb8b98f596d" class="biological activity">
+      <label text="tag"/>
+      <bbox x="-141.62156978317114" y="348.97441367468355" w="100" h="40"/>
+    </glyph>
+    <glyph id="nwtN_ebc3573c-4d47-4e1f-9365-b3a6257a6239" class="and">
+      <bbox x="-479.7871552233636" y="452.1492888747799" w="35.714285714285715" h="35.714285714285715"/>
+      <port id="nwtN_ebc3573c-4d47-4e1f-9365-b3a6257a6239.1" x="-486.93001236622075" y="470.00643173192276"/>
+      <port id="nwtN_ebc3573c-4d47-4e1f-9365-b3a6257a6239.2" x="-436.93001236622075" y="470.00643173192276"/>
+    </glyph>
+    <glyph id="c0b83c36-31ca-818e-cd4f-04edf3974cf6" class="biological activity">
+      <label text="and"/>
+      <bbox x="-392.5086795326393" y="445.0236688648276" w="100" h="40"/>
+    </glyph>
+    <glyph id="nwtN_c97d0970-c8af-4213-8343-4e44b5d420bd" class="biological activity">
+      <label text="LABEL"/>
+      <bbox x="-501.93001236622075" y="263.64533328987665" w="80" h="40"/>
+    </glyph>
+    <glyph id="nwtN_5412295b-b034-498d-9d02-03641a45a323" class="or">
+      <bbox x="-223.30893429035652" y="445.0655409038819" w="35.714285714285715" h="35.714285714285715"/>
+      <port id="nwtN_5412295b-b034-498d-9d02-03641a45a323.1" x="-230.45179143321366" y="462.92268376102476"/>
+      <port id="nwtN_5412295b-b034-498d-9d02-03641a45a323.2" x="-180.45179143321366" y="462.92268376102476"/>
+    </glyph>
+    <glyph id="951e9d9d-cbbe-2be4-8b8c-5d02010f4467" class="biological activity">
+      <label text="or"/>
+      <bbox x="-141.62156978317114" y="441.87219120912334" w="100" h="40"/>
+    </glyph>
+    <glyph id="bf2aaba0-7b58-d482-c704-9487a83f9956" class="biological activity">
+      <label text="compartment"/>
+      <bbox x="-392.5086795326393" y="347.7635555265844" w="100" h="40"/>
+    </glyph>
+    <glyph id="050f46be-55d2-9567-46bc-43315da23969" class="biological activity">
+      <label text="not"/>
+      <bbox x="-392.5086795326395" y="528.7601177055342" w="100" h="40"/>
+    </glyph>
+    <glyph id="0d6117dc-61cb-0b18-2d59-f8270a7da690" class="biological activity">
+      <label text="delay"/>
+      <bbox x="-141.62156978317114" y="526.6591326017315" w="100" h="40"/>
+    </glyph>
+    <glyph id="435fb0e4-fd5d-a6a1-f9f8-1ec3b11777c3" class="biological activity">
+      <label text=""/>
+      <bbox x="11.113452850171356" y="350.03531777689597" w="1" h="1"/>
+    </glyph>
+    <glyph id="f631e915-6938-113b-7992-3e4c818b4573" class="biological activity">
+      <label text=""/>
+      <bbox x="11.113452850171356" y="420.03531777689597" w="1" h="1"/>
+    </glyph>
+    <glyph id="216301f1-e727-0c74-0929-caf196fd69d0" class="biological activity">
+      <label text=""/>
+      <bbox x="11.113452850171356" y="280.03531777689597" w="1" h="1"/>
+    </glyph>
+    <glyph id="nwtN_a84230a9-1748-472e-b10c-c9e06317036e" class="compartment">
+      <label text="LABEL"/>
+      <bbox x="-505.0614602029976" y="346.3025724737608" w="86.26289567355363" h="48.685521632231705"/>
+    </glyph>
+    <glyph id="dbedc9ce-eb27-e89b-b9d8-6dfa719e486c" class="biological activity">
+      <label text="necessary stimulation"/>
+      <bbox x="167.05026696779385" y="469.01695741805537" w="150" h="40"/>
+    </glyph>
+    <glyph id="fbcde33a-e6d6-1de7-c364-85bae6e8388e" class="biological activity">
+      <label text="unknown influence"/>
+      <bbox x="167.05026696779385" y="399.01695741805537" w="150" h="40"/>
+    </glyph>
+    <glyph id="565db2a9-b23c-7060-3066-82ef92e53502" class="biological activity">
+      <label text=""/>
+      <bbox x="142.74059637390548" y="489.5283054557536" w="1" h="1"/>
+    </glyph>
+    <glyph id="nwtN_a1e2ff03-5b46-4dd4-92c4-f15fe71f49c3" class="not">
+      <bbox x="-479.7871552233636" y="535.8857377154866" w="35.714285714285715" h="35.714285714285715"/>
+      <port id="nwtN_a1e2ff03-5b46-4dd4-92c4-f15fe71f49c3.1" x="-486.93001236622075" y="553.7428805726295"/>
+      <port id="nwtN_a1e2ff03-5b46-4dd4-92c4-f15fe71f49c3.2" x="-436.93001236622075" y="553.7428805726295"/>
+    </glyph>
+    <glyph id="888ebe15-5add-2e21-8b30-edfb8f11bc48" class="biological activity">
+      <label text=""/>
+      <bbox x="142.74059637390548" y="279.5283054557536" w="1" h="1"/>
+    </glyph>
+    <glyph id="e2bd60ba-784d-ad95-a89a-4bb37674d275" class="biological activity">
+      <label text="negative influence"/>
+      <bbox x="167.05026696779385" y="329.01695741805537" w="150" h="40"/>
+    </glyph>
+    <glyph id="d68ff71e-cca8-3b8f-ba39-be1eeb98b84b" class="biological activity">
+      <label text=""/>
+      <bbox x="139.74059637390548" y="349.5283054557536" w="1" h="1"/>
+    </glyph>
+    <glyph id="584ce460-cfd7-fa0b-e179-e2466cae2a23" class="biological activity">
+      <label text=""/>
+      <bbox x="142.74059637390548" y="419.5283054557536" w="1" h="1"/>
+    </glyph>
+    <glyph id="1d483a26-edb4-2d72-6b6f-4da476bb8cae" class="biological activity">
+      <label text="phenotype"/>
+      <bbox x="-141.62156978317114" y="260.76355552658447" w="100" h="40"/>
+    </glyph>
+    <glyph id="nwtN_10beade4-232b-46fc-b517-4a5e1be68956" class="delay">
+      <bbox x="-230.45179143321366" y="523.7601177055342" w="50" h="50"/>
+    </glyph>
+    <glyph id="nwtN_f51490d5-1558-4556-a3f7-1cc4dfff5562" class="biological activity">
+      <bbox x="11.113452850171356" y="489.8382350021006" w="1" h="1"/>
+    </glyph>
+    <glyph id="f160512f-dad8-31e8-1dd6-c5103788df03" class="biological activity">
+      <label text="biological activity"/>
+      <bbox x="-392.5086795326393" y="260.7635555265844" w="100" h="40"/>
+    </glyph>
+    <glyph id="nwtN_a9a6e687-aca1-469d-aca8-32551490b81d" class="biological activity">
+      <bbox x="11.113452850171356" y="551.1440752846838" w="1" h="1"/>
+    </glyph>
+    <glyph id="nwtN_01c81704-d38d-4587-8e35-aed5b8ea015b" class="biological activity">
+      <bbox x="140.92999644179798" y="550.6370629635414" w="1" h="1"/>
+    </glyph>
+    <glyph id="3ec26491-986e-d2ce-ef18-6cf2cf4f551a" class="biological activity">
+      <label text="logic arc"/>
+      <bbox x="167.05026696779385" y="531.36712583586" w="150" h="40"/>
+    </glyph>
+    <arc id="nwtE_778cdca3-9e91-44d0-bfdc-acd2a42a1b76" class="negative influence" source="435fb0e4-fd5d-a6a1-f9f8-1ec3b11777c3" target="d68ff71e-cca8-3b8f-ba39-be1eeb98b84b">
+      <start x="12.738452850171342" y="350.530883340698"/>
+      <end x="138.11560414239744" y="350.0366815823952"/>
+    </arc>
+    <arc id="nwtE_465f75bd-5a8f-4c73-8be9-e8d42376f7dc" class="necessary stimulation" source="nwtN_f51490d5-1558-4556-a3f7-1cc4dfff5562" target="565db2a9-b23c-7060-3066-82ef92e53502">
+      <start x="12.73845285017137" y="490.335586074757"/>
+      <end x="138.99060503660533" y="490.03831249421"/>
+    </arc>
+    <arc id="nwtE_64dc150c-eff0-47ab-9e55-f093c3f6ff7f" class="unknown influence" source="f631e915-6938-113b-7992-3e4c818b4573" target="584ce460-cfd7-fa0b-e179-e2466cae2a23">
+      <start x="12.73845285017137" y="420.530984408823"/>
+      <end x="140.5531079651832" y="420.0386573459464"/>
+    </arc>
+    <arc id="nwtE_414dcf72-5141-42b6-acf8-be76ce0b8b7b" class="positive influence" source="216301f1-e727-0c74-0929-caf196fd69d0" target="888ebe15-5add-2e21-8b30-edfb8f11bc48">
+      <start x="12.73845285017137" y="280.530984408823"/>
+      <end x="138.9906195564609" y="280.0446758680662"/>
+    </arc>
+    <arc id="nwtE_cbd02382-0ceb-4a9f-8e25-81ffce73eb49" class="logic arc" source="nwtN_a9a6e687-aca1-469d-aca8-32551490b81d" target="nwtN_01c81704-d38d-4587-8e35-aed5b8ea015b">
+      <start x="12.73845285017137" y="551.639681477504"/>
+      <end x="140.30499644179798" y="551.1414567707212"/>
+    </arc>
+  </map>
+</sbgn>

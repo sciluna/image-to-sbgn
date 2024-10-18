@@ -25,13 +25,45 @@ document.getElementById("samples").addEventListener("change", function (event) {
 		filename = "sample1.png";
 	}
 	else if(sample == "sample2") {
-		filename = "sample2.png";
+		filename = "repressilator_AF.png";
 	}
 	else if(sample == "sample3") {
-		filename = "sample3.png";
+		filename = "repressilator_AF_black_white.png";
 	}
 	loadSample('../../examples/' + filename);
+
+	const selectedSample = this.value;
+	
+	// Get the radio buttons
+	const radioPD = document.getElementById('radioPD');
+	const radioAF = document.getElementById('radioAF');
+	
+	// Uncheck both radios
+	radioPD.checked = false;
+	radioAF.checked = false;
+	
+	// Check the appropriate radio based on the selected sample
+	if (selectedSample === 'sample1') {
+			radioPD.checked = true; // PD for sample1
+	} else if (selectedSample === 'sample2') {
+			radioAF.checked = true; // AF for sample2
+	} else if (selectedSample === 'sample3') {
+			radioAF.checked = true; // PD for sample3 (as an example)
+	}
 });
+
+function getCheckedRadio() {
+	// Get all radio buttons with the name 'language'
+	const radios = document.getElementsByName('language');
+	
+	// Loop through the radio buttons and return the one that's checked
+	for (let i = 0; i < radios.length; i++) {
+			if (radios[i].checked) {
+					return radios[i].nextElementSibling.innerText; // Get the label text (PD or AF)
+			}
+	}
+	return null; // If none are checked
+}
 
 let loadSample = function (fname) {
 	cy.remove(cy.elements());
@@ -117,7 +149,8 @@ let communicate = async function (pngBase64, userInputText) {
 };
 
 let sendRequestToGPT = async function (data){
-	let url = "http://localhost:4000/gpt/";
+	let language = getCheckedRadio();
+	let url = "http://localhost:4000/gpt?language="+language;
 	if(img2sbgn) {
 		url = "http://ec2-54-224-126-212.compute-1.amazonaws.com/gpt/";
 	}

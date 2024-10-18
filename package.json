@@ -16,12 +16,12 @@
   "dependencies": {
     "cors": "^2.8.5",
     "cytoscape-fcose": "^2.2.0",
-    "cytoscape-sbgn-stylesheet": "^4.0.2",
+    "cytoscape-sbgn-stylesheet": "https://github.com/hasanbalci/cytoscape-sbgn-stylesheet.git",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "file-saver": "^2.0.5",
     "openai": "^4.52.0",
-    "sbgnml-to-cytoscape": "^4.0.4"
+    "sbgnml-to-cytoscape": "https://github.com/hasanbalci/sbgnml-to-cytoscape.git"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^26.0.1",

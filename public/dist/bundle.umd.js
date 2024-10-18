@@ -41488,9 +41488,9 @@
 
   	var sbgnData = __webpack_require__(0);
 
-  	var sbgnStyle = new Map().set('unspecified entity', { w: 32, h: 32, shape: 'ellipse' }).set('simple chemical', { w: 48, h: 48, shape: 'ellipse' }).set('simple chemical multimer', { w: 48, h: 48, shape: 'ellipse' }).set('macromolecule', { w: 96, h: 48, shape: 'roundrectangle' }).set('macromolecule multimer', { w: 96, h: 48, shape: 'roundrectangle' }).set('nucleic acid feature', { w: 88, h: 56, shape: 'bottomroundrectangle' }).set('nucleic acid feature multimer', { w: 88, h: 52, shape: 'bottomroundrectangle' }).set('complex', { w: 10, h: 10, shape: 'cutrectangle' }).set('complex multimer', { w: 10, h: 10, shape: 'cutrectangle' }).set('source and sink', { w: 60, h: 60, shape: 'polygon' }).set('perturbing agent', { w: 140, h: 60, shape: 'concavehexagon' }).set('phenotype', { w: 140, h: 60, shape: 'hexagon' }).set('process', { w: 25, h: 25, shape: 'square' }).set('uncertain process', { w: 25, h: 25, shape: 'square' }).set('omitted process', { w: 25, h: 25, shape: 'square' }).set('association', { w: 25, h: 25, shape: 'ellipse' }).set('dissociation', { w: 25, h: 25, shape: 'ellipse' }).set('compartment', { w: 50, h: 50, shape: 'barrel' }).set('tag', { w: 100, h: 65, shape: 'tag' }).set('and', { w: 40, h: 40, shape: 'ellipse' }).set('or', { w: 40, h: 40, shape: 'ellipse' }).set('not', { w: 40, h: 40, shape: 'ellipse' });
+  	var sbgnStyle = new Map().set('unspecified entity', { w: 32, h: 32, shape: 'ellipse' }).set('simple chemical', { w: 48, h: 48, shape: 'ellipse' }).set('simple chemical multimer', { w: 48, h: 48, shape: 'ellipse' }).set('macromolecule', { w: 96, h: 48, shape: 'roundrectangle' }).set('macromolecule multimer', { w: 96, h: 48, shape: 'roundrectangle' }).set('nucleic acid feature', { w: 88, h: 56, shape: 'bottomroundrectangle' }).set('nucleic acid feature multimer', { w: 88, h: 52, shape: 'bottomroundrectangle' }).set('complex', { w: 10, h: 10, shape: 'cutrectangle' }).set('complex multimer', { w: 10, h: 10, shape: 'cutrectangle' }).set('source and sink', { w: 60, h: 60, shape: 'polygon' }).set('perturbing agent', { w: 140, h: 60, shape: 'concavehexagon' }).set('phenotype', { w: 140, h: 60, shape: 'hexagon' }).set('process', { w: 25, h: 25, shape: 'square' }).set('uncertain process', { w: 25, h: 25, shape: 'square' }).set('omitted process', { w: 25, h: 25, shape: 'square' }).set('association', { w: 25, h: 25, shape: 'ellipse' }).set('dissociation', { w: 25, h: 25, shape: 'ellipse' }).set('compartment', { w: 50, h: 50, shape: 'barrel' }).set('tag', { w: 100, h: 65, shape: 'tag' }).set('and', { w: 40, h: 40, shape: 'ellipse' }).set('or', { w: 40, h: 40, shape: 'ellipse' }).set('not', { w: 40, h: 40, shape: 'ellipse' }).set('delay', { w: 40, h: 40, shape: 'ellipse' }).set('biological activity', { w: 96, h: 48, shape: 'rectangle' });
 
-  	var sbgnArrowMap = new Map().set('necessary stimulation', 'triangle-cross').set('inhibition', 'tee').set('catalysis', 'circle').set('stimulation', 'triangle').set('production', 'triangle').set('modulation', 'diamond');
+  	var sbgnArrowMap = new Map().set('necessary stimulation', 'triangle-cross').set('inhibition', 'tee').set('catalysis', 'circle').set('stimulation', 'triangle').set('production', 'triangle').set('modulation', 'diamond').set('positive influence', 'triangle').set('negative influence', 'tee').set('unknown influence', 'diamond');
 
   	var elementStyle = {
   	  sbgnShape: function sbgnShape(node) {
@@ -41521,6 +41521,9 @@
   	    }
   	    if (sbgnClass == 'uncertain process') {
   	      content = '?';
+  	    }
+  	    if (sbgnClass == 'delay') {
+  	      content = '\u03C4'; // tau
   	    }
 
   	    return content;
@@ -42327,6 +42330,7 @@
   	    },
   	    'text-valign': 'center',
   	    'text-halign': 'center',
+  	    'text-wrap': 'wrap',
   	    'border-width': 1.5,
   	    'border-color': '#555',
   	    'background-color': '#f6f6f6',
@@ -42465,6 +42469,8 @@
   	    },
   	    'source-arrow-shape': 'none'
   	  }).selector('edge[class="inhibition"]').css({
+  	    'target-arrow-fill': 'filled'
+  	  }).selector('edge[class="negative influence"]').css({
   	    'target-arrow-fill': 'filled'
   	  }).selector('edge[class="production"]').css({
   	    'target-arrow-fill': 'filled'
@@ -51922,13 +51928,19 @@
   	};
 
   	var getUnitOfInformation = function getUnitOfInformation(glyph) {
-  	  return {
+  	  var unitOfInformation = {
   	    id: getId(glyph),
   	    'class': getClass(glyph),
   	    label: {
   	      text: objPath.get(glyph, 'label._attributes.text', '')
   	    }
   	  };
+  	  if (objPath.get(glyph, 'entity')) {
+  	    unitOfInformation.entity = {
+  	      name: objPath.get(glyph, 'entity._attributes.name', '')
+  	    };
+  	  }
+  	  return unitOfInformation;
   	};
 
   	var getStateVars = function getStateVars(glyph) {
@@ -52062,7 +52074,8 @@
 
   	},{"./sbgnTags":41,"object-path":10}],41:[function(_dereq_,module,exports){
 
-  	var handledSbgnClasses = new Set().add('unspecified entity').add('simple chemical').add('macromolecule').add('nucleic acid feature').add('perturbing agent').add('source and sink').add('complex').add('process').add('omitted process').add('uncertain process').add('association').add('dissociation').add('phenotype').add('tag').add('consumption').add('production').add('modulation').add('stimulation').add('catalysis').add('inhibition').add('necessary stimulation').add('logic arc').add('equivalence arc').add('and operator').add('or operator').add('not operator').add('and').add('or').add('not').add('nucleic acid feature multimer').add('macromolecule multimer').add('simple chemical multimer').add('complex multimer').add('compartment');
+  	var handledSbgnClasses = new Set().add('unspecified entity').add('simple chemical').add('macromolecule').add('nucleic acid feature').add('perturbing agent').add('source and sink').add('complex').add('process').add('omitted process').add('uncertain process').add('association').add('dissociation').add('phenotype').add('tag').add('consumption').add('production').add('modulation').add('stimulation').add('catalysis').add('inhibition').add('necessary stimulation').add('logic arc').add('equivalence arc').add('and operator').add('or operator').add('not operator').add('and').add('or').add('not').add('nucleic acid feature multimer').add('macromolecule multimer').add('simple chemical multimer').add('complex multimer').add('compartment').add('biological activity') // AF specific
+  	.add('delay').add('positive influence').add('negative influence').add('unknown influence');
 
   	module.exports = function (sbgnClass) {
   	  return handledSbgnClasses.has(sbgnClass);
@@ -52148,13 +52161,45 @@
   		filename = "sample1.png";
   	}
   	else if(sample == "sample2") {
-  		filename = "sample2.png";
+  		filename = "repressilator_AF.png";
   	}
   	else if(sample == "sample3") {
-  		filename = "sample3.png";
+  		filename = "repressilator_AF_black_white.png";
   	}
   	loadSample('../../examples/' + filename);
+
+  	const selectedSample = this.value;
+  	
+  	// Get the radio buttons
+  	const radioPD = document.getElementById('radioPD');
+  	const radioAF = document.getElementById('radioAF');
+  	
+  	// Uncheck both radios
+  	radioPD.checked = false;
+  	radioAF.checked = false;
+  	
+  	// Check the appropriate radio based on the selected sample
+  	if (selectedSample === 'sample1') {
+  			radioPD.checked = true; // PD for sample1
+  	} else if (selectedSample === 'sample2') {
+  			radioAF.checked = true; // AF for sample2
+  	} else if (selectedSample === 'sample3') {
+  			radioAF.checked = true; // PD for sample3 (as an example)
+  	}
   });
+
+  function getCheckedRadio() {
+  	// Get all radio buttons with the name 'language'
+  	const radios = document.getElementsByName('language');
+  	
+  	// Loop through the radio buttons and return the one that's checked
+  	for (let i = 0; i < radios.length; i++) {
+  			if (radios[i].checked) {
+  					return radios[i].nextElementSibling.innerText; // Get the label text (PD or AF)
+  			}
+  	}
+  	return null; // If none are checked
+  }
 
   let loadSample = function (fname) {
   	cy.remove(cy.elements());
@@ -52240,7 +52285,8 @@
   };
 
   let sendRequestToGPT = async function (data){
-  	let url = "http://localhost:4000/gpt/";
+  	let language = getCheckedRadio();
+  	let url = "http://localhost:4000/gpt?language="+language;
   	if(img2sbgn) {
   		url = "http://ec2-54-224-126-212.compute-1.amazonaws.com/gpt/";
   	}
