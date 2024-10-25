@@ -112,12 +112,12 @@ const generateMessage = function(language, image, comment) {
 		let firstSampleImage = convertImage(path.join(__dirname, "assets/reference1.jpeg"));
 		let secondSampleImage = convertImage(path.join(__dirname, "assets/reference2.jpeg"));
 		let thirdSampleImage = convertImage(path.join(__dirname, "assets/reference3.png"));
-		let forthSampleImage = convertImage(path.join(__dirname, "assets/reference4.png"));
+		//let forthSampleImage = convertImage(path.join(__dirname, "assets/reference4.png"));
 
 		let firstSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference1.sbgn"));
 		let secondSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference2.sbgn"));
 		let thirdSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference3.sbgn"));
-		let forthSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference4.sbgn"));
+		//let forthSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference4.sbgn"));
 
 		console.log("here is pd");
 		let userPrompt = "Now, based on what you have learned, generate the SBGNML for this hand-drawn SBGN diagram. Please note that macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with 'glyph' tag in SBGNML and consumption, production, modulation, simulation, catalysis, inhibition, necessary stimulation edges are represented with 'arc' tag in SBGNML. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. In cases where the class of the node or edge is not fully understood from the image, you can get support from your biology knowledge. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).";
@@ -127,7 +127,7 @@ const generateMessage = function(language, image, comment) {
 		}
 	
 		let messagesArray = [
-			{ role: 'system', content: 'You are a helpful and professional assistant for converting hand drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) Process Description (PD) language and producing the corresponding SBGNML files. You will be first given an image of a stylesheet that is used to draw biological networks in SBGN PD. Then for an input hand-drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a string"}. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).'
+			{ role: 'system', content: 'You are a helpful and professional assistant for converting hand drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) Process Description (PD) language and producing the corresponding SBGNML files. You will be first given an image of a stylesheet that is used to draw biological networks in SBGN PD. Then for an input hand-drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).'
 			},
 			{ 
 				role: "user", 
@@ -177,7 +177,7 @@ const generateMessage = function(language, image, comment) {
 				role: "assistant", 
 				content: '{"answer": ' + thirdSampleSBGNML + '}'
 			},
-			{ 
+/* 			{ 
 				role: "user", 
 				content: [
 					{type: 'text', text: promptsPD.forthSampleComment}, 
@@ -189,7 +189,7 @@ const generateMessage = function(language, image, comment) {
 			{ 
 				role: "assistant", 
 				content: '{"answer": ' + forthSampleSBGNML + '}'
-			},
+			}, */
 			{ 
 				role: "user", 
 				content: [
@@ -205,10 +205,10 @@ const generateMessage = function(language, image, comment) {
 	else if (language == "AF") {
 		let stylesheetImage = convertImage(path.join(__dirname, "assets/af_learners_card_small.png"));
 		let firstSampleImage = convertImage(path.join(__dirname, "assets/AF_reference1.png"));
-		//let secondSampleImage = convertImage(path.join(__dirname, "assets/Activated_STAT1alpha_induction_of_the_IRF1_gene.png"));
+		let secondSampleImage = convertImage(path.join(__dirname, "assets/AF_reference2.jpeg"));
 
 		let firstSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/AF_reference1.sbgn"));
-		//let secondSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/Activated_STAT1alpha_induction_of_the_IRF1_gene.sbgn"));
+		let secondSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/AF_reference2.sbgn"));
 		console.log("here is af");
 		let userPrompt = "Now, based on what you have learned so far, generate the SBGNML for this hand-drawn SBGN AF diagram. Please make sure that each glyph has a 'label' and 'bbox' subtags and each arc has 'source' and 'target' defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. Please pay particular attention to the arrow heads at the edges and the edge directions, this is very important. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).";
 		let userPromptWithComment = userPrompt;
@@ -217,12 +217,12 @@ const generateMessage = function(language, image, comment) {
 		}
 	
 		let messagesArray = [
-			{ role: 'system', content: 'You are a helpful and professional assistant for converting hand drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) Activitiy Flow language and producing the corresponding SBGNML files. You will be first given an image of a stylesheet that is used to draw biological networks in SBGN AF. Then for an input hand drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a string"}. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).'
+			{ role: 'system', content: 'You are a helpful and professional assistant for converting hand drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) Activity Flow (AF) language and producing the corresponding SBGNML files. You will be first given an image of a stylesheet that is used to draw biological networks in SBGN AF. Then for an input hand drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).'
 			},
 			{ 
 				role: "user", 
 				content: [
-					{type: 'text', text: "Here is a stylesheet of SBGN AF shapes (nodes and edges) and their corresponding classes written in the right columns. Try to learn this stylesheet thoroughly, because subsequent hand-drawn images will be drawn using the node and edge shapes in this stylesheet. Therefore, it is important to learn it correctly in order to classify nodes and edges in hand-drawn images correctly."}, 
+					{type: 'text', text: "Here is a stylesheet of SBGN AF shapes (nodes and edges) and their corresponding classes written in the right columns. Try to learn this stylesheet thoroughly, because subsequent hand-drawn images will be drawn using the node and edge shapes in this stylesheet. Therefore, it is important to learn it correctly in order to classify nodes and edges in hand-drawn images correctly. For edges, pay particular attention to arrows because arrows differentiate the edge class. Input edges to AND, OR and NOT nodes can only be logic arcs."}, 
 					{type: 'image_url', image_url: {
             "url": stylesheetImage
           }}
@@ -241,10 +241,10 @@ const generateMessage = function(language, image, comment) {
 				role: "assistant", 
 				content: '{"answer": ' + firstSampleSBGNML + '}'
 			},
-/* 			{ 
+ 			{ 
 				role: "user", 
 				content: [
-					{type: 'text', text: userPrompt}, 
+					{type: 'text', text: promptsAF.secondSampleComment}, 
 					{type: 'image_url', image_url: {
             "url": secondSampleImage 
           }}
@@ -253,7 +253,7 @@ const generateMessage = function(language, image, comment) {
 			{ 
 				role: "assistant", 
 				content: '{"answer": ' + secondSampleSBGNML + '}'
-			}, */
+			},
 			{ 
 				role: "user", 
 				content: [

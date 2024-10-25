@@ -52158,13 +52158,22 @@
   	let sample = event.target.value;
   	let filename = "";
   	if(sample == "sample1") {
-  		filename = "sample1.png";
+  		filename = "PD_sample1.png";
   	}
   	else if(sample == "sample2") {
-  		filename = "repressilator_AF.png";
+  		filename = "PD_sample2.png";
   	}
   	else if(sample == "sample3") {
-  		filename = "repressilator_AF_black_white.png";
+  		filename = "PD_sample3.png";
+  	}
+  	else if(sample == "sample4") {
+  		filename = "AF_sample1.png";
+  	}
+  	else if(sample == "sample5") {
+  		filename = "AF_sample1_black_white.png";
+  	}
+  	else if(sample == "sample6") {
+  		filename = "AF_sample2.png";
   	}
   	loadSample('../../examples/' + filename);
 
@@ -52179,12 +52188,10 @@
   	radioAF.checked = false;
   	
   	// Check the appropriate radio based on the selected sample
-  	if (selectedSample === 'sample1') {
+  	if (selectedSample === 'sample1' || selectedSample === 'sample2' || selectedSample === 'sample3') {
   			radioPD.checked = true; // PD for sample1
-  	} else if (selectedSample === 'sample2') {
+  	} else if (selectedSample === 'sample4' || selectedSample === 'sample5' || selectedSample === 'sample6') {
   			radioAF.checked = true; // AF for sample2
-  	} else if (selectedSample === 'sample3') {
-  			radioAF.checked = true; // PD for sample3 (as an example)
   	}
   });
 
@@ -52202,6 +52209,7 @@
   }
 
   let loadSample = function (fname) {
+  	cy.nodes().unselect();
   	cy.remove(cy.elements());
   	fetch(fname).then(function (res) {
   		return res.blob();
@@ -52247,6 +52255,7 @@
   		userInputText = document.getElementById("userInputText").value;
   		sbgnmlText = undefined;
   		cy.remove(cy.elements());
+  		cy.nodes().unselect();
   		e.currentTarget.style.backgroundColor = "#f2711c";
   		e.currentTarget.className += " loading";
   		communicate(base64data, userInputText);
@@ -52274,14 +52283,22 @@
   	};
 
   	let response = await sendRequestToGPT(data);
-  	let resultJSON = JSON.parse(response);
-  	sbgnmlText = resultJSON.answer;
-  	console.log(sbgnmlText);
-  	sbgnmlText = sbgnmlText.replaceAll('\"', '"');
-  	sbgnmlText = sbgnmlText.replaceAll('\n', '');
-  	sbgnmlText = sbgnmlText.replaceAll('empty set', 'source and sink');
-  	console.log(sbgnmlText);
-  	await generateCyGraph();
+  	let resultJSON;
+  	try {
+  		resultJSON = JSON.parse(response);
+  		sbgnmlText = resultJSON.answer;
+  		console.log(sbgnmlText);
+  		sbgnmlText = sbgnmlText.replaceAll('\"', '"');
+  		sbgnmlText = sbgnmlText.replaceAll('\n', '');
+  		sbgnmlText = sbgnmlText.replaceAll('empty set', 'source and sink');
+  		console.log(sbgnmlText);
+  		await generateCyGraph();
+  	} catch (error) {
+  		alert("Output SBGNML from GPT is not in the correct format! Please try again!");
+  		console.log("Output SBGNML is not in the correct format");
+  		document.getElementById("processData").style.backgroundColor = "#d67664";
+  		document.getElementById("processData").classList.remove("loading");
+  	}
   };
 
   let sendRequestToGPT = async function (data){
