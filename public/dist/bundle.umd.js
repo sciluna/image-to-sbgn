@@ -52305,7 +52305,7 @@
   	let language = getCheckedRadio();
   	let url = "http://localhost:4000/gpt?language="+language;
   	if(img2sbgn) {
-  		url = "http://ec2-54-224-126-212.compute-1.amazonaws.com/gpt/";
+  		url = "http://ec2-3-87-167-56.compute-1.amazonaws.com/gpt?language="+language;
   	}
   	const settings = {
   		method: 'POST',
