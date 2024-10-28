@@ -101,7 +101,7 @@ const convertImage = (imgPath) => {
 
 const convertSBGNML = (sbgnmlPath) => {
 	// read sbgnml file
-	let data = fs.readFileSync(sbgnmlPath);
+	let data = fs.readFileSync(sbgnmlPath, 'utf8');
 
 	return data;
 };
@@ -149,7 +149,7 @@ const generateMessage = function(language, image, comment) {
 			},
 			{ 
 				role: "assistant", 
-				content: '{"answer": ' + firstSampleSBGNML + '}'
+				content: JSON.stringify({ answer: firstSampleSBGNML })
 			},
 			{ 
 				role: "user", 
@@ -162,7 +162,7 @@ const generateMessage = function(language, image, comment) {
 			},
 			{ 
 				role: "assistant", 
-				content: '{"answer": ' + secondSampleSBGNML + '}'
+				content: JSON.stringify({ answer: secondSampleSBGNML })
 			},
 			{ 
 				role: "user", 
@@ -175,7 +175,7 @@ const generateMessage = function(language, image, comment) {
 			},
 			{ 
 				role: "assistant", 
-				content: '{"answer": ' + thirdSampleSBGNML + '}'
+				content: JSON.stringify({ answer: thirdSampleSBGNML })
 			},
 /* 			{ 
 				role: "user", 
@@ -239,7 +239,7 @@ const generateMessage = function(language, image, comment) {
 			},
 			{ 
 				role: "assistant", 
-				content: '{"answer": ' + firstSampleSBGNML + '}'
+				content: JSON.stringify({ answer: firstSampleSBGNML })
 			},
  			{ 
 				role: "user", 
@@ -252,7 +252,7 @@ const generateMessage = function(language, image, comment) {
 			},
 			{ 
 				role: "assistant", 
-				content: '{"answer": ' + secondSampleSBGNML + '}'
+				content: JSON.stringify({ answer: secondSampleSBGNML })
 			},
 			{ 
 				role: "user", 
