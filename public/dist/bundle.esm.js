@@ -206,6 +206,9 @@ let generateCyGraph = async function () {
 	nodesToQuery = nodesToQuery.map(node => {
 		return node.data("label");
 	});
+	nodesToQuery = nodesToQuery.filter((value, index, array) => {
+		return array.indexOf(value) === index;
+	});
 	let identifiers = await mapIdentifiers(nodesToQuery);
 
 	let identifiersMap = new Map();
@@ -215,7 +218,7 @@ let generateCyGraph = async function () {
 				let query = data.match.query;
 				let content = {db: data.term.db, id: data.term.id, url: data.url};
 				if (identifiersMap.has(query)) {
-					identifiersMap.set(query, identifiersMap.get(query).push(content));
+					identifiersMap.get(query).push(content);
 				} else {
 					identifiersMap.set(query, [content]);
 				}
