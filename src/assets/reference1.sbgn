@@ -1,73 +1,73 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
 <sbgn xmlns="http://sbgn.org/libsbgn/0.2">
   <map language="process description">
-    <glyph id="nwtN_71c6106a-a029-4826-8832-bb30fa794822" class="simple chemical">
+    <glyph id="n1" class="simple chemical">
       <label text="glucose"/>
       <bbox x="259.44247263209644" y="196.10256150025734" w="47.91455078125" h="25"/>
     </glyph>
-    <glyph id="nwtN_5da0a233-6e01-46bb-be56-0cb863fcb5dc" class="simple chemical">
+    <glyph id="n2" class="simple chemical">
       <label text="ATP"/>
       <bbox x="298.14051654388095" y="249.10592521769303" w="30.58203125" h="25"/>
     </glyph>
-    <glyph id="nwtN_62b6f76d-c244-4e8e-8612-7e0d73838c80" class="simple chemical">
+    <glyph id="n3" class="simple chemical">
       <label text="glucose&#xA;6P"/>
       <bbox x="423.85910298894044" y="191.5593351893747" w="47.91455078125" h="36"/>
     </glyph>
-    <glyph id="nwtN_64b45dc5-25f0-466a-a7f5-3bc9a215468f" class="simple chemical">
+    <glyph id="n4" class="simple chemical">
       <label text="ADP"/>
       <bbox x="413.8832983629491" y="252.68584939953507" w="32.61767578125" h="25"/>
     </glyph>
-    <glyph id="nwtN_cdc46998-2d3e-4ff6-81c7-6ba6ac3fc821" class="simple chemical">
+    <glyph id="n5" class="simple chemical">
       <label text="fructose&#xA;6P"/>
       <bbox x="592.059363508202" y="190.45782005650022" w="49.12841796875" h="36"/>
     </glyph>
-    <glyph id="nwtN_438461f3-e1f7-4e05-b297-c889b7aa4072" class="process">
+    <glyph id="n6" class="process">
       <bbox x="357.784507487905" y="201.5903416968617" w="14.285714285714286" h="14.285714285714286"/>
-      <port id="nwtN_438461f3-e1f7-4e05-b297-c889b7aa4072.1" x="354.92736463076216" y="208.73319883971885"/>
-      <port id="nwtN_438461f3-e1f7-4e05-b297-c889b7aa4072.2" x="374.92736463076216" y="208.73319883971885"/>
+      <port id="n6.1" x="354.92736463076216" y="208.73319883971885"/>
+      <port id="n6.2" x="374.92736463076216" y="208.73319883971885"/>
     </glyph>
-    <glyph id="nwtN_30477bb4-9383-4478-8907-9fe96a227723" class="process">
+    <glyph id="n7" class="process">
       <bbox x="524.6640501183863" y="202.41647804651754" w="14.285714285714286" h="14.285714285714286"/>
-      <port id="nwtN_30477bb4-9383-4478-8907-9fe96a227723.1" x="521.8069072612434" y="209.55933518937468"/>
-      <port id="nwtN_30477bb4-9383-4478-8907-9fe96a227723.2" x="541.8069072612434" y="209.55933518937468"/>
+      <port id="n7.1" x="521.8069072612434" y="209.55933518937468"/>
+      <port id="n7.2" x="541.8069072612434" y="209.55933518937468"/>
     </glyph>
-    <glyph id="nwtN_2b64157a-d496-46e7-bebb-7275fd9b6cea" class="macromolecule">
+    <glyph id="n8" class="macromolecule">
       <label text="hexokinase"/>
       <bbox x="331.55165589244984" y="138.12827558059092" w="65.64990234375" h="25"/>
     </glyph>
-    <glyph id="nwtN_c7f4db37-0096-458f-9190-084d4ebf9fda" class="macromolecule">
+    <glyph id="n9" class="macromolecule">
       <label text="glucose-6P&#xA;isomerase"/>
       <bbox x="500.11693032964934" y="135.65744219599569" w="65.0322265625" h="36"/>
     </glyph>
-    <arc id="nwtE_3896635c-0166-484d-a865-113874d32879" class="consumption" source="nwtN_71c6106a-a029-4826-8832-bb30fa794822" target="nwtN_438461f3-e1f7-4e05-b297-c889b7aa4072.1">
+    <arc id="e1" class="consumption" source="n1" target="n6.1">
       <start x="307.98191271022995" y="208.64195120311618"/>
       <end x="354.30236463076216" y="208.73319883971885"/>
     </arc>
-    <arc id="nwtE_a636556a-551a-405a-bad7-fe65e73bf987" class="consumption" source="nwtN_5da0a233-6e01-46bb-be56-0cb863fcb5dc" target="nwtN_438461f3-e1f7-4e05-b297-c889b7aa4072.1">
+    <arc id="e2" class="consumption" source="n2" target="n6.1">
       <start x="323.3981257619667" y="251.3728451648991"/>
       <end x="354.30236463076216" y="208.73319883971885"/>
     </arc>
-    <arc id="nwtE_b968db20-4f77-4d69-8d7e-2b0baf04f6a0" class="production" source="nwtN_438461f3-e1f7-4e05-b297-c889b7aa4072.2" target="nwtN_62b6f76d-c244-4e8e-8612-7e0d73838c80">
+    <arc id="e3" class="production" source="n6.2" target="n3">
       <start x="375.55236463076216" y="208.73319883971885"/>
       <end x="420.1113848449028" y="209.28320568570697"/>
     </arc>
-    <arc id="nwtE_513bc8ec-8940-41f1-a3d3-d9b2838dce50" class="production" source="nwtN_438461f3-e1f7-4e05-b297-c889b7aa4072.2" target="nwtN_64b45dc5-25f0-466a-a7f5-3bc9a215468f">
+    <arc id="e4" class="production" source="n6.2" target="n4">
       <start x="375.55236463076216" y="208.73319883971885"/>
       <end x="416.52795510247483" y="253.36662097769818"/>
     </arc>
-    <arc id="nwtE_98958bb0-4300-4e86-8872-eabd51567dca" class="catalysis" source="nwtN_2b64157a-d496-46e7-bebb-7275fd9b6cea" target="nwtN_438461f3-e1f7-4e05-b297-c889b7aa4072">
+    <arc id="e5" class="catalysis" source="n8" target="n6">
       <start x="364.5010146472633" y="163.75327558059092"/>
       <end x="364.8258087507569" y="198.01905349916422"/>
     </arc>
-    <arc id="nwtE_fac356a5-23ad-4e7b-8b46-49d31dd2048a" class="catalysis" source="nwtN_c7f4db37-0096-458f-9190-084d4ebf9fda" target="nwtN_30477bb4-9383-4478-8907-9fe96a227723">
+    <arc id="e6" class="catalysis" source="n9" target="n7">
       <start x="532.3577973054806" y="172.28244219599569"/>
       <end x="531.9652414167394" y="198.84539066747396"/>
     </arc>
-    <arc id="nwtE_9926b01a-fcd5-47f4-911e-0b0142873ded" class="consumption" source="nwtN_62b6f76d-c244-4e8e-8612-7e0d73838c80" target="nwtN_30477bb4-9383-4478-8907-9fe96a227723.1">
+    <arc id="e7" class="consumption" source="n3" target="n7.1">
       <start x="472.39865377019044" y="209.5593351893747"/>
       <end x="521.1819072612434" y="209.55933518937468"/>
     </arc>
-    <arc id="nwtE_5e1a349a-59c1-412e-b198-bb9f93eed6cb" class="production" source="nwtN_30477bb4-9383-4478-8907-9fe96a227723.2" target="nwtN_cdc46998-2d3e-4ff6-81c7-6ba6ac3fc821">
+    <arc id="e8" class="production" source="n7.2" target="n5">
       <start x="542.4319072612434" y="209.55933518937468"/>
       <end x="588.3135115456662" y="208.8254831856809"/>
     </arc>

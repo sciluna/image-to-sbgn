@@ -52167,12 +52167,15 @@
   		filename = "PD_sample3.png";
   	}
   	else if(sample == "sample4") {
-  		filename = "AF_sample1.png";
+  		filename = "PD_sample4.png";
   	}
   	else if(sample == "sample5") {
-  		filename = "AF_sample1_black_white.png";
+  		filename = "AF_sample1.png";
   	}
   	else if(sample == "sample6") {
+  		filename = "AF_sample1_black_white.png";
+  	}
+  	else if(sample == "sample7") {
   		filename = "AF_sample2.png";
   	}
   	loadSample('../../examples/' + filename);
@@ -52188,9 +52191,9 @@
   	radioAF.checked = false;
   	
   	// Check the appropriate radio based on the selected sample
-  	if (selectedSample === 'sample1' || selectedSample === 'sample2' || selectedSample === 'sample3') {
+  	if (selectedSample === 'sample1' || selectedSample === 'sample2' || selectedSample === 'sample3' || selectedSample === 'sample4') {
   			radioPD.checked = true; // PD for sample1
-  	} else if (selectedSample === 'sample4' || selectedSample === 'sample5' || selectedSample === 'sample6') {
+  	} else if (selectedSample === 'sample5' || selectedSample === 'sample6' || selectedSample === 'sample7') {
   			radioAF.checked = true; // AF for sample2
   	}
   });

@@ -21,11 +21,6 @@ const port = process.env.PORT || 4000;
 app.use(express.static(path.join(__dirname, "../public/")));
 app.use(cors());
 
-// Initialize OpenAI API
-const openai = new OpenAI({
-	apiKey: process.env.OPEN_API_KEY
-});
-
 // Define a route to handle gpt query
 app.post('/gpt', async (req, res) => {
 	let body = "";
@@ -33,11 +28,16 @@ app.post('/gpt', async (req, res) => {
 		body += data;
 	});
 
+	// Initialize OpenAI API
+	const openai = new OpenAI({
+		apiKey: process.env.OPEN_API_KEY
+	});
+
 	req.on('end', async () => {
 		body = JSON.parse(body);
 
 		let language = req.query.language;
-		console.log(language);
+
 		let comment = body["comment"];
 		let image = body["image"];
 
@@ -109,8 +109,8 @@ const convertSBGNML = (sbgnmlPath) => {
 const generateMessage = function(language, image, comment) {
 	if (language == "PD") {
 		let stylesheetImage = convertImage(path.join(__dirname, "assets/sbgn_stylesheet.png"));
-		let firstSampleImage = convertImage(path.join(__dirname, "assets/reference1.jpeg"));
-		let secondSampleImage = convertImage(path.join(__dirname, "assets/reference2.jpeg"));
+		let firstSampleImage = convertImage(path.join(__dirname, "assets/reference1.png"));
+		let secondSampleImage = convertImage(path.join(__dirname, "assets/reference2.png"));
 		let thirdSampleImage = convertImage(path.join(__dirname, "assets/reference3.png"));
 		//let forthSampleImage = convertImage(path.join(__dirname, "assets/reference4.png"));
 
@@ -120,7 +120,7 @@ const generateMessage = function(language, image, comment) {
 		//let forthSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference4.sbgn"));
 
 		console.log("here is pd");
-		let userPrompt = "Now, based on what you have learned, generate the SBGNML for this hand-drawn SBGN diagram. Please note that macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with 'glyph' tag in SBGNML and consumption, production, modulation, simulation, catalysis, inhibition, necessary stimulation edges are represented with 'arc' tag in SBGNML. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. In cases where the class of the node or edge is not fully understood from the image, you can get support from your biology knowledge. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).";
+		let userPrompt = "Now please generate the SBGNML for this hand-drawn SBGN PD diagram. Please note that macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with 'glyph' tag in SBGNML and consumption, production, modulation, simulation, catalysis, inhibition, necessary stimulation and logic arc edges are represented with 'arc' tag in SBGNML. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. In cases where the class of the node or edge is not fully understood from the image, you can get support from your biology knowledge. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).";
 		let userPromptWithComment = userPrompt;
 		if(comment) {
 			userPromptWithComment = userPrompt + " Additionally, please also consider the following comment during your process: " + comment;
@@ -205,12 +205,12 @@ const generateMessage = function(language, image, comment) {
 	else if (language == "AF") {
 		let stylesheetImage = convertImage(path.join(__dirname, "assets/af_learners_card_small.png"));
 		let firstSampleImage = convertImage(path.join(__dirname, "assets/AF_reference1.png"));
-		let secondSampleImage = convertImage(path.join(__dirname, "assets/AF_reference2.jpeg"));
+		let secondSampleImage = convertImage(path.join(__dirname, "assets/AF_reference2.png"));
 
 		let firstSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/AF_reference1.sbgn"));
 		let secondSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/AF_reference2.sbgn"));
 		console.log("here is af");
-		let userPrompt = "Now, based on what you have learned so far, generate the SBGNML for this hand-drawn SBGN AF diagram. Please make sure that each glyph has a 'label' and 'bbox' subtags and each arc has 'source' and 'target' defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. Please pay particular attention to the arrow heads at the edges and the edge directions, this is very important. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).";
+		let userPrompt = "Now please generate the SBGNML for this hand-drawn SBGN AF diagram. Please make sure that each glyph has a 'label' and 'bbox' subtags and each arc has 'source' and 'target' defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. Please pay particular attention to the arrow heads at the edges and the edge directions, this is very important. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).";
 		let userPromptWithComment = userPrompt;
 		if(comment) {
 			userPromptWithComment = userPrompt + " Additionally, please also consider the following comment during your process: " + comment;

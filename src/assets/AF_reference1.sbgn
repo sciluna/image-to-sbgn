@@ -1,39 +1,39 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
 <sbgn xmlns="http://sbgn.org/libsbgn/0.2">
   <map language="activity flow">
-    <glyph id="nwtN_9ed849ae-0a47-4cb8-86e3-ec45f6fbe819" class="biological activity">
+    <glyph id="n1" class="biological activity">
       <label text="increase in&#xA;membrane&#xA;potential"/>
       <bbox x="1005.6323235615748" y="76.5" w="63.1953125" h="47"/>
     </glyph>
-    <glyph id="nwtN_3702512b-0cf0-40fd-b38f-32aff4d035b6" class="biological activity">
+    <glyph id="n2" class="biological activity">
       <label text="sodium&#xA;channel&#xA;activity"/>
       <bbox x="1012.9638665303248" y="180.5" w="48.5322265625" h="47"/>
     </glyph>
-    <glyph id="nwtN_e546c039-7cb2-4e25-a684-f33d216abd49" class="biological activity">
+    <glyph id="n3" class="biological activity">
       <label text="depolarization"/>
       <bbox x="997.9838860615748" y="297.5" w="78.4921875" h="25"/>
     </glyph>
-    <glyph id="nwtN_c22a4d69-1c57-4dc5-b382-552269208597" class="biological activity">
+    <glyph id="n4" class="biological activity">
       <label text="potassium&#xA;channel&#xA;activity"/>
       <bbox x="1007.1630852803248" y="380.5" w="60.1337890625" h="47"/>
     </glyph>
-    <glyph id="nwtN_73d0c00b-0f01-45e9-be3c-1cb4112e2e51" class="phenotype">
+    <glyph id="n5" class="phenotype">
       <label text="repolarization"/>
       <bbox x="994.0362324672634" y="476.5000000000002" w="86.38749468862292" h="32.47677097969837"/>
     </glyph>
-    <arc id="nwtE_f56d8c71-bc5d-4e18-b22a-fb9ae95d1cc1" class="positive influence" source="nwtN_9ed849ae-0a47-4cb8-86e3-ec45f6fbe819" target="nwtN_3702512b-0cf0-40fd-b38f-32aff4d035b6">
+    <arc id="e1" class="positive influence" source="n1" target="n2">
       <start x="1037.2299798115748" y="124.125"/>
       <end x="1037.2299798115748" y="176.75"/>
     </arc>
-    <arc id="nwtE_4fd7f6d2-c51c-463b-9e21-ec2dd988e681" class="necessary stimulation" source="nwtN_3702512b-0cf0-40fd-b38f-32aff4d035b6" target="nwtN_e546c039-7cb2-4e25-a684-f33d216abd49">
+    <arc id="e2" class="necessary stimulation" source="n2" target="n3">
       <start x="1037.2299798115748" y="228.125"/>
       <end x="1037.2299798115748" y="293.75"/>
     </arc>
-    <arc id="nwtE_229a2384-9e05-4c13-b034-e18e8e9bc0f0" class="positive influence" source="nwtN_e546c039-7cb2-4e25-a684-f33d216abd49" target="nwtN_c22a4d69-1c57-4dc5-b382-552269208597">
+    <arc id="e3" class="positive influence" source="n3" target="n4">
       <start x="1037.2299798115748" y="323.125"/>
       <end x="1037.2299798115748" y="376.75"/>
     </arc>
-    <arc id="nwtE_ccd1810a-3216-4e81-9136-585d9b3cc8ad" class="necessary stimulation" source="nwtN_c22a4d69-1c57-4dc5-b382-552269208597" target="nwtN_73d0c00b-0f01-45e9-be3c-1cb4112e2e51">
+    <arc id="e4" class="necessary stimulation" source="n4" target="n5">
       <start x="1037.2299798115748" y="428.125"/>
       <end x="1037.2299798115748" y="472.7500000000002"/>
     </arc>
