@@ -219,6 +219,10 @@ let generateCyGraph = async function () {
 			node.position({x:  node.data('bbox').x + node.data('bbox').w / 2, y: node.data('bbox').y + node.data('bbox').h / 2});
 		}
 	);
+	let language = getCheckedRadio();
+	cy.elements().forEach(ele => {
+		ele.data("language", language);
+	});
 	cy.layout({ name: 'fcose', randomize: false }).run();
 	let nodesToQuery = cy.nodes().filter(node => {
 		return node.data("label");

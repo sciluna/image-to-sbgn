@@ -1,5 +1,6 @@
 import express from 'express';
 import { config } from 'dotenv';
+import { TokenJS } from 'token.js'
 import { OpenAI } from 'openai';
 import fs from 'fs';
 import path from 'path';
@@ -28,10 +29,37 @@ app.post('/gpt', async (req, res) => {
 		body += data;
 	});
 
-	// Initialize OpenAI API
-	const openai = new OpenAI({
-		apiKey: process.env.OPEN_API_KEY
+	// Create the Token.js client
+	const tokenjs = new TokenJS({
+		//baseURL: 'http://127.0.0.1:11434/v1/'
 	});
+	let provider = "openai"; // options: openai, gemini, openai-compatible
+	let model = "";
+
+	if (provider == "openai") {
+		model = "gpt-4o";
+	} else if (provider == "gemini") {
+		model = "gemini-1.5-pro";
+	} else if (provider == "bedrock") {
+		model = "meta.llama3-8b-instruct-v1:0";
+	} else if (provider == "openai-compatible") {
+		model = "llama3.2-vision";
+	}
+
+	// Initialize OpenAI API
+/* 	const client = new OpenAI({
+		apiKey: process.env.OPEN_API_KEY
+	}); */
+/* 	const client = new OpenAI({
+		apiKey: process.env.GEMINI_API_KEY,
+		baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+	}); */
+/* 	const client = new OpenAI({
+		baseURL: 'http://localhost:11434/v1/',
+
+		// required but ignored
+		apiKey: 'ollama',
+	}); */
 
 	req.on('end', async () => {
 		body = JSON.parse(body);
@@ -44,12 +72,15 @@ app.post('/gpt', async (req, res) => {
 		let messagesArray = generateMessage(language, image, comment);
 
 		async function main() {
-			const response = await openai.chat.completions.create({
-				model: 'gpt-4o',
+			const response = await tokenjs.chat.completions.create({
+				provider: provider,
+				model: model,
 				messages: messagesArray
 			});
 			let answer = response.choices[0]["message"]["content"];
 			console.log(answer);
+			answer = answer.replaceAll('```json', '');
+			answer = answer.replaceAll('```', '');
 			//return res.status(200).send(answer);
 			return res.status(200).send(JSON.stringify(answer));
 		}
@@ -120,14 +151,14 @@ const generateMessage = function(language, image, comment) {
 		//let forthSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference4.sbgn"));
 
 		console.log("here is pd");
-		let userPrompt = "Now please generate the SBGNML for this hand-drawn SBGN PD diagram. Please note that macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with 'glyph' tag in SBGNML and consumption, production, modulation, simulation, catalysis, inhibition, necessary stimulation and logic arc edges are represented with 'arc' tag in SBGNML. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. In cases where the class of the node or edge is not fully understood from the image, you can get support from your biology knowledge. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).";
+		let userPrompt = "Now please generate the SBGNML for this hand-drawn SBGN PD diagram. Please note that macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with 'glyph' tag in SBGNML and consumption, production, modulation, simulation, catalysis, inhibition, necessary stimulation and logic arc edges are represented with 'arc' tag in SBGNML. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).";
 		let userPromptWithComment = userPrompt;
 		if(comment) {
 			userPromptWithComment = userPrompt + " Additionally, please also consider the following comment during your process: " + comment;
 		}
 	
 		let messagesArray = [
-			{ role: 'system', content: 'You are a helpful and professional assistant for converting hand drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) Process Description (PD) language and producing the corresponding SBGNML files. You will be first given an image of a stylesheet that is used to draw biological networks in SBGN PD. Then for an input hand-drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).'
+			{ role: 'system', content: 'You are a helpful and professional assistant for converting hand drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) Process Description (PD) language and producing the corresponding SBGNML files. You will be first given an image of a stylesheet that is used to draw biological networks in SBGN PD. Then for an input hand-drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, and make sure that you are returning a valid JSON (this is important).'
 			},
 			{ 
 				role: "user", 
@@ -138,7 +169,7 @@ const generateMessage = function(language, image, comment) {
           }}
 				]
 			},
-			{ 
+/* 			{ 
 				role: "user", 
 				content: [
 					{type: 'text', text: promptsPD.firstSampleComment}, 
@@ -150,7 +181,7 @@ const generateMessage = function(language, image, comment) {
 			{ 
 				role: "assistant", 
 				content: JSON.stringify({ answer: firstSampleSBGNML })
-			},
+			}, */
 			{ 
 				role: "user", 
 				content: [
@@ -210,7 +241,7 @@ const generateMessage = function(language, image, comment) {
 		let firstSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/AF_reference1.sbgn"));
 		let secondSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/AF_reference2.sbgn"));
 		console.log("here is af");
-		let userPrompt = "Now please generate the SBGNML for this hand-drawn SBGN AF diagram. Please make sure that each glyph has a 'label' and 'bbox' subtags and each arc has 'source' and 'target' defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. Please pay particular attention to the arrow heads at the edges and the edge directions, this is very important. Do NOT enclose the JSON output in markdown code blocks like ```json and make sure that you are returning a valid JSON (this is important).";
+		let userPrompt = "Please generate the SBGNML for this hand-drawn SBGN AF diagram. Please note that biological activity, phenotype, and, or, not, delay nodes are represented with 'glyph' tag in SBGNML AF and positive influence, negative influence, unknown influence, necessary simulation and logic arc edges are represented with 'arc' tag in SBGNML AF. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).";
 		let userPromptWithComment = userPrompt;
 		if(comment) {
 			userPromptWithComment = userPrompt + " Additionally, please also consider the following comment during your process: " + comment;

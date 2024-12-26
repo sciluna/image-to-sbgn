@@ -10491,10 +10491,14 @@
       }
 
       // shift by margin and expand by outline and border
-      lx1 += marginX - Math.max(outlineWidth, halfBorderWidth) - padding - marginOfError;
-      lx2 += marginX + Math.max(outlineWidth, halfBorderWidth) + padding + marginOfError;
-      ly1 += marginY - Math.max(outlineWidth, halfBorderWidth) - padding - marginOfError;
-      ly2 += marginY + Math.max(outlineWidth, halfBorderWidth) + padding + marginOfError;
+      var leftPad = marginX - Math.max(outlineWidth, halfBorderWidth) - padding - marginOfError;
+      var rightPad = marginX + Math.max(outlineWidth, halfBorderWidth) + padding + marginOfError;
+      var topPad = marginY - Math.max(outlineWidth, halfBorderWidth) - padding - marginOfError;
+      var botPad = marginY + Math.max(outlineWidth, halfBorderWidth) + padding + marginOfError;
+      lx1 += leftPad;
+      lx2 += rightPad;
+      ly1 += topPad;
+      ly2 += botPad;
 
       // always store the unrotated label bounds separately
       var bbPrefix = prefix || 'main';
@@ -10506,6 +10510,10 @@
       bb.y2 = ly2;
       bb.w = lx2 - lx1;
       bb.h = ly2 - ly1;
+      bb.leftPad = leftPad;
+      bb.rightPad = rightPad;
+      bb.topPad = topPad;
+      bb.botPad = botPad;
       var isAutorotate = isEdge && rotation.strValue === 'autorotate';
       var isPfValue = rotation.pfValue != null && rotation.pfValue !== 0;
       if (isAutorotate || isPfValue) {
@@ -10897,7 +10905,7 @@
     var isDirty = function isDirty(ele) {
       return ele._private.bbCache == null || ele._private.styleDirty;
     };
-    var needRecalc = !useCache || isDirty(ele) || isEdge && isDirty(ele.source()) || isDirty(ele.target());
+    var needRecalc = !useCache || isDirty(ele) || isEdge && (isDirty(ele.source()) || isDirty(ele.target()));
     if (needRecalc) {
       if (!isPosKeySame) {
         ele.recalculateRenderedStyle(useCache);
@@ -15727,9 +15735,7 @@
       // only for beziers -- so performance of other edges isn't affected
       prop.triggersBoundsOfParallelBeziers && name === 'curve-style' && (fromValue === 'bezier' || toValue === 'bezier')) {
         ele.parallelEdges().forEach(function (pllEdge) {
-          if (pllEdge.isBundledBezier()) {
-            pllEdge.dirtyBoundingBoxCache();
-          }
+          pllEdge.dirtyBoundingBoxCache();
         });
       }
       if (prop.triggersBoundsOfConnectedEdges && name === 'display' && (fromValue === 'none' || toValue === 'none')) {
@@ -23150,7 +23156,9 @@
             hasUnbundled: pairInfo.hasUnbundled,
             eles: pairInfo.eles,
             srcPos: tgtPos,
+            srcRs: tgtRs,
             tgtPos: srcPos,
+            tgtRs: srcRs,
             srcW: tgtW,
             srcH: tgtH,
             tgtW: srcW,
@@ -23237,17 +23245,17 @@
   }
   BRp$c.getSegmentPoints = function (edge) {
     var rs = edge[0]._private.rscratch;
+    this.recalculateRenderedStyle(edge);
     var type = rs.edgeType;
     if (type === 'segments') {
-      this.recalculateRenderedStyle(edge);
       return getPts(rs.segpts);
     }
   };
   BRp$c.getControlPoints = function (edge) {
     var rs = edge[0]._private.rscratch;
+    this.recalculateRenderedStyle(edge);
     var type = rs.edgeType;
     if (type === 'bezier' || type === 'multibezier' || type === 'self' || type === 'compound') {
-      this.recalculateRenderedStyle(edge);
       return getPts(rs.ctrlpts);
     }
   };
@@ -24307,6 +24315,18 @@
   BRp$3.registerBinding = function (target, event, handler, useCapture) {
     // eslint-disable-line no-unused-vars
     var args = Array.prototype.slice.apply(arguments, [1]); // copy
+
+    if (Array.isArray(target)) {
+      var res = [];
+      for (var i = 0; i < target.length; i++) {
+        var t = target[i];
+        if (t !== undefined) {
+          var b = this.binder(t);
+          res.push(b.on.apply(b, args));
+        }
+      }
+      return res;
+    }
     var b = this.binder(target);
     return b.on.apply(b, args);
   };
@@ -24365,6 +24385,13 @@
     var containerWindow = r.cy.window();
     var isSelected = function isSelected(ele) {
       return ele.selected();
+    };
+    var getShadowRoot = function getShadowRoot(element) {
+      var rootNode = element.getRootNode();
+      // Check if the root node is a shadow root
+      if (rootNode && rootNode.nodeType === 11 && rootNode.host !== undefined) {
+        return rootNode;
+      }
     };
     var triggerEvents = function triggerEvents(target, names, e, position) {
       if (target == null) {
@@ -24779,7 +24806,8 @@
       select[0] = select[2] = pos[0];
       select[1] = select[3] = pos[1];
     }, false);
-    r.registerBinding(containerWindow, 'mousemove', function mousemoveHandler(e) {
+    var shadowRoot = getShadowRoot(r.container);
+    r.registerBinding([containerWindow, shadowRoot], 'mousemove', function mousemoveHandler(e) {
       // eslint-disable-line no-undef
       var capture = r.hoverData.capture;
       if (!capture && !eventInContainer(e)) {
@@ -27663,6 +27691,7 @@
   var maxDeqSize = 1; // number of eles to dequeue and render at higher texture in each batch
   var invalidThreshold = 250; // time threshold for disabling b/c of invalidations
   var maxLayerArea = 4000 * 4000; // layers can't be bigger than this
+  var maxLayerDim = 32767; // maximum size for the width/height of layer canvases
   var useHighQualityEleTxrReqs = true; // whether to use high quality ele txr requests (generally faster and cheaper in the longterm)
 
   // var log = function(){ console.log.apply( console, arguments ); };
@@ -27803,7 +27832,12 @@
       opts = opts || {};
       var after = opts.after;
       getBb();
-      var area = bb.w * scale * (bb.h * scale);
+      var w = Math.ceil(bb.w * scale);
+      var h = Math.ceil(bb.h * scale);
+      if (w > maxLayerDim || h > maxLayerDim) {
+        return null;
+      }
+      var area = w * h;
       if (area > maxLayerArea) {
         return null;
       }
@@ -30859,18 +30893,18 @@
       if (ele.isNode()) {
         switch (ele.pstyle('text-halign').value) {
           case 'left':
-            p.x = -bb.w;
+            p.x = -bb.w - (bb.leftPad || 0);
             break;
           case 'right':
-            p.x = 0;
+            p.x = -(bb.rightPad || 0);
             break;
         }
         switch (ele.pstyle('text-valign').value) {
           case 'top':
-            p.y = -bb.h;
+            p.y = -bb.h - (bb.topPad || 0);
             break;
           case 'bottom':
-            p.y = 0;
+            p.y = -(bb.botPad || 0);
             break;
         }
       }
@@ -31324,7 +31358,7 @@
     return style;
   };
 
-  var version = "3.30.2";
+  var version = "3.30.4";
 
   var cytoscape$1 = function cytoscape(options) {
     // if no options specified, use default
@@ -41488,7 +41522,7 @@
 
   	var sbgnData = __webpack_require__(0);
 
-  	var sbgnStyle = new Map().set('unspecified entity', { w: 32, h: 32, shape: 'ellipse' }).set('simple chemical', { w: 48, h: 48, shape: 'ellipse' }).set('simple chemical multimer', { w: 48, h: 48, shape: 'ellipse' }).set('macromolecule', { w: 96, h: 48, shape: 'roundrectangle' }).set('macromolecule multimer', { w: 96, h: 48, shape: 'roundrectangle' }).set('nucleic acid feature', { w: 88, h: 56, shape: 'bottomroundrectangle' }).set('nucleic acid feature multimer', { w: 88, h: 52, shape: 'bottomroundrectangle' }).set('complex', { w: 10, h: 10, shape: 'cutrectangle' }).set('complex multimer', { w: 10, h: 10, shape: 'cutrectangle' }).set('source and sink', { w: 60, h: 60, shape: 'polygon' }).set('perturbing agent', { w: 140, h: 60, shape: 'concavehexagon' }).set('phenotype', { w: 140, h: 60, shape: 'hexagon' }).set('process', { w: 25, h: 25, shape: 'square' }).set('uncertain process', { w: 25, h: 25, shape: 'square' }).set('omitted process', { w: 25, h: 25, shape: 'square' }).set('association', { w: 25, h: 25, shape: 'ellipse' }).set('dissociation', { w: 25, h: 25, shape: 'ellipse' }).set('compartment', { w: 50, h: 50, shape: 'barrel' }).set('tag', { w: 100, h: 65, shape: 'tag' }).set('and', { w: 40, h: 40, shape: 'ellipse' }).set('or', { w: 40, h: 40, shape: 'ellipse' }).set('not', { w: 40, h: 40, shape: 'ellipse' }).set('delay', { w: 40, h: 40, shape: 'ellipse' }).set('biological activity', { w: 96, h: 48, shape: 'rectangle' });
+  	var sbgnStyle = new Map().set('unspecified entity', { w: 96, h: 48, shape: 'ellipse' }).set('simple chemical', { w: 96, h: 48, shape: 'polygon' }).set('simple chemical multimer', { w: 48, h: 48, shape: 'ellipse' }).set('macromolecule', { w: 96, h: 48, shape: 'roundrectangle' }).set('macromolecule multimer', { w: 96, h: 48, shape: 'roundrectangle' }).set('nucleic acid feature', { w: 88, h: 56, shape: 'bottomroundrectangle' }).set('nucleic acid feature multimer', { w: 88, h: 52, shape: 'bottomroundrectangle' }).set('complex', { w: 10, h: 10, shape: 'cutrectangle' }).set('complex multimer', { w: 10, h: 10, shape: 'cutrectangle' }).set('source and sink', { w: 60, h: 60, shape: 'polygon' }).set('perturbing agent', { w: 140, h: 60, shape: 'concavehexagon' }).set('phenotype', { w: 140, h: 60, shape: 'hexagon' }).set('process', { w: 25, h: 25, shape: 'square' }).set('uncertain process', { w: 25, h: 25, shape: 'square' }).set('omitted process', { w: 25, h: 25, shape: 'square' }).set('association', { w: 25, h: 25, shape: 'ellipse' }).set('dissociation', { w: 25, h: 25, shape: 'ellipse' }).set('compartment', { w: 50, h: 50, shape: 'barrel' }).set('tag', { w: 100, h: 65, shape: 'tag' }).set('and', { w: 48, h: 48, shape: 'ellipse' }).set('or', { w: 48, h: 48, shape: 'ellipse' }).set('not', { w: 48, h: 48, shape: 'ellipse' }).set('delay', { w: 48, h: 48, shape: 'ellipse' }).set('biological activity', { w: 96, h: 48, shape: 'rectangle' });
 
   	var sbgnArrowMap = new Map().set('necessary stimulation', 'triangle-cross').set('inhibition', 'tee').set('catalysis', 'circle').set('stimulation', 'triangle').set('production', 'triangle').set('modulation', 'diamond').set('positive influence', 'triangle').set('negative influence', 'tee').set('unknown influence', 'diamond');
 
@@ -42346,6 +42380,8 @@
   	  }).selector('node:active').css({
   	    'overlay-color': '#d67614',
   	    'overlay-padding': '14'
+  	  }).selector('\n          node[class="simple chemical"]\n        ').css({
+  	    'shape-polygon-points': "-1 0 -0.992 -0.134 -0.970 -0.272 -0.933 -0.408 -0.883 -0.541 -0.821 -0.664 -0.750 -0.775 -0.671 -0.869 -0.587 -0.945 -0.5 -1 0.5 -1 0.587 -0.945 0.671 -0.869 0.750 -0.775 0.821 -0.664 0.883 -0.541 0.933 -0.408 0.970 -0.272 0.992 -0.134 1 0 0.992 0.134 0.970 0.272 0.933 0.408 0.883 0.541 0.821 0.664 0.750 0.775 0.671 0.869 0.587 0.945 0.5 1 -0.5 1 -0.587 0.945 -0.671 0.869 -0.750 0.775 -0.821 0.664 -0.883 0.541 -0.933 0.408 -0.970 0.272 -0.992 0.134 -1 0"
   	  })
 
   	  // draw sbgn specific styling (auxiliary items, clonemarker, etc.)
@@ -43932,12 +43968,371 @@
   var bundleExports = bundle.exports;
   var sbgnStylesheet = /*@__PURE__*/getDefaultExportFromCjs(bundleExports);
 
+  var cytoscapeContextMenus = {exports: {}};
+
+  (function (module, exports) {
+  	!function(e,t){module.exports=t();}(commonjsGlobal,(function(){return (()=>{var e={621:(e,t,n)=>{function i(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,i=new Array(t);n<t;n++)i[n]=e[n];return i}function o(e,t){var n={};for(var i in e)n[i]=e[i];for(var o in t)n[o]instanceof Array?n[o]=n[o].concat(t[o]):n[o]=t[o];return n}function r(e){for(var t="",n=0;n<e.length;n++)t+=e[n],n!==e.length-1&&(t+=" ");return t}function u(e,t,n){n?e.setAttribute(t,""):e.removeAttribute(t);}function s(e,t,n){void 0===customElements.get(e)&&customElements.define(e,t,{extends:n});}n.r(t),n.d(t,{contextMenus:()=>_});var a="cy-context-menus-divider",c={evtType:"cxttap",menuItems:[],menuItemClasses:["cy-context-menus-cxt-menuitem"],contextMenuClasses:["cy-context-menus-cxt-menu"],submenuIndicator:{src:"assets/submenu-indicator-default.svg",width:12,height:12}};function l(e){return (l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e})(e)}function f(e,t){var n;if("undefined"==typeof Symbol||null==e[Symbol.iterator]){if(Array.isArray(e)||(n=function(e,t){if(e){if("string"==typeof e)return d(e,t);var n=Object.prototype.toString.call(e).slice(8,-1);return "Object"===n&&e.constructor&&(n=e.constructor.name),"Map"===n||"Set"===n?Array.from(e):"Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?d(e,t):void 0}}(e))||t){n&&(e=n);var i=0,o=function(){};return {s:o,n:function(){return i>=e.length?{done:!0}:{done:!1,value:e[i++]}},e:function(e){throw e},f:o}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var r,u=!0,s=!1;return {s:function(){n=e[Symbol.iterator]();},n:function(){var e=n.next();return u=e.done,e},e:function(e){s=!0,r=e;},f:function(){try{u||null==n.return||n.return();}finally{if(s)throw r}}}}function d(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,i=new Array(t);n<t;n++)i[n]=e[n];return i}function h(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function m(e,t){for(var n=0;n<t.length;n++){var i=t[n];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i);}}function v(e,t,n){return t&&m(e.prototype,t),n&&m(e,n),e}function y(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),t&&M(e,t);}function p(e){var t=I();return function(){var n,i=k(e);if(t){var o=k(this).constructor;n=Reflect.construct(i,arguments,o);}else n=i.apply(this,arguments);return b(this,n)}}function b(e,t){return !t||"object"!==l(t)&&"function"!=typeof t?g(e):t}function g(e){if(void 0===e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return e}function w(e,t,n){return (w="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(e,t,n){var i=function(e,t){for(;!Object.prototype.hasOwnProperty.call(e,t)&&null!==(e=k(e)););return e}(e,t);if(i){var o=Object.getOwnPropertyDescriptor(i,t);return o.get?o.get.call(n):o.value}})(e,t,n||e)}function x(e){var t="function"==typeof Map?new Map:void 0;return (x=function(e){if(null===e||(n=e,-1===Function.toString.call(n).indexOf("[native code]")))return e;var n;if("function"!=typeof e)throw new TypeError("Super expression must either be null or a function");if(void 0!==t){if(t.has(e))return t.get(e);t.set(e,i);}function i(){return C(e,arguments,k(this).constructor)}return i.prototype=Object.create(e.prototype,{constructor:{value:i,enumerable:!1,writable:!0,configurable:!0}}),M(i,e)})(e)}function C(e,t,n){return (C=I()?Reflect.construct:function(e,t,n){var i=[null];i.push.apply(i,t);var o=new(Function.bind.apply(e,i));return n&&M(o,n.prototype),o}).apply(null,arguments)}function I(){if("undefined"==typeof Reflect||!Reflect.construct)return !1;if(Reflect.construct.sham)return !1;if("function"==typeof Proxy)return !0;try{return Date.prototype.toString.call(Reflect.construct(Date,[],(function(){}))),!0}catch(e){return !1}}function M(e,t){return (M=Object.setPrototypeOf||function(e,t){return e.__proto__=t,e})(e,t)}function k(e){return (k=Object.setPrototypeOf?Object.getPrototypeOf:function(e){return e.__proto__||Object.getPrototypeOf(e)})(e)}function E(e){e.preventDefault(),e.stopPropagation();}var S=function(e){y(n,e);var t=p(n);function n(e,i,o){var r,s,a,c,l,f,d,m,v,y;h(this,n),w((s=g(y=t.call(this)),k(n.prototype)),"setAttribute",s).call(s,"id",e.id);var p=y._getMenuItemClassStr(o.cxtMenuItemClasses,e.hasTrailingDivider);if(w((a=g(y),k(n.prototype)),"setAttribute",a).call(a,"class",p),w((c=g(y),k(n.prototype)),"setAttribute",c).call(c,"title",null!==(r=e.tooltipText)&&void 0!==r?r:""),e.disabled&&u(g(y),"disabled",!0),e.image){var b=document.createElement("img");b.src=e.image.src,b.width=e.image.width,b.height=e.image.height,b.style.position="absolute",b.style.top=e.image.y+"px",b.style.left=e.image.x+"px",w((l=g(y),k(n.prototype)),"appendChild",l).call(l,b);}if(y.innerHTML+=e.content,y.onMenuItemClick=i,y.data={},y.clickFns=[],y.selector=e.selector,y.hasTrailingDivider=e.hasTrailingDivider,y.show=void 0===e.show||e.show,y.coreAsWell=e.coreAsWell||!1,y.scratchpad=o,void 0===e.onClickFunction&&void 0===e.submenu)throw new Error("A menu item must either have click function or a submenu or both");return y.onClickFunction=e.onClickFunction,e.submenu instanceof Array&&y._createSubmenu(e.submenu),w((f=g(y),k(n.prototype)),"addEventListener",f).call(f,"mousedown",E),w((d=g(y),k(n.prototype)),"addEventListener",d).call(d,"mouseup",E),w((m=g(y),k(n.prototype)),"addEventListener",m).call(m,"touchstart",E),w((v=g(y),k(n.prototype)),"addEventListener",v).call(v,"touchend",E),y}return v(n,[{key:"bindOnClickFunction",value:function(e){this.clickFns.push(e),w(k(n.prototype),"addEventListener",this).call(this,"click",e);}},{key:"unbindOnClickFunctions",value:function(){var e,t=f(this.clickFns);try{for(t.s();!(e=t.n()).done;){var i=e.value;w(k(n.prototype),"removeEventListener",this).call(this,"click",i);}}catch(e){t.e(e);}finally{t.f();}this.clickFns=[];}},{key:"enable",value:function(){u(this,"disabled",!1),this.hasSubmenu()&&this.addEventListener("mouseenter",this.mouseEnterHandler);}},{key:"disable",value:function(){u(this,"disabled",!0),this.hasSubmenu()&&this.removeEventListener("mouseenter",this.mouseEnterHandler);}},{key:"hide",value:function(){this.show=!1,this.style.display="none";}},{key:"getHasTrailingDivider",value:function(){return !!this.hasTrailingDivider}},{key:"setHasTrailingDivider",value:function(e){this.hasTrailingDivider=e;}},{key:"hasSubmenu",value:function(){return this.submenu instanceof T}},{key:"appendSubmenuItem",value:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:void 0;this.hasSubmenu()||this._createSubmenu(),this.submenu.appendMenuItem(e,t);}},{key:"isClickable",value:function(){return void 0!==this.onClickFunction}},{key:"display",value:function(){this.show=!0,this.style.display="block";}},{key:"isVisible",value:function(){return !0===this.show&&"none"!==this.style.display}},{key:"removeSubmenu",value:function(){this.hasSubmenu()&&(this.submenu.removeAllMenuItems(),this.detachSubmenu());}},{key:"detachSubmenu",value:function(){this.hasSubmenu()&&(this.removeChild(this.submenu),this.removeChild(this.indicator),this.removeEventListener("mouseenter",this.mouseEnterHandler),this.removeEventListener("mouseleave",this.mouseLeaveHandler),this.submenu=void 0,this.indicator=void 0);}},{key:"_onMouseEnter",value:function(e){var t=this.getBoundingClientRect(),i=function(e){e.style.opacity="0",e.style.display="block";var t=e.getBoundingClientRect();return e.style.opacity="1",e.style.display="none",t}(this.submenu),o=t.right+i.width>window.innerWidth,r=t.top+i.height>window.innerHeight;o||r?o&&!r?(this.submenu.style.right=this.clientWidth+"px",this.submenu.style.top="0px",this.submenu.style.left="auto",this.submenu.style.bottom="auto"):o&&r?(this.submenu.style.right=this.clientWidth+"px",this.submenu.style.bottom="0px",this.submenu.style.top="auto",this.submenu.style.left="auto"):(this.submenu.style.left=this.clientWidth+"px",this.submenu.style.bottom="0px",this.submenu.style.right="auto",this.submenu.style.top="auto"):(this.submenu.style.left=this.clientWidth+"px",this.submenu.style.top="0px",this.submenu.style.right="auto",this.submenu.style.bottom="auto"),this.submenu.display();var u=Array.from(this.submenu.children).filter((function(e){if(e instanceof n)return e.isVisible()})),s=u.length;u.forEach((function(e,t){e instanceof n&&(t<s-1&&e.getHasTrailingDivider()?e.classList.add(a):e.getHasTrailingDivider()&&e.classList.remove(a));}));}},{key:"_onMouseLeave",value:function(e){var t,n,i,o,r;t={x:e.clientX,y:e.clientY},n=this.submenu,o=t.y,(i=t.x)>=(r=n.getBoundingClientRect()).left&&i<=r.right&&o>=r.top&&o<=r.bottom||this.submenu.hide();}},{key:"_createSubmenu",value:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:[];this.indicator=this.scratchpad.submenuIndicatorGen(),this.submenu=new T(this.onMenuItemClick,this.scratchpad),this.appendChild(this.indicator),this.appendChild(this.submenu);var t,i=f(e);try{for(i.s();!(t=i.n()).done;){var o=t.value,r=new n(o,this.onMenuItemClick,this.scratchpad);this.submenu.appendMenuItem(r);}}catch(e){i.e(e);}finally{i.f();}this.mouseEnterHandler=this._onMouseEnter.bind(this),this.mouseLeaveHandler=this._onMouseLeave.bind(this),this.addEventListener("mouseenter",this.mouseEnterHandler),this.addEventListener("mouseleave",this.mouseLeaveHandler);}},{key:"_getMenuItemClassStr",value:function(e,t){return t?e+" "+a:e}}],[{key:"define",value:function(){s("ctx-menu-item",n,"button");}}]),n}(x(HTMLButtonElement)),T=function(e){y(n,e);var t=p(n);function n(e,i){var o,r;return h(this,n),w((o=g(r=t.call(this)),k(n.prototype)),"setAttribute",o).call(o,"class",i.cxtMenuClasses),r.style.position="absolute",r.onMenuItemClick=e,r.scratchpad=i,r}return v(n,[{key:"hide",value:function(){this.isVisible()&&(this.hideSubmenus(),this.style.display="none");}},{key:"display",value:function(){this.style.display="block";}},{key:"isVisible",value:function(){return "none"!==this.style.display}},{key:"hideMenuItems",value:function(){var e,t=f(this.children);try{for(t.s();!(e=t.n()).done;){var n=e.value;n instanceof HTMLElement?n.style.display="none":console.warn("".concat(n," is not a HTMLElement"));}}catch(e){t.e(e);}finally{t.f();}}},{key:"hideSubmenus",value:function(){var e,t=f(this.children);try{for(t.s();!(e=t.n()).done;){var n=e.value;n instanceof S&&n.submenu&&n.submenu.hide();}}catch(e){t.e(e);}finally{t.f();}}},{key:"appendMenuItem",value:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:void 0;if(void 0!==t){if(t.parentNode!==this)throw new Error("The item with id='".concat(t.id,"' is not a child of the context menu"));this.insertBefore(e,t);}else this.appendChild(e);e.isClickable()&&this._performBindings(e);}},{key:"moveBefore",value:function(e,t){if(e.parentNode!==this)throw new Error("The item with id='".concat(e.id,"' is not a child of context menu"));if(t.parentNode!==this)throw new Error("The item with id='".concat(t.id,"' is not a child of context menu"));this.removeChild(e),this.insertBefore(e,t);}},{key:"removeAllMenuItems",value:function(){for(;this.firstChild;){var e=this.lastChild;e instanceof S?this._removeImmediateMenuItem(e):(console.warn("Found non menu item in the context menu: ",e),this.removeChild(e));}}},{key:"_removeImmediateMenuItem",value:function(e){if(!this._detachImmediateMenuItem(e))throw new Error("menu item(id=".concat(e.id,") is not in the context menu"));e.detachSubmenu(),e.unbindOnClickFunctions();}},{key:"_detachImmediateMenuItem",value:function(e){if(e.parentNode===this){if(this.removeChild(e),this.children.length<=0){var t=this.parentNode;t instanceof S&&t.detachSubmenu();}return !0}return !1}},{key:"_performBindings",value:function(e){var t=this._bindOnClick(e.onClickFunction);e.bindOnClickFunction(t),e.bindOnClickFunction(this.onMenuItemClick);}},{key:"_bindOnClick",value:function(e){var t=this;return function(){var n=t.scratchpad.currentCyEvent;e(n);}}}],[{key:"define",value:function(){s("menu-item-list",n,"div");}}]),n}(x(HTMLDivElement)),A=function(e){y(n,e);var t=p(n);function n(e,i){var o;return h(this,n),(o=t.call(this,e,i)).onMenuItemClick=function(t){E(t),o.hide(),e();},o}return v(n,[{key:"removeMenuItem",value:function(e){var t=e.parentElement;t instanceof T&&this.contains(t)&&t._removeImmediateMenuItem(e);}},{key:"appendMenuItem",value:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:void 0;this.ensureDoesntContain(e.id),w(k(n.prototype),"appendMenuItem",this).call(this,e,t);}},{key:"insertMenuItem",value:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=t.before,i=t.parent;if(this.ensureDoesntContain(e.id),void 0!==n){if(!this.contains(n))throw new Error("before(id=".concat(n.id,") is not in the context menu"));var o=n.parentNode;if(!(o instanceof T))throw new Error("Parent of before(id=".concat(n.id,") is not a submenu"));o.appendMenuItem(e,n);}else if(void 0!==i){if(!this.contains(i))throw new Error("parent(id=".concat(i.id,") is not a descendant of the context menu"));i.appendSubmenuItem(e);}else this.appendMenuItem(e);}},{key:"moveBefore",value:function(e,t){var n=e.parentElement;if(!this.contains(n))throw new Error("parent(id=".concat(n.id,") is not in the contex menu"));if(!this.contains(t))throw new Error("before(id=".concat(t.id,") is not in the context menu"));n.removeChild(e),this.insertMenuItem(e,{before:t});}},{key:"moveToSubmenu",value:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:null,n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:null,i=e.parentElement;if(!(i instanceof T))throw new Error("current parent(id=".concat(i.id,") is not a submenu"));if(!this.contains(i))throw new Error("parent of the menu item(id=".concat(i.id,") is not in the context menu"));if(null!==t){if(!this.contains(t))throw new Error("parent(id=".concat(t.id,") is not in the context menu"));i._detachImmediateMenuItem(e),t.appendSubmenuItem(e);}else null!==n&&(e.selector=n.selector,e.coreAsWell=n.coreAsWell),i._detachImmediateMenuItem(e),this.appendMenuItem(e);}},{key:"ensureDoesntContain",value:function(e){var t=document.getElementById(e);if(void 0!==t&&this.contains(t))throw new Error("There is already an element with id=".concat(e," in the context menu"))}},{key:"ensureContains",value:function(e){var t=document.getElementById(e);if(null==t||null==t||!this.contains(t))throw new Error("An element with id '".concat(e,"' does not exist!"))}}],[{key:"define",value:function(){s("ctx-menu",n,"div");}}]),n}(T);function O(e,t){var n;if("undefined"==typeof Symbol||null==e[Symbol.iterator]){if(Array.isArray(e)||(n=function(e,t){if(e){if("string"==typeof e)return L(e,t);var n=Object.prototype.toString.call(e).slice(8,-1);return "Object"===n&&e.constructor&&(n=e.constructor.name),"Map"===n||"Set"===n?Array.from(e):"Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?L(e,t):void 0}}(e))||t){n&&(e=n);var i=0,o=function(){};return {s:o,n:function(){return i>=e.length?{done:!0}:{done:!1,value:e[i++]}},e:function(e){throw e},f:o}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var r,u=!0,s=!1;return {s:function(){n=e[Symbol.iterator]();},n:function(){var e=n.next();return u=e.done,e},e:function(e){s=!0,r=e;},f:function(){try{u||null==n.return||n.return();}finally{if(s)throw r}}}}function L(e,t){(null==t||t>e.length)&&(t=e.length);for(var n=0,i=new Array(t);n<t;n++)i[n]=e[n];return i}function _(e){var t=this;t.scratch("cycontextmenus")||t.scratch("cycontextmenus",{});var n,u,s=function(e){return t.scratch("cycontextmenus")[e]},l=function(e,n){return t.scratch("cycontextmenus")[e]=n},f=s("options"),d=s("cxtMenu"),h=function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:void 0,n=v(e);if(void 0!==t){var i=p(t);d.insertMenuItem(n,{parent:i});}else d.insertMenuItem(n);},m=function(e){for(var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:void 0,n=0;n<e.length;n++)h(e[n],t);},v=function(e){var n=t.scratch("cycontextmenus");return new S(e,d.onMenuItemClick,n)},y=function(){s("active")&&(d.removeAllMenuItems(),t.off("tapstart",s("eventCyTapStart")),t.off(f.evtType,s("onCxttap")),t.off("viewport",s("onViewport")),document.removeEventListener("mouseup",s("hideOnNonCyClick")),d.parentNode.removeChild(d),d=void 0,l("cxtMenu",void 0),l("active",!1),l("anyVisibleChild",!1),l("onCxttap",void 0),l("onViewport",void 0),l("hideOnNonCyClick",void 0));},p=function(e){var t=document.getElementById(e);if(t instanceof S)return t;throw new Error("The item with id=".concat(e," is not a menu item"))},b=function(){var e,t=!1,n=O(d.children);try{for(n.s();!(e=n.n()).done;){var i=e.value;if(i instanceof S&&i.show&&"none"!=i.style.display){t=!0;break}}}catch(e){n.e(e);}finally{n.f();}t?d.display():d.hide();};if("get"!==e){S.define(),T.define(),A.define(),f=o(c,e),l("options",f),s("active")&&y(),l("active",!0),l("submenuIndicatorGen",function(e){var t=document.createElement("img");return t.src=e.src,t.width=e.width,t.height=e.height,t.classList.add("cy-context-menus-submenu-indicator"),t}.bind(void 0,f.submenuIndicator));var g=r(f.contextMenuClasses);l("cxtMenuClasses",g);var w=t.scratch("cycontextmenus");d=new A((function(){return l("cxtMenuPosition",void 0)}),w),l("cxtMenu",d),t.container().appendChild(d),l("cxtMenuItemClasses",r(f.menuItemClasses));var x=f.menuItems;m(x),u=function(e){l("currentCyEvent",e),function(e){var n,i=t.container(),o=s("cxtMenuPosition"),r=e.position||e.cyPosition;if(o!=r){d.hideMenuItems(),l("anyVisibleChild",!1),l("cxtMenuPosition",r);var u={top:(n=i.getBoundingClientRect()).top,left:n.left},a=e.renderedPosition||e.cyRenderedPosition,c=getComputedStyle(i)["border-width"],f=parseInt(c.replace("px",""))||0;f>0&&(u.top+=f,u.left+=f);var h=i.clientHeight,m=i.clientWidth,v=h/2,y=m/2;a.y>v&&a.x<=y?(d.style.left=a.x+"px",d.style.bottom=h-a.y+"px",d.style.right="auto",d.style.top="auto"):a.y>v&&a.x>y?(d.style.right=m-a.x+"px",d.style.bottom=h-a.y+"px",d.style.left="auto",d.style.top="auto"):a.y<=v&&a.x<=y?(d.style.left=a.x+"px",d.style.top=a.y+"px",d.style.right="auto",d.style.bottom="auto"):(d.style.right=m-a.x+"px",d.style.top=a.y+"px",d.style.left="auto",d.style.bottom="auto");}}(e);var n,i=e.target||e.cyTarget,o=O(d.children);try{for(o.s();!(n=o.n()).done;){var r=n.value;r instanceof S&&(i===t?r.coreAsWell:i.is(r.selector))&&r.show&&(d.display(),l("anyVisibleChild",!0),r.display());}}catch(e){o.e(e);}finally{o.f();}var u=Array.from(d.children).filter((function(e){if(e instanceof S)return e.isVisible()})),c=u.length;u.forEach((function(e,t){e instanceof S&&(t<c-1&&e.getHasTrailingDivider()?e.classList.add(a):e.getHasTrailingDivider()&&e.classList.remove(a));})),!s("anyVisibleChild")&&!function(e){return e.offsetWidth<=0&&e.offsetHeight<=0||e.style&&e.style.display||getComputedStyle(e).display}(d)&&d.hide();},t.on(f.evtType,u),l("onCxttap",u),function(){var e=function(e){if(d.contains(e.originalEvent.target))return !1;d.hide(),l("cxtMenuPosition",void 0),l("currentCyEvent",void 0);};t.on("tapstart",e),l("eventCyTapStart",e);var n=function(){d.hide();};t.on("viewport",n),l("onViewport",n);}(),n=function(e){t.container().contains(e.target)||d.contains(e.target)||(d.hide(),l("cxtMenuPosition",void 0));},document.addEventListener("mouseup",n),l("hideOnNonCyClick",n),function(){var e,t=function(e,t){var n;if("undefined"==typeof Symbol||null==e[Symbol.iterator]){if(Array.isArray(e)||(n=function(e,t){if(e){if("string"==typeof e)return i(e,t);var n=Object.prototype.toString.call(e).slice(8,-1);return "Object"===n&&e.constructor&&(n=e.constructor.name),"Map"===n||"Set"===n?Array.from(e):"Arguments"===n||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)?i(e,t):void 0}}(e))||t){n&&(e=n);var o=0,r=function(){};return {s:r,n:function(){return o>=e.length?{done:!0}:{done:!1,value:e[o++]}},e:function(e){throw e},f:r}}throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}var u,s=!0,a=!1;return {s:function(){n=e[Symbol.iterator]();},n:function(){var e=n.next();return s=e.done,e},e:function(e){a=!0,u=e;},f:function(){try{s||null==n.return||n.return();}finally{if(a)throw u}}}}(document.getElementsByClassName("cy-context-menus-cxt-menu"));try{for(t.s();!(e=t.n()).done;)e.value.addEventListener("contextmenu",(function(e){return e.preventDefault()}));}catch(e){t.e(e);}finally{t.f();}}();}return function(e){return {isActive:function(){return s("active")},appendMenuItem:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:void 0;return h(t,n),e},appendMenuItems:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:void 0;return m(t,n),e},removeMenuItem:function(t){var n=p(t);return d.removeMenuItem(n),e},setTrailingDivider:function(t,n){var i=p(t);return i.setHasTrailingDivider(n),n?i.classList.add(a):i.classList.remove(a),e},insertBeforeMenuItem:function(t,n){var i=v(t),o=p(n);return d.insertMenuItem(i,{before:o}),e},moveToSubmenu:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:null,i=p(t);if(null===n)d.moveToSubmenu(i);else if("string"==typeof n){var o=p(n.toString());d.moveToSubmenu(i,o);}else void 0!==n.coreAsWell||void 0!==n.selector?d.moveToSubmenu(i,null,n):console.warn("options neither has coreAsWell nor selector property but it is an object. Are you sure that this is what you want to do?");return e},moveBeforeOtherMenuItem:function(t,n){var i=p(t),o=p(n);return d.moveBefore(i,o),e},disableMenuItem:function(t){return p(t).disable(),e},enableMenuItem:function(t){return p(t).enable(),e},hideMenuItem:function(t){return p(t).hide(),b(),e},showMenuItem:function(t){return p(t).display(),b(),e},destroy:function(){return y(),e},getOptions:function(){return o(c,f)},swapItems:function(e,t){d.ensureContains(e),d.ensureContains(t);var n=document.getElementById(e),i=document.getElementById(t),o=n.nextSibling,r=i.nextSibling,u=n.parentNode,s=i.parentNode;if(!u.isSameNode(s))throw new Error("To swap, the items should have the same parent!");o&&o.isSameNode(i)?u.insertBefore(i,n):r&&r.isSameNode(n)?u.insertBefore(n,i):(u.insertBefore(i,n),u.insertBefore(n,r));}}}(this)}},579:(e,t,n)=>{var i=n(621).contextMenus,o=function(e){e&&e("core","contextMenus",i);};"undefined"!=typeof cytoscape&&o(cytoscape),e.exports=o;}},t={};function n(i){var o=t[i];if(void 0!==o)return o.exports;var r=t[i]={exports:{}};return e[i](r,r.exports,n),r.exports}return n.d=(e,t)=>{for(var i in t)n.o(t,i)&&!n.o(e,i)&&Object.defineProperty(e,i,{enumerable:!0,get:t[i]});},n.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),n.r=e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0});},n(579)})()})); 
+  } (cytoscapeContextMenus));
+
+  var cytoscapeContextMenusExports = cytoscapeContextMenus.exports;
+  var contextMenus = /*@__PURE__*/getDefaultExportFromCjs(cytoscapeContextMenusExports);
+
   cytoscape$1.use(fcose);
+  cytoscape$1.use(contextMenus);
 
   let cy = window.cy = cytoscape$1({
   	container: document.getElementById('cy'),
   	style: sbgnStylesheet(cytoscape$1)
   });
+
+  var contextMenuOptions = {
+  	evtType: 'cxttap',
+  	// List of initial menu items
+  	// A menu item must have either onClickFunction or submenu or both
+  	menuItems: [
+  		{
+  			id: 'changeEdgeClass', // ID of menu item
+  			content: 'Change class', // Display content of menu item
+  			// image: {src : "remove.svg", width : 12, height : 12, x : 6, y : 4}, // menu icon
+  			// Filters the elements to have this menu item on cxttap
+  			// If the selector is not truthy no elements will have this menu item on cxttap
+  			selector: 'edge',
+  			coreAsWell: false, // Whether core instance have this item on cxttap
+  			submenu: [
+  				{
+  					id: 'consumption',
+  					content: 'Consumption',
+  					selector: 'edge[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'consumption');
+  					}
+  				},
+  				{
+  					id: 'production',
+  					content: 'Production',
+  					selector: 'edge[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'production');
+  					}
+  				},
+  				{
+  					id: 'modulation',
+  					content: 'Modulation',
+  					selector: 'edge[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'modulation');
+  					}
+  				},
+  				{
+  					id: 'stimulation',
+  					content: 'Stimulation',
+  					selector: 'edge[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'stimulation');
+  					}
+  				},
+  				{
+  					id: 'catalysis',
+  					content: 'Catalysis',
+  					selector: 'edge[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'catalysis');
+  					}
+  				},
+  				{
+  					id: 'inhibition',
+  					content: 'Inhibition',
+  					selector: 'edge[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'inhibition');
+  					}
+  				},
+  				{
+  					id: 'necessaryStimulation',
+  					content: 'Necessary stimulation',
+  					selector: 'edge',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'necessary stimulation');
+  					}
+  				},
+  				{
+  					id: 'logicArc',
+  					content: 'Logic arc',
+  					selector: 'edge',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'logic arc');
+  					}
+  				},
+  				{
+  					id: 'positiveInfluence',
+  					content: 'Positive influence',
+  					selector: 'edge[language = "AF"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'positive influence');
+  					}
+  				},
+  				{
+  					id: 'negativeInfluence',
+  					content: 'Negative influence',
+  					selector: 'edge[language = "AF"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'negative influence');
+  					}
+  				},
+  				{
+  					id: 'unknownInfluence',
+  					content: 'Unknown influence',
+  					selector: 'edge[language = "AF"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'unknown influence');
+  					}
+  				},
+  			]
+  		},
+  		{
+  			id: 'changeNodeClass', // ID of menu item
+  			content: 'Change class', // Display content of menu item
+  			// image: {src : "remove.svg", width : 12, height : 12, x : 6, y : 4}, // menu icon
+  			// Filters the elements to have this menu item on cxttap
+  			// If the selector is not truthy no elements will have this menu item on cxttap
+  			selector: 'node',
+  			coreAsWell: false, // Whether core instance have this item on cxttap
+  			submenu: [
+  				{
+  					id: 'macromolecule',
+  					content: 'Macromolecule',
+  					selector: 'node[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'macromolecule');
+  					}
+  				},
+  				{
+  					id: 'simpleChemical',
+  					content: 'Simple chemical',
+  					selector: 'node[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'simple chemical');
+  					}
+  				},
+  				{
+  					id: 'unspecifiedEntity',
+  					content: 'Unspecified entity',
+  					selector: 'node[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'unspecified entity');
+  					}
+  				},
+  				{
+  					id: 'nucleicAcidFeature',
+  					content: 'Nucleic acid feature',
+  					selector: 'node[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'nucleicAcidFeature');
+  					}
+  				},
+  				{
+  					id: 'perturbingAgent',
+  					content: 'Perturbing agent',
+  					selector: 'node[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'perturbing agent');
+  					}
+  				},
+  				{
+  					id: 'emptySet',
+  					content: 'Empty set',
+  					selector: 'node[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'empty set');
+  					}
+  				},
+  				{
+  					id: 'complex',
+  					content: 'Complex',
+  					selector: 'node[language = "PD"]',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'complex');
+  					}
+  				},
+  				{
+  					id: 'process',
+  					content: 'Process',
+  					selector: 'node[language = "PD"]',
+  					submenu: [
+  						{
+  							id: 'process',
+  							content: 'Process',
+  							selector: 'node[language = "PD"]',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'process');
+  							}
+  						},
+  						{
+  							id: 'omittedProcess',
+  							content: 'Omitted process',
+  							selector: 'node[language = "PD"]',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'omitted process');
+  							}
+  						},
+  						{
+  							id: 'uncertainProcess',
+  							content: 'Uncertain process',
+  							selector: 'node[language = "PD"]',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'uncertain process');
+  							}
+  						},
+  						{
+  							id: 'association',
+  							content: 'association',
+  							selector: 'node[language = "PD"]',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'association');
+  							}
+  						},
+  						{
+  							id: 'dissociation',
+  							content: 'dissociation',
+  							selector: 'node[language = "PD"]',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'dissociation');
+  							}
+  						}
+  					]
+  				},
+  				{
+  					id: 'phenotype',
+  					content: 'phenotype',
+  					selector: 'node',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'phenotype');
+  					}
+  				},
+  				{
+  					id: 'compartment',
+  					content: 'Compartment',
+  					selector: 'node',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'compartment');
+  					}
+  				},
+  				{
+  					id: 'tag',
+  					content: 'Tag',
+  					selector: 'node',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'tag');
+  					}
+  				},
+  				{
+  					id: 'logicalOperator',
+  					content: 'Logical operator',
+  					selector: 'node',
+  					submenu: [
+  						{
+  							id: 'and',
+  							content: 'AND',
+  							selector: 'node',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'and');
+  							}
+  						},
+  						{
+  							id: 'or',
+  							content: 'OR',
+  							selector: 'node',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'or');
+  							}
+  						},
+  						{
+  							id: 'not',
+  							content: 'NOT',
+  							selector: 'node',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'not');
+  							}
+  						},
+  						{
+  							id: 'delay',
+  							content: 'Delay',
+  							selector: 'node[language = "AF"]',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'delay');
+  							}
+  						},
+  					]
+  				},
+  			]
+  		},
+  		{
+  			id: 'changeDirection',
+  			content: 'Change direction',
+  			selector: 'edge',
+  			onClickFunction: function (event) {
+  				let edge = event.target || event.cyTarget;
+  				let source = edge.source();
+  				let target = edge.target();
+  				edge.move({
+  					source: target.id(),
+  					target: source.id()
+  				});
+  			}
+  		},
+  		{
+  			id: 'remove',
+  			content: 'Remove',
+  			selector: 'node, edge',
+  			onClickFunction: function (event) {
+  				let target = event.target || event.cyTarget;
+  				target.remove();
+  			}
+  		}
+  	],
+  	// css classes that menu items will have
+  	menuItemClasses: [
+  		// add class names to this list
+  	],
+  	// css classes that context menu will have
+  	contextMenuClasses: [
+  		// add class names to this list
+  	],
+  	// Indicates that the menu item has a submenu. If not provided default one will be used
+  	submenuIndicator: { src: 'img/submenu-indicator-default.svg', width: 12, height: 12 }
+  };
+
+  cy.contextMenus(contextMenuOptions);
 
   function commonjsRequire(path) {
   	throw new Error('Could not dynamically require "' + path + '". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.');
@@ -52340,6 +52735,10 @@
   			node.position({x:  node.data('bbox').x + node.data('bbox').w / 2, y: node.data('bbox').y + node.data('bbox').h / 2});
   		}
   	);
+  	let language = getCheckedRadio();
+  	cy.elements().forEach(ele => {
+  		ele.data("language", language);
+  	});
   	cy.layout({ name: 'fcose', randomize: false }).run();
   	let nodesToQuery = cy.nodes().filter(node => {
   		return node.data("label");
