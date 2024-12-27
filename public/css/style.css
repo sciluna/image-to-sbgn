@@ -52,9 +52,36 @@ h1 {
 }
 
 #processData {
-  background-color: #d67664 ;
+  background-color: #d67664;
 }
 
-#processData:hover{
+#processData:hover {
   background-color: #f2711c !important;
+}
+
+.tooltip {
+  margin-left: auto;
+  margin-right: 10;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: auto;
+  background-color: white;
+  border-style: solid;
+  border-width: 0px;
+  text-align: justify;
+  border-radius: 3px;
+  padding: 3px 5px;
+  color: black;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1000;
+  top: 0px;
+  right: 5%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }

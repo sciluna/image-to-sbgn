@@ -42367,7 +42367,7 @@
   	    'text-wrap': 'wrap',
   	    'border-width': 1.5,
   	    'border-color': '#555',
-  	    'background-color': '#f6f6f6',
+  	    'background-color': '#ffffff',
   	    'text-opacity': 1,
   	    'opacity': 1,
   	    'text-outline-color': 'white',
@@ -43993,16 +43993,12 @@
   		{
   			id: 'changeEdgeClass', // ID of menu item
   			content: 'Change class', // Display content of menu item
-  			// image: {src : "remove.svg", width : 12, height : 12, x : 6, y : 4}, // menu icon
-  			// Filters the elements to have this menu item on cxttap
-  			// If the selector is not truthy no elements will have this menu item on cxttap
-  			selector: 'edge',
+  			selector: "edge",
   			coreAsWell: false, // Whether core instance have this item on cxttap
   			submenu: [
   				{
   					id: 'consumption',
   					content: 'Consumption',
-  					selector: 'edge[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'consumption');
@@ -44011,7 +44007,6 @@
   				{
   					id: 'production',
   					content: 'Production',
-  					selector: 'edge[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'production');
@@ -44020,7 +44015,6 @@
   				{
   					id: 'modulation',
   					content: 'Modulation',
-  					selector: 'edge[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'modulation');
@@ -44029,7 +44023,6 @@
   				{
   					id: 'stimulation',
   					content: 'Stimulation',
-  					selector: 'edge[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'stimulation');
@@ -44038,7 +44031,6 @@
   				{
   					id: 'catalysis',
   					content: 'Catalysis',
-  					selector: 'edge[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'catalysis');
@@ -44047,34 +44039,14 @@
   				{
   					id: 'inhibition',
   					content: 'Inhibition',
-  					selector: 'edge[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'inhibition');
   					}
   				},
   				{
-  					id: 'necessaryStimulation',
-  					content: 'Necessary stimulation',
-  					selector: 'edge',
-  					onClickFunction: function (event) {
-  						let target = event.target || event.cyTarget;
-  						target.data('class', 'necessary stimulation');
-  					}
-  				},
-  				{
-  					id: 'logicArc',
-  					content: 'Logic arc',
-  					selector: 'edge',
-  					onClickFunction: function (event) {
-  						let target = event.target || event.cyTarget;
-  						target.data('class', 'logic arc');
-  					}
-  				},
-  				{
   					id: 'positiveInfluence',
   					content: 'Positive influence',
-  					selector: 'edge[language = "AF"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'positive influence');
@@ -44083,7 +44055,6 @@
   				{
   					id: 'negativeInfluence',
   					content: 'Negative influence',
-  					selector: 'edge[language = "AF"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'negative influence');
@@ -44092,27 +44063,46 @@
   				{
   					id: 'unknownInfluence',
   					content: 'Unknown influence',
-  					selector: 'edge[language = "AF"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'unknown influence');
   					}
   				},
+  				{
+  					id: 'necessaryStimulation',
+  					content: 'Necessary stimulation',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'necessary stimulation');
+  					}
+  				},
+  				{
+  					id: 'logicArc',
+  					content: 'Logic arc',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'logic arc');
+  					}
+  				},
+  				{
+  					id: 'equivalence',
+  					content: 'Equivalence Arc',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'equivalence arc');
+  					}
+  				}
   			]
   		},
   		{
   			id: 'changeNodeClass', // ID of menu item
   			content: 'Change class', // Display content of menu item
-  			// image: {src : "remove.svg", width : 12, height : 12, x : 6, y : 4}, // menu icon
-  			// Filters the elements to have this menu item on cxttap
-  			// If the selector is not truthy no elements will have this menu item on cxttap
   			selector: 'node',
   			coreAsWell: false, // Whether core instance have this item on cxttap
   			submenu: [
   				{
   					id: 'macromolecule',
   					content: 'Macromolecule',
-  					selector: 'node[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'macromolecule');
@@ -44121,7 +44111,6 @@
   				{
   					id: 'simpleChemical',
   					content: 'Simple chemical',
-  					selector: 'node[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'simple chemical');
@@ -44130,7 +44119,6 @@
   				{
   					id: 'unspecifiedEntity',
   					content: 'Unspecified entity',
-  					selector: 'node[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'unspecified entity');
@@ -44139,7 +44127,6 @@
   				{
   					id: 'nucleicAcidFeature',
   					content: 'Nucleic acid feature',
-  					selector: 'node[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'nucleicAcidFeature');
@@ -44148,7 +44135,6 @@
   				{
   					id: 'perturbingAgent',
   					content: 'Perturbing agent',
-  					selector: 'node[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'perturbing agent');
@@ -44157,7 +44143,6 @@
   				{
   					id: 'emptySet',
   					content: 'Empty set',
-  					selector: 'node[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'empty set');
@@ -44166,67 +44151,22 @@
   				{
   					id: 'complex',
   					content: 'Complex',
-  					selector: 'node[language = "PD"]',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
   						target.data('class', 'complex');
   					}
   				},
   				{
-  					id: 'process',
-  					content: 'Process',
-  					selector: 'node[language = "PD"]',
-  					submenu: [
-  						{
-  							id: 'process',
-  							content: 'Process',
-  							selector: 'node[language = "PD"]',
-  							onClickFunction: function (event) {
-  								let target = event.target || event.cyTarget;
-  								target.data('class', 'process');
-  							}
-  						},
-  						{
-  							id: 'omittedProcess',
-  							content: 'Omitted process',
-  							selector: 'node[language = "PD"]',
-  							onClickFunction: function (event) {
-  								let target = event.target || event.cyTarget;
-  								target.data('class', 'omitted process');
-  							}
-  						},
-  						{
-  							id: 'uncertainProcess',
-  							content: 'Uncertain process',
-  							selector: 'node[language = "PD"]',
-  							onClickFunction: function (event) {
-  								let target = event.target || event.cyTarget;
-  								target.data('class', 'uncertain process');
-  							}
-  						},
-  						{
-  							id: 'association',
-  							content: 'association',
-  							selector: 'node[language = "PD"]',
-  							onClickFunction: function (event) {
-  								let target = event.target || event.cyTarget;
-  								target.data('class', 'association');
-  							}
-  						},
-  						{
-  							id: 'dissociation',
-  							content: 'dissociation',
-  							selector: 'node[language = "PD"]',
-  							onClickFunction: function (event) {
-  								let target = event.target || event.cyTarget;
-  								target.data('class', 'dissociation');
-  							}
-  						}
-  					]
+  					id: 'biologicalActivity',
+  					content: 'Biological activity',
+  					onClickFunction: function (event) {
+  						let target = event.target || event.cyTarget;
+  						target.data('class', 'biological activity');
+  					}
   				},
   				{
   					id: 'phenotype',
-  					content: 'phenotype',
+  					content: 'Phenotype',
   					selector: 'node',
   					onClickFunction: function (event) {
   						let target = event.target || event.cyTarget;
@@ -44250,6 +44190,52 @@
   						let target = event.target || event.cyTarget;
   						target.data('class', 'tag');
   					}
+  				},
+  				{
+  					id: 'process',
+  					content: 'Process',
+  					submenu: [
+  						{
+  							id: 'genericProcess',
+  							content: 'Process',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'process');
+  							}
+  						},
+  						{
+  							id: 'omittedProcess',
+  							content: 'Omitted process',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'omitted process');
+  							}
+  						},
+  						{
+  							id: 'uncertainProcess',
+  							content: 'Uncertain process',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'uncertain process');
+  							}
+  						},
+  						{
+  							id: 'association',
+  							content: 'Association',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'association');
+  							}
+  						},
+  						{
+  							id: 'dissociation',
+  							content: 'Dissociation',
+  							onClickFunction: function (event) {
+  								let target = event.target || event.cyTarget;
+  								target.data('class', 'dissociation');
+  							}
+  						}
+  					]
   				},
   				{
   					id: 'logicalOperator',
@@ -44291,9 +44277,9 @@
   								let target = event.target || event.cyTarget;
   								target.data('class', 'delay');
   							}
-  						},
+  						}
   					]
-  				},
+  				}
   			]
   		},
   		{
@@ -52552,56 +52538,56 @@
   document.getElementById("samples").addEventListener("change", function (event) {
   	let sample = event.target.value;
   	let filename = "";
-  	if(sample == "sample1") {
+  	if (sample == "sample1") {
   		filename = "PD_sample1.png";
   	}
-  	else if(sample == "sample2") {
+  	else if (sample == "sample2") {
   		filename = "PD_sample2.png";
   	}
-  	else if(sample == "sample3") {
+  	else if (sample == "sample3") {
   		filename = "PD_sample3.png";
   	}
-  	else if(sample == "sample4") {
+  	else if (sample == "sample4") {
   		filename = "PD_sample4.png";
   	}
-  	else if(sample == "sample5") {
+  	else if (sample == "sample5") {
   		filename = "AF_sample1.png";
   	}
-  	else if(sample == "sample6") {
+  	else if (sample == "sample6") {
   		filename = "AF_sample1_black_white.png";
   	}
-  	else if(sample == "sample7") {
+  	else if (sample == "sample7") {
   		filename = "AF_sample2.png";
   	}
   	loadSample('../../examples/' + filename);
 
   	const selectedSample = this.value;
-  	
+
   	// Get the radio buttons
   	const radioPD = document.getElementById('radioPD');
   	const radioAF = document.getElementById('radioAF');
-  	
+
   	// Uncheck both radios
   	radioPD.checked = false;
   	radioAF.checked = false;
-  	
+
   	// Check the appropriate radio based on the selected sample
   	if (selectedSample === 'sample1' || selectedSample === 'sample2' || selectedSample === 'sample3' || selectedSample === 'sample4') {
-  			radioPD.checked = true; // PD for sample1
+  		radioPD.checked = true; // PD for sample1
   	} else if (selectedSample === 'sample5' || selectedSample === 'sample6' || selectedSample === 'sample7') {
-  			radioAF.checked = true; // AF for sample2
+  		radioAF.checked = true; // AF for sample2
   	}
   });
 
   function getCheckedRadio() {
   	// Get all radio buttons with the name 'language'
   	const radios = document.getElementsByName('language');
-  	
+
   	// Loop through the radio buttons and return the one that's checked
   	for (let i = 0; i < radios.length; i++) {
-  			if (radios[i].checked) {
-  					return radios[i].nextElementSibling.innerText; // Get the label text (PD or AF)
-  			}
+  		if (radios[i].checked) {
+  			return radios[i].nextElementSibling.innerText; // Get the label text (PD or AF)
+  		}
   	}
   	return null; // If none are checked
   }
@@ -52612,8 +52598,8 @@
   	fetch(fname).then(function (res) {
   		return res.blob();
   	}).then(blob => new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = function(){
+  		const reader = new FileReader();
+  		reader.onload = function () {
   			base64data = reader.result;
   			let output = document.getElementById('inputImage');
   			output.src = base64data;
@@ -52621,8 +52607,8 @@
   			output.style.maxHeight = "100%";
   			sbgnmlText = undefined;
   		};
-      reader.readAsDataURL(blob);
-    }));
+  		reader.readAsDataURL(blob);
+  	}));
   };
 
   $("#load-file").on("click", function (e) {
@@ -52630,26 +52616,26 @@
   });
 
   document.getElementById("file-input").addEventListener("change", async function (file) {
-    let input = file.target;
-    let reader = new FileReader();
-    reader.onload = function(){
-      base64data = reader.result;
-      let output = document.getElementById('inputImage');
-      output.src = base64data;
+  	let input = file.target;
+  	let reader = new FileReader();
+  	reader.onload = function () {
+  		base64data = reader.result;
+  		let output = document.getElementById('inputImage');
+  		output.src = base64data;
   		output.style.removeProperty('width');
   		output.style.maxHeight = "100%";
   		sbgnmlText = undefined;
-    };
-    reader.readAsDataURL(input.files[0]);
+  	};
+  	reader.readAsDataURL(input.files[0]);
   });
 
   document.getElementById("downloadSbgnml").addEventListener("click", function () {
-  	let blob = new Blob([sbgnmlText], {type: "text/xml"});
+  	let blob = new Blob([sbgnmlText], { type: "text/xml" });
   	FileSaver_minExports.saveAs(blob, "newFile.sbgnml");
   });
 
   document.getElementById("processData").addEventListener("click", function (e) {
-  	if(base64data !== undefined) {
+  	if (base64data !== undefined) {
   		userInputText = document.getElementById("userInputText").value;
   		sbgnmlText = undefined;
   		cy.remove(cy.elements());
@@ -52664,16 +52650,16 @@
   });
 
   document.getElementById("applyLayout").addEventListener("click", function () {
-  	cy.layout({ name: 'fcose', randomize: false, initialEnergyOnIncremental: 0.5}).run();
+  	cy.layout({ name: 'fcose', randomize: false, initialEnergyOnIncremental: 0.5 }).run();
   });
 
   // evaluate positions
   let communicate = async function (pngBase64, userInputText) {
 
-  /* 	let data = {
-  		comment: 'This image shows a biological network. I want you to evaluate this image, produce the corresponding SBGN Process Description representation and return the resulting SBGNML content. Take your time and think carefully about the node and relation types. Here are some considerations to take into account: - Make sure that each glyph has a bbox and each arc has source and target defined (This is important.). - Nodes are represented as rectangles in the image except process, and, or, not, empty set nodes. - Nodes can have the following classes: macromolecule, simple chemical, complex, compartment, process, unspecified entity, nucleic acid feature, perturbing agent, and, or, not, empty set in SBGN. - There can be nested nodes (nodes inside nodes). In these cases progress from outer rectangle to the inner ones. - If a node does have an inner node then classify the outer node as complex. - Try to infer class of each node, which does not have an inner node, based on its label inside or from its shape in case of empty set. - Edges can have the following classes: consumption, production, modulation, catalysis, stimulation, inhibition, necessary stumilation. - If there is a direct line with an arrow at the end from one node to another, then represent this line with two SBGN edges (one consumption and one production) with a process node in between. - If there are dots between nodes that connect edges, apply the following: a- Classify dot as a process node and assign a bbox for it. b- If there is a line between a node and a dot without arrow at the ends, classify that line as consumption edge. c- If there is a line between a dot and a node with an arrow on the node side, classify that line as production edge. d- If there is a line between a dot and a node with an arrow on the dot side, try to infer edge class from the text next to the line. While generating your answer, please describe what made you come to your conclusion (thoughts). Also state your final conclusion as SBGNML text (answer).' + userInput + ' Whenever you are not sure you are kindly asked to make an informed guess about the node/edge class as best as you can. Here is the patient image:',
-  		image: pngBase64
-  	}; */
+  	/* 	let data = {
+  			comment: 'This image shows a biological network. I want you to evaluate this image, produce the corresponding SBGN Process Description representation and return the resulting SBGNML content. Take your time and think carefully about the node and relation types. Here are some considerations to take into account: - Make sure that each glyph has a bbox and each arc has source and target defined (This is important.). - Nodes are represented as rectangles in the image except process, and, or, not, empty set nodes. - Nodes can have the following classes: macromolecule, simple chemical, complex, compartment, process, unspecified entity, nucleic acid feature, perturbing agent, and, or, not, empty set in SBGN. - There can be nested nodes (nodes inside nodes). In these cases progress from outer rectangle to the inner ones. - If a node does have an inner node then classify the outer node as complex. - Try to infer class of each node, which does not have an inner node, based on its label inside or from its shape in case of empty set. - Edges can have the following classes: consumption, production, modulation, catalysis, stimulation, inhibition, necessary stumilation. - If there is a direct line with an arrow at the end from one node to another, then represent this line with two SBGN edges (one consumption and one production) with a process node in between. - If there are dots between nodes that connect edges, apply the following: a- Classify dot as a process node and assign a bbox for it. b- If there is a line between a node and a dot without arrow at the ends, classify that line as consumption edge. c- If there is a line between a dot and a node with an arrow on the node side, classify that line as production edge. d- If there is a line between a dot and a node with an arrow on the dot side, try to infer edge class from the text next to the line. While generating your answer, please describe what made you come to your conclusion (thoughts). Also state your final conclusion as SBGNML text (answer).' + userInput + ' Whenever you are not sure you are kindly asked to make an informed guess about the node/edge class as best as you can. Here is the patient image:',
+  			image: pngBase64
+  		}; */
 
   	let data = {
   		comment: userInputText,
@@ -52699,11 +52685,11 @@
   	}
   };
 
-  let sendRequestToGPT = async function (data){
+  let sendRequestToGPT = async function (data) {
   	let language = getCheckedRadio();
-  	let url = "http://localhost:4000/gpt?language="+language;
-  	if(img2sbgn) {
-  		url = "http://ec2-3-87-167-56.compute-1.amazonaws.com/gpt?language="+language;
+  	let url = "http://localhost:4000/gpt?language=" + language;
+  	if (img2sbgn) {
+  		url = "http://ec2-3-87-167-56.compute-1.amazonaws.com/gpt?language=" + language;
   	}
   	const settings = {
   		method: 'POST',
@@ -52715,13 +52701,13 @@
   	};
 
   	let res = await fetch(url, settings)
-  	.then(response => response.json())
-  	.then(result => {
-  		return result;
-  	})
-  	.catch(e => {
-  		console.log("Error!");
-  	});
+  		.then(response => response.json())
+  		.then(result => {
+  			return result;
+  		})
+  		.catch(e => {
+  			console.log("Error!");
+  		});
 
   	return res;
   };
@@ -52732,14 +52718,32 @@
   	cy.add(cyGraph);
   	cy.nodes().forEach(
   		(node) => {
-  			node.position({x:  node.data('bbox').x + node.data('bbox').w / 2, y: node.data('bbox').y + node.data('bbox').h / 2});
+  			node.position({ x: node.data('bbox').x + node.data('bbox').w / 2, y: node.data('bbox').y + node.data('bbox').h / 2 });
   		}
   	);
+  	// adjust context menu items
   	let language = getCheckedRadio();
-  	cy.elements().forEach(ele => {
-  		ele.data("language", language);
-  	});
+  	let contextMenu = cy.contextMenus('get');
+  	let pdItemIDs = ["consumption", "production", "modulation", "stimulation", "catalysis", "inhibition", "macromolecule", "simpleChemical", "unspecifiedEntity", "nucleicAcidFeature", "perturbingAgent", "emptySet", "complex", "process"];
+  	let afItemIDs = ["positiveInfluence", "negativeInfluence", "unknownInfluence", "biologicalActivity", "delay"];
+  	if (language == "PD") {
+  		pdItemIDs.forEach(itemID => {
+  			contextMenu.showMenuItem(itemID);
+  		});
+  		afItemIDs.forEach(itemID => {
+  			contextMenu.hideMenuItem(itemID);
+  		});
+  	} else if (language == "AF") {
+  		pdItemIDs.forEach(itemID => {
+  			contextMenu.hideMenuItem(itemID);
+  		});
+  		afItemIDs.forEach(itemID => {
+  			contextMenu.showMenuItem(itemID);
+  		});
+  	}
+  	// apply layout
   	cy.layout({ name: 'fcose', randomize: false }).run();
+  	// apply identifier mapping
   	let nodesToQuery = cy.nodes().filter(node => {
   		return node.data("label");
   	});
@@ -52756,7 +52760,7 @@
   		item.forEach(data => {
   			if (data.score >= 0.6) {
   				let query = data.match.query;
-  				let content = {db: data.term.db, id: data.term.id, url: data.url};
+  				let content = { db: data.term.db, id: data.term.id, url: data.url };
   				if (identifiersMap.has(query)) {
   					identifiersMap.get(query).push(content);
   				} else {
@@ -52778,14 +52782,14 @@
   	document.getElementById("processData").classList.remove("loading");
   };
 
-  let mapIdentifiers = async function(nodesToQuery) {
+  let mapIdentifiers = async function (nodesToQuery) {
   	let data = [];
   	nodesToQuery.forEach(item => {
-  		data.push({text: item});
+  		data.push({ text: item });
   	});
   	data = JSON.stringify(data);
   	let url = "http://localhost:4000/anno/";
-  	if(img2sbgn) {
+  	if (img2sbgn) {
   		url = "http://ec2-3-87-167-56.compute-1.amazonaws.com/anno/";
   	}
   	const settings = {
@@ -52798,81 +52802,81 @@
   	};
 
   	let identifiers = await fetch(url, settings)
-  	.then(response => response.json())
-  	.then(result => {
-  		return result;
-  	})
-  	.catch(e => {
-  		console.log("Error!");
-  	});
+  		.then(response => response.json())
+  		.then(result => {
+  			return result;
+  		})
+  		.catch(e => {
+  			console.log("Error!");
+  		});
 
   	return identifiers;
   };
 
-   let generateObjectContent = function(nodeLabel, identifierData) {
-    // Create the main div element
-    const div = document.createElement('div');
+  let generateObjectContent = function (nodeLabel, identifierData) {
+  	// Create the main div element
+  	const div = document.createElement('div');
   	div.setAttribute("id", "objectData");
 
-    // Loop through the dataArray and generate content for each object
-    identifierData.forEach((dataItem) => {
-      // Create a title for the id
-      const title = document.createElement('h3');
-      title.textContent = nodeLabel;
-      div.appendChild(title);
+  	// Loop through the dataArray and generate content for each object
+  	identifierData.forEach((dataItem) => {
+  		// Create a title for the id
+  		const title = document.createElement('h3');
+  		title.textContent = nodeLabel;
+  		div.appendChild(title);
 
-      // Create a table with Fomantic UI classes
-      const table = document.createElement('table');
-      table.className = 'ui celled table';
+  		// Create a table with Fomantic UI classes
+  		const table = document.createElement('table');
+  		table.className = 'ui celled table';
 
-      // Create a table body
-      const tbody = document.createElement('tbody');
+  		// Create a table body
+  		const tbody = document.createElement('tbody');
 
-      // Create a row for each object in dataArray
-      const row = document.createElement('tr');
+  		// Create a row for each object in dataArray
+  		const row = document.createElement('tr');
 
-      const dbCell = document.createElement('td');
-      dbCell.textContent = dataItem.db;
+  		const dbCell = document.createElement('td');
+  		dbCell.textContent = dataItem.db;
 
-      const idCell = document.createElement('td');
-      const link = document.createElement('a');
-      link.href = dataItem.url;
-      link.textContent = dataItem.id;
+  		const idCell = document.createElement('td');
+  		const link = document.createElement('a');
+  		link.href = dataItem.url;
+  		link.textContent = dataItem.id;
   		link.target = '_blank';
-      idCell.appendChild(link);
+  		idCell.appendChild(link);
 
-      row.appendChild(dbCell);
-      row.appendChild(idCell);
-      tbody.appendChild(row);
+  		row.appendChild(dbCell);
+  		row.appendChild(idCell);
+  		tbody.appendChild(row);
 
-      table.appendChild(tbody);
-      div.appendChild(table);
-    });
+  		table.appendChild(tbody);
+  		div.appendChild(table);
+  	});
 
-    return div;
+  	return div;
   };
 
-  cy.on("select", "node", function(evt){
+  cy.on("select", "node", function (evt) {
   	let node = evt.target;
-  	if(node.data("label") && node.data("label") != "" && node.data("identifierData")) {
+  	if (node.data("label") && node.data("label") != "" && node.data("identifierData")) {
   		let objectContent = generateObjectContent(node.data("label"), node.data("identifierData"));
   		let objectView = document.getElementById("objectView");
   		objectView.appendChild(objectContent);
   	}
   });
 
-  cy.on("unselect", "node", function(evt){
+  cy.on("unselect", "node", function (evt) {
   	let objectView = document.getElementById("objectView");
-  	if(objectView.querySelector("#objectData") != null) {
+  	if (objectView.querySelector("#objectData") != null) {
   		let objectData = document.getElementById("objectData");
   		objectView.removeChild(objectData);
   	}
   });
 
   document.getElementById("inputImage").addEventListener("click", function () {
-    let imageContent = document.getElementById("imageContent");
-    imageContent.src = base64data;
-    $('#imageModal').modal({inverted: true}).modal('show');
+  	let imageContent = document.getElementById("imageContent");
+  	imageContent.src = base64data;
+  	$('#imageModal').modal({ inverted: true }).modal('show');
   });
 
 }));

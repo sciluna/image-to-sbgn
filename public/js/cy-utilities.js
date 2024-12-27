@@ -2,7 +2,6 @@ import cytoscape from 'cytoscape';
 import fcose from "cytoscape-fcose";
 import sbgnStylesheet from 'cytoscape-sbgn-stylesheet';
 import contextMenus from 'cytoscape-context-menus';
-import 'cytoscape-context-menus/cytoscape-context-menus.css';
 
 cytoscape.use(fcose);
 cytoscape.use(contextMenus);
@@ -20,16 +19,12 @@ var contextMenuOptions = {
 		{
 			id: 'changeEdgeClass', // ID of menu item
 			content: 'Change class', // Display content of menu item
-			// image: {src : "remove.svg", width : 12, height : 12, x : 6, y : 4}, // menu icon
-			// Filters the elements to have this menu item on cxttap
-			// If the selector is not truthy no elements will have this menu item on cxttap
-			selector: 'edge',
+			selector: "edge",
 			coreAsWell: false, // Whether core instance have this item on cxttap
 			submenu: [
 				{
 					id: 'consumption',
 					content: 'Consumption',
-					selector: 'edge[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'consumption');
@@ -38,7 +33,6 @@ var contextMenuOptions = {
 				{
 					id: 'production',
 					content: 'Production',
-					selector: 'edge[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'production');
@@ -47,7 +41,6 @@ var contextMenuOptions = {
 				{
 					id: 'modulation',
 					content: 'Modulation',
-					selector: 'edge[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'modulation');
@@ -56,7 +49,6 @@ var contextMenuOptions = {
 				{
 					id: 'stimulation',
 					content: 'Stimulation',
-					selector: 'edge[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'stimulation');
@@ -65,7 +57,6 @@ var contextMenuOptions = {
 				{
 					id: 'catalysis',
 					content: 'Catalysis',
-					selector: 'edge[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'catalysis');
@@ -74,34 +65,14 @@ var contextMenuOptions = {
 				{
 					id: 'inhibition',
 					content: 'Inhibition',
-					selector: 'edge[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'inhibition');
 					}
 				},
 				{
-					id: 'necessaryStimulation',
-					content: 'Necessary stimulation',
-					selector: 'edge',
-					onClickFunction: function (event) {
-						let target = event.target || event.cyTarget;
-						target.data('class', 'necessary stimulation');
-					}
-				},
-				{
-					id: 'logicArc',
-					content: 'Logic arc',
-					selector: 'edge',
-					onClickFunction: function (event) {
-						let target = event.target || event.cyTarget;
-						target.data('class', 'logic arc');
-					}
-				},
-				{
 					id: 'positiveInfluence',
 					content: 'Positive influence',
-					selector: 'edge[language = "AF"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'positive influence');
@@ -110,7 +81,6 @@ var contextMenuOptions = {
 				{
 					id: 'negativeInfluence',
 					content: 'Negative influence',
-					selector: 'edge[language = "AF"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'negative influence');
@@ -119,27 +89,46 @@ var contextMenuOptions = {
 				{
 					id: 'unknownInfluence',
 					content: 'Unknown influence',
-					selector: 'edge[language = "AF"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'unknown influence');
 					}
 				},
+				{
+					id: 'necessaryStimulation',
+					content: 'Necessary stimulation',
+					onClickFunction: function (event) {
+						let target = event.target || event.cyTarget;
+						target.data('class', 'necessary stimulation');
+					}
+				},
+				{
+					id: 'logicArc',
+					content: 'Logic arc',
+					onClickFunction: function (event) {
+						let target = event.target || event.cyTarget;
+						target.data('class', 'logic arc');
+					}
+				},
+				{
+					id: 'equivalence',
+					content: 'Equivalence Arc',
+					onClickFunction: function (event) {
+						let target = event.target || event.cyTarget;
+						target.data('class', 'equivalence arc');
+					}
+				}
 			]
 		},
 		{
 			id: 'changeNodeClass', // ID of menu item
 			content: 'Change class', // Display content of menu item
-			// image: {src : "remove.svg", width : 12, height : 12, x : 6, y : 4}, // menu icon
-			// Filters the elements to have this menu item on cxttap
-			// If the selector is not truthy no elements will have this menu item on cxttap
 			selector: 'node',
 			coreAsWell: false, // Whether core instance have this item on cxttap
 			submenu: [
 				{
 					id: 'macromolecule',
 					content: 'Macromolecule',
-					selector: 'node[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'macromolecule');
@@ -148,7 +137,6 @@ var contextMenuOptions = {
 				{
 					id: 'simpleChemical',
 					content: 'Simple chemical',
-					selector: 'node[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'simple chemical');
@@ -157,7 +145,6 @@ var contextMenuOptions = {
 				{
 					id: 'unspecifiedEntity',
 					content: 'Unspecified entity',
-					selector: 'node[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'unspecified entity');
@@ -166,7 +153,6 @@ var contextMenuOptions = {
 				{
 					id: 'nucleicAcidFeature',
 					content: 'Nucleic acid feature',
-					selector: 'node[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'nucleicAcidFeature');
@@ -175,7 +161,6 @@ var contextMenuOptions = {
 				{
 					id: 'perturbingAgent',
 					content: 'Perturbing agent',
-					selector: 'node[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'perturbing agent');
@@ -184,7 +169,6 @@ var contextMenuOptions = {
 				{
 					id: 'emptySet',
 					content: 'Empty set',
-					selector: 'node[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'empty set');
@@ -193,10 +177,17 @@ var contextMenuOptions = {
 				{
 					id: 'complex',
 					content: 'Complex',
-					selector: 'node[language = "PD"]',
 					onClickFunction: function (event) {
 						let target = event.target || event.cyTarget;
 						target.data('class', 'complex');
+					}
+				},
+				{
+					id: 'biologicalActivity',
+					content: 'Biological activity',
+					onClickFunction: function (event) {
+						let target = event.target || event.cyTarget;
+						target.data('class', 'biological activity');
 					}
 				},
 				{
@@ -229,12 +220,10 @@ var contextMenuOptions = {
 				{
 					id: 'process',
 					content: 'Process',
-					selector: 'node[language = "PD"]',
 					submenu: [
 						{
-							id: 'process',
+							id: 'genericProcess',
 							content: 'Process',
-							selector: 'node[language = "PD"]',
 							onClickFunction: function (event) {
 								let target = event.target || event.cyTarget;
 								target.data('class', 'process');
@@ -243,7 +232,6 @@ var contextMenuOptions = {
 						{
 							id: 'omittedProcess',
 							content: 'Omitted process',
-							selector: 'node[language = "PD"]',
 							onClickFunction: function (event) {
 								let target = event.target || event.cyTarget;
 								target.data('class', 'omitted process');
@@ -252,7 +240,6 @@ var contextMenuOptions = {
 						{
 							id: 'uncertainProcess',
 							content: 'Uncertain process',
-							selector: 'node[language = "PD"]',
 							onClickFunction: function (event) {
 								let target = event.target || event.cyTarget;
 								target.data('class', 'uncertain process');
@@ -260,8 +247,7 @@ var contextMenuOptions = {
 						},
 						{
 							id: 'association',
-							content: 'association',
-							selector: 'node[language = "PD"]',
+							content: 'Association',
 							onClickFunction: function (event) {
 								let target = event.target || event.cyTarget;
 								target.data('class', 'association');
@@ -269,8 +255,7 @@ var contextMenuOptions = {
 						},
 						{
 							id: 'dissociation',
-							content: 'dissociation',
-							selector: 'node[language = "PD"]',
+							content: 'Dissociation',
 							onClickFunction: function (event) {
 								let target = event.target || event.cyTarget;
 								target.data('class', 'dissociation');
@@ -318,9 +303,9 @@ var contextMenuOptions = {
 								let target = event.target || event.cyTarget;
 								target.data('class', 'delay');
 							}
-						},
+						}
 					]
-				},
+				}
 			]
 		},
 		{
