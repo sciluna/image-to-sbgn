@@ -2,6 +2,7 @@ import cytoscape from 'cytoscape';
 import fcose from "cytoscape-fcose";
 import sbgnStylesheet from 'cytoscape-sbgn-stylesheet';
 import contextMenus from 'cytoscape-context-menus';
+import { getMapType } from './menu.js'
 
 cytoscape.use(fcose);
 cytoscape.use(contextMenus);
@@ -329,6 +330,34 @@ var contextMenuOptions = {
 			onClickFunction: function (event) {
 				let target = event.target || event.cyTarget;
 				target.remove();
+			}
+		},
+		{
+			id: 'addEdge',
+			content: 'Add edge btw selected nodes',
+			coreAsWell: true,
+			onClickFunction: function (event) {
+				const langauge = getMapType();
+				if (cy.nodes(':selected').length > 1) {
+					if (langauge == 'PD') {
+						cy.add({ group: 'edges', data: { source: cy.nodes(':selected')[0].id(), target: cy.nodes(':selected')[1].id(), class: 'modulation' } });
+					} else {
+						cy.add({ group: 'edges', data: { source: cy.nodes(':selected')[0].id(), target: cy.nodes(':selected')[1].id(), class: 'positive influence' } });
+					}
+				}
+			}
+		},
+		{
+			id: 'addNode',
+			content: 'Add node',
+			coreAsWell: true,
+			onClickFunction: function (event) {
+				const langauge = getMapType();
+				if (langauge == 'PD') {
+					cy.add({ group: 'nodes', data: { class: 'macromolecule', label: 'Node', 'stateVariables': [], 'unitsOfInformation': [] }, position: { x: event.position.x, y: event.position.y } });
+				} else {
+					cy.add({ group: 'nodes', data: { class: 'biological activity', label: 'Node', 'stateVariables': [], 'unitsOfInformation': [] }, position: { x: event.position.x, y: event.position.y } });
+				}
 			}
 		}
 	],

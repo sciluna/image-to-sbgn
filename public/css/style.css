@@ -85,3 +85,8 @@ h1 {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+#objectData h3 {
+  display: inline-block;
+  margin-bottom: 0px;
+}

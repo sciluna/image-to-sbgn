@@ -332,6 +332,34 @@ var contextMenuOptions = {
 				let target = event.target || event.cyTarget;
 				target.remove();
 			}
+		},
+		{
+			id: 'addEdge',
+			content: 'Add edge btw selected nodes',
+			coreAsWell: true,
+			onClickFunction: function (event) {
+				const langauge = getMapType();
+				if (cy.nodes(':selected').length > 1) {
+					if (langauge == 'PD') {
+						cy.add({ group: 'edges', data: { source: cy.nodes(':selected')[0].id(), target: cy.nodes(':selected')[1].id(), class: 'modulation' } });
+					} else {
+						cy.add({ group: 'edges', data: { source: cy.nodes(':selected')[0].id(), target: cy.nodes(':selected')[1].id(), class: 'positive influence' } });
+					}
+				}
+			}
+		},
+		{
+			id: 'addNode',
+			content: 'Add node',
+			coreAsWell: true,
+			onClickFunction: function (event) {
+				const langauge = getMapType();
+				if (langauge == 'PD') {
+					cy.add({ group: 'nodes', data: { class: 'macromolecule', label: 'Node', 'stateVariables': [], 'unitsOfInformation': [] }, position: { x: event.position.x, y: event.position.y } });
+				} else {
+					cy.add({ group: 'nodes', data: { class: 'biological activity', label: 'Node', 'stateVariables': [], 'unitsOfInformation': [] }, position: { x: event.position.x, y: event.position.y } });
+				}
+			}
 		}
 	],
 	// css classes that menu items will have
@@ -397,7 +425,7 @@ document.getElementById("samples").addEventListener("change", function (event) {
 	}
 });
 
-function getCheckedRadio() {
+function getMapType() {
 	// Get all radio buttons with the name 'language'
 	const radios = document.getElementsByName('language');
 
@@ -454,12 +482,19 @@ document.getElementById("downloadSbgnml").addEventListener("click", function () 
 
 document.getElementById("processData").addEventListener("click", function (e) {
 	if (base64data !== undefined) {
-		userInputText = document.getElementById("userInputText").value;
+		// remove object view content
+		let objectView = document.getElementById("objectView");
+		if (objectView.querySelector("#objectData") != null) {
+			let objectData = document.getElementById("objectData");
+			objectView.removeChild(objectData);
+		}
+		// reset other data
 		sbgnmlText = undefined;
 		cy.remove(cy.elements());
 		cy.nodes().unselect();
 		e.currentTarget.style.backgroundColor = "#f2711c";
 		e.currentTarget.className += " loading";
+		userInputText = document.getElementById("userInputText").value;
 		communicate(base64data, userInputText);
 	}
 	else {
@@ -504,7 +539,7 @@ let communicate = async function (pngBase64, userInputText) {
 };
 
 let sendRequestToGPT = async function (data) {
-	let language = getCheckedRadio();
+	let language = getMapType();
 	let url = "http://localhost:4000/gpt?language=" + language;
 	if (img2sbgn) {
 		url = "http://ec2-3-87-167-56.compute-1.amazonaws.com/gpt?language=" + language;
@@ -540,7 +575,7 @@ let generateCyGraph = async function () {
 		}
 	);
 	// adjust context menu items
-	let language = getCheckedRadio();
+	let language = getMapType();
 	let contextMenu = cy.contextMenus('get');
 	let pdItemIDs = ["consumption", "production", "modulation", "stimulation", "catalysis", "inhibition", "macromolecule", "simpleChemical", "unspecifiedEntity", "nucleicAcidFeature", "perturbingAgent", "emptySet", "complex", "process"];
 	let afItemIDs = ["positiveInfluence", "negativeInfluence", "unknownInfluence", "biologicalActivity", "delay"];
@@ -631,53 +666,83 @@ let mapIdentifiers = async function (nodesToQuery) {
 	return identifiers;
 };
 
-let generateObjectContent = function (nodeLabel, identifierData) {
+let generateObjectContent = function (node, identifierData) {
 	// Create the main div element
 	const div = document.createElement('div');
 	div.setAttribute("id", "objectData");
 
-	// Loop through the dataArray and generate content for each object
-	identifierData.forEach((dataItem) => {
-		// Create a title for the id
-		const title = document.createElement('h3');
-		title.textContent = nodeLabel;
-		div.appendChild(title);
+	// Create a title for the id
+	const title = document.createElement('h3');
+	title.textContent = node.data('label');
 
-		// Create a table with Fomantic UI classes
-		const table = document.createElement('table');
-		table.className = 'ui celled table';
+	// Create an edit icon 
+	const editIcon = document.createElement('span');
+	editIcon.textContent = '✏️'; // You can replace this with an icon image if needed
+	editIcon.style.cursor = 'pointer';
+	editIcon.style.marginLeft = '10px';
 
-		// Create a table body
-		const tbody = document.createElement('tbody');
+	// Add an event listener to switch to input field when clicked
+	editIcon.addEventListener('click', () => {
+		// Replace h3 with an input field
+		const labelInput = document.createElement('input');
+		labelInput.setAttribute("type", "text");
+		labelInput.setAttribute("id", "labelInput");
+		labelInput.value = title.textContent; // Set the current label text as input value
 
-		// Create a row for each object in dataArray
-		const row = document.createElement('tr');
+		labelInput.addEventListener('keydown', (event) => {
+			if (event.key === 'Enter') {
+				title.textContent = labelInput.value;
+				div.replaceChild(title, labelInput);
+				node.data('label', title.textContent);
+			}
+		});
 
-		const dbCell = document.createElement('td');
-		dbCell.textContent = dataItem.db;
-
-		const idCell = document.createElement('td');
-		const link = document.createElement('a');
-		link.href = dataItem.url;
-		link.textContent = dataItem.id;
-		link.target = '_blank';
-		idCell.appendChild(link);
-
-		row.appendChild(dbCell);
-		row.appendChild(idCell);
-		tbody.appendChild(row);
-
-		table.appendChild(tbody);
-		div.appendChild(table);
+		div.replaceChild(labelInput, title); // Replace h3 with input
 	});
+
+	div.appendChild(title);
+	div.appendChild(editIcon);
+
+	if (node.data("identifierData")) {
+		// Loop through the dataArray and generate content for each object
+		identifierData.forEach((dataItem) => {
+
+			// Create a table with Fomantic UI classes
+			const table = document.createElement('table');
+			table.className = 'ui celled table';
+
+			// Create a table body
+			const tbody = document.createElement('tbody');
+
+			// Create a row for each object in dataArray
+			const row = document.createElement('tr');
+
+			const dbCell = document.createElement('td');
+			dbCell.textContent = dataItem.db;
+
+			const idCell = document.createElement('td');
+			const link = document.createElement('a');
+			link.href = dataItem.url;
+			link.textContent = dataItem.id;
+			link.target = '_blank';
+			idCell.appendChild(link);
+
+			row.appendChild(dbCell);
+			row.appendChild(idCell);
+			tbody.appendChild(row);
+
+			table.appendChild(tbody);
+			div.appendChild(table);
+		});
+	}
 
 	return div;
 };
 
 cy.on("select", "node", function (evt) {
 	let node = evt.target;
-	if (node.data("label") && node.data("label") != "" && node.data("identifierData")) {
-		let objectContent = generateObjectContent(node.data("label"), node.data("identifierData"));
+	if (node.data("label") && node.data("label") != "") {
+		let objectContent = generateObjectContent(node, node.data("identifierData"));
 		let objectView = document.getElementById("objectView");
 		objectView.appendChild(objectContent);
 	}

@@ -33,7 +33,7 @@ app.post('/gpt', async (req, res) => {
 	const tokenjs = new TokenJS({
 		//baseURL: 'http://127.0.0.1:11434/v1/'
 	});
-	let provider = "openai"; // options: openai, gemini, openai-compatible
+	let provider = "gemini"; // options: openai, gemini, openai-compatible
 	let model = "";
 
 	if (provider == "openai") {
