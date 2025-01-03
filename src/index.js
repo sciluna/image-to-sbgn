@@ -139,16 +139,16 @@ const convertSBGNML = (sbgnmlPath) => {
 
 const generateMessage = function(language, image, comment) {
 	if (language == "PD") {
-		let stylesheetImage = convertImage(path.join(__dirname, "assets/sbgn_stylesheet.png"));
-		let firstSampleImage = convertImage(path.join(__dirname, "assets/reference1.png"));
-		let secondSampleImage = convertImage(path.join(__dirname, "assets/reference2.png"));
-		let thirdSampleImage = convertImage(path.join(__dirname, "assets/reference3.png"));
-		//let forthSampleImage = convertImage(path.join(__dirname, "assets/reference4.png"));
+		let stylesheetImage = convertImage(path.join(__dirname, "assets/sbgn_pd_stylesheet.png"));
+		let firstSampleImage = convertImage(path.join(__dirname, "assets/PD_reference1.png"));
+		let secondSampleImage = convertImage(path.join(__dirname, "assets/PD_reference2.png"));
+		let thirdSampleImage = convertImage(path.join(__dirname, "assets/PD_reference3.png"));
+		//let forthSampleImage = convertImage(path.join(__dirname, "assets/PD_reference4.png"));
 
-		let firstSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference1.sbgn"));
-		let secondSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference2.sbgn"));
-		let thirdSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference3.sbgn"));
-		//let forthSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/reference4.sbgn"));
+		let firstSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/PD_reference1.sbgn"));
+		let secondSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/PD_reference2.sbgn"));
+		let thirdSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/PD_reference3.sbgn"));
+		//let forthSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/PD_reference4.sbgn"));
 
 		console.log("here is pd");
 		let userPrompt = "Now please generate the SBGNML for this hand-drawn SBGN PD diagram. Please note that macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with 'glyph' tag in SBGNML and consumption, production, modulation, simulation, catalysis, inhibition, necessary stimulation and logic arc edges are represented with 'arc' tag in SBGNML. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).";
@@ -234,7 +234,7 @@ const generateMessage = function(language, image, comment) {
 		return messagesArray;
 	}
 	else if (language == "AF") {
-		let stylesheetImage = convertImage(path.join(__dirname, "assets/af_learners_card_small.png"));
+		let stylesheetImage = convertImage(path.join(__dirname, "assets/sbgn_af_stylesheet.png"));
 		let firstSampleImage = convertImage(path.join(__dirname, "assets/AF_reference1.png"));
 		let secondSampleImage = convertImage(path.join(__dirname, "assets/AF_reference2.png"));
 
