@@ -1,5 +1,6 @@
-import { cy } from './cy-utilities';
+import { cy } from './cy-utilities.js';
 import convert from 'sbgnml-to-cytoscape';
+import { convert as cyJsonToSbgnml } from './cytoscape-to-sbgnml'
 import { saveAs } from 'file-saver';
 
 let base64data;
@@ -102,7 +103,8 @@ document.getElementById("file-input").addEventListener("change", async function 
 });
 
 document.getElementById("downloadSbgnml").addEventListener("click", function () {
-	let blob = new Blob([sbgnmlText], { type: "text/xml" });
+	let finalSbgnml = cyJsonToSbgnml(cy, getMapType());
+	let blob = new Blob([finalSbgnml], { type: "text/xml" });
 	saveAs(blob, "newFile.sbgnml");
 });
 

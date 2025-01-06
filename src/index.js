@@ -81,7 +81,6 @@ app.post('/gpt', async (req, res) => {
 			console.log(answer);
 			answer = answer.replaceAll('```json', '');
 			answer = answer.replaceAll('```', '');
-			//return res.status(200).send(answer);
 			return res.status(200).send(JSON.stringify(answer));
 		}
 		main();
