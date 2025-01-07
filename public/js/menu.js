@@ -65,6 +65,19 @@ function getMapType() {
 	return null; // If none are checked
 }
 
+function getModelType() {
+	// Get all radio buttons with the name 'model'
+	const radios = document.getElementsByName('model');
+
+	// Loop through the radio buttons and return the one that's checked
+	for (let i = 0; i < radios.length; i++) {
+		if (radios[i].checked) {
+			return radios[i].id; // Get the model id (openai or gemini)
+		}
+	}
+	return null; // If none are checked
+}
+
 let loadSample = function (fname) {
 	cy.nodes().unselect();
 	cy.remove(cy.elements());
@@ -144,9 +157,13 @@ let communicate = async function (pngBase64, userInputText) {
 			image: pngBase64
 		}; */
 
+	let language = getMapType();
+	let model = getModelType();
 	let data = {
 		comment: userInputText,
-		image: pngBase64
+		image: pngBase64,
+		language: language,
+		model: model
 	};
 
 	let response = await sendRequestToGPT(data);
@@ -154,7 +171,6 @@ let communicate = async function (pngBase64, userInputText) {
 	try {
 		resultJSON = JSON.parse(response);
 		sbgnmlText = resultJSON.answer;
-		console.log(sbgnmlText);
 		sbgnmlText = sbgnmlText.replaceAll('\"', '"');
 		sbgnmlText = sbgnmlText.replaceAll('\n', '');
 		sbgnmlText = sbgnmlText.replaceAll('empty set', 'source and sink');
@@ -169,10 +185,9 @@ let communicate = async function (pngBase64, userInputText) {
 };
 
 let sendRequestToGPT = async function (data) {
-	let language = getMapType();
-	let url = "http://localhost:4000/gpt?language=" + language;
+	let url = "http://localhost:4000/gpt/";
 	if (img2sbgn) {
-		url = "http://ec2-3-87-167-56.compute-1.amazonaws.com/gpt?language=" + language;
+		url = "http://ec2-3-87-167-56.compute-1.amazonaws.com/gpt/";
 	}
 	const settings = {
 		method: 'POST',
