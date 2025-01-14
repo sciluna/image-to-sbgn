@@ -29,6 +29,9 @@ app.post('/gpt', async (req, res) => {
 		body += data;
 	});
 
+	console.log(`Received request: ${body}`); // debugging purpose
+	
+
 	req.on('end', async () => {
 		body = JSON.parse(body);
 		let comment = body["comment"];
@@ -38,13 +41,13 @@ app.post('/gpt', async (req, res) => {
 
 		// Create the Token.js client
 		const tokenjs = new TokenJS({
-			//baseURL: 'http://127.0.0.1:11434/v1/'
+			baseURL: 'http://127.0.0.1:11434/v1/'
 		});
 
 		let model = "";
 
 		if (provider == "openai") {
-			model = "gpt-4o";
+			model = "gpt-4";  // Changed from "gpt-4-vision"
 		} else if (provider == "gemini") {
 			model = "gemini-1.5-pro";
 		} else if (provider == "bedrock") {
@@ -283,5 +286,8 @@ const generateMessage = function (language, image, comment) {
 		return messagesArray;
 	}
 };
+
+console.log(`server running on http://localhost:${port}`); //debugging purpose
+
 
 export { port, app }
