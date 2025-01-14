@@ -23,6 +23,7 @@
     "file-saver": "^2.0.5",
     "libsbgn.js": "github:sbgn/libsbgn.js#master",
     "openai": "^4.52.0",
+    "punycode": "^2.3.1",
     "sbgnml-to-cytoscape": "https://github.com/hasanbalci/sbgnml-to-cytoscape.git",
     "token.js": "^0.4.7",
     "util": "^0.12.5"
