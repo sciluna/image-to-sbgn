@@ -12,6 +12,12 @@ import { promptsPD, promptsAF } from './prompts.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const tempDir = './src/public/temp';
+
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+}
+
 // Load environment variables
 config();
 
