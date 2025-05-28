@@ -14,35 +14,35 @@
         </listOfColorDefinitions>
         <listOfBackgroundImages/>
         <listOfStyles>
-          <style id="nodeffffff000000112normalnormalHelvetica0000.5" idList="n22 n163">
-            <g font-size="12" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000" stroke="color_2" stroke-width="1" fill="color_1" background-opacity="0.5"/>
+          <style id="nodeffffff000000112normalnormalHelvetica00010.5" idList="n22 n163">
+            <g font-size="12" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000" stroke="color_2" stroke-width="1" fill="color_1" background-image-opacity="1" background-opacity="0.5"/>
           </style>
-          <style id="nodeffffff000000112normalnormalHelvetica0001" idList="n22::n0 n22::n1 n0 n4 n19 n33 n34 c60206b6-97a9-df25-d3d9-f3b39996ed56 d2ba1a7b-4110-7091-9f22-74f8a529f765 n130">
-            <g font-size="12" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000" stroke="color_2" stroke-width="1" fill="color_3" background-opacity="1"/>
+          <style id="nodeffffff000000112normalnormalHelvetica00011" idList="n22::n0 n22::n1 n0 n4 n19 n33 n34 c60206b6-97a9-df25-d3d9-f3b39996ed56 d2ba1a7b-4110-7091-9f22-74f8a529f765 n130 0795452d-0a13-8624-6abb-f0b61f8696e4">
+            <g font-size="12" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000" stroke="color_2" stroke-width="1" fill="color_3" background-image-opacity="1" background-opacity="1"/>
           </style>
-          <style id="nodeffffffffffff114normalnormalHelvetica0000001" idList="fee03086-d00b-fe51-55d2-b8f260cc9bbe 7be45ba1-39d4-0626-60ca-e09bdceec67e 185a44d2-b30f-c6d2-ccc4-76c8ebd09868 a9468763-7c9d-7ea3-8c4f-0eb8fb10f107 f9286813-67ef-0dd5-c963-025ef9ca34fc n3 n5 0f7f093e-21d8-26f9-8a00-f79b95c5f2c1 82a1ac5f-7067-d5c1-d7e8-717a8db3bb6f n21 n23 d713906c-6235-e99a-4549-96ba133321b9 9c3519da-8a9a-a1ee-cf82-1ffd187ed726 811cea90-0ff8-d700-ffaa-1625a0b24588 ab0801a6-c715-3a45-4821-7dad46f0ea71 n32 n35 8c658897-dcc3-1e64-5f75-35d3e1b946f7 5b3a5c86-73b7-1351-dade-f67540213608 n131 n161 n160 9bbeccce-ddbf-a369-b75c-f384d51103c9 22302c87-6579-a242-1a37-9facb6ba412f 34720c3a-c0e1-bb83-4a79-eb7ce6cc1bad">
-            <g font-size="14" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000000" stroke="color_4" stroke-width="1" fill="color_3" background-opacity="1"/>
+          <style id="nodeffffffffffff114normalnormalHelvetica00000011" idList="fee03086-d00b-fe51-55d2-b8f260cc9bbe 7be45ba1-39d4-0626-60ca-e09bdceec67e 185a44d2-b30f-c6d2-ccc4-76c8ebd09868 a9468763-7c9d-7ea3-8c4f-0eb8fb10f107 f9286813-67ef-0dd5-c963-025ef9ca34fc n3 n5 0f7f093e-21d8-26f9-8a00-f79b95c5f2c1 82a1ac5f-7067-d5c1-d7e8-717a8db3bb6f n21 n23 d713906c-6235-e99a-4549-96ba133321b9 9c3519da-8a9a-a1ee-cf82-1ffd187ed726 811cea90-0ff8-d700-ffaa-1625a0b24588 ab0801a6-c715-3a45-4821-7dad46f0ea71 n32 n35 8c658897-dcc3-1e64-5f75-35d3e1b946f7 5b3a5c86-73b7-1351-dade-f67540213608 n131 n161 n160 9bbeccce-ddbf-a369-b75c-f384d51103c9 22302c87-6579-a242-1a37-9facb6ba412f 34720c3a-c0e1-bb83-4a79-eb7ce6cc1bad 43e2b0aa-5004-f37a-eac8-e1aa412080a5 16a82899-8d27-a549-c588-6391fd7c0560 0a5ace45-4e2d-c7a9-0698-2c8421ad10c2">
+            <g font-size="14" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000000" stroke="color_4" stroke-width="1" fill="color_3" background-image-opacity="1" background-opacity="1"/>
           </style>
-          <style id="nodeffffff5555551.251" idList="nwtN_cd03a475-a95a-4a3e-ad5b-cb4c579f7008 nwtN_f5d43cbb-2cb9-4c01-b712-209c33f9764a nwtN_45b39f7d-e488-4aa0-b6f4-2bc259355246 nwtN_674fa26a-01af-4eb5-9259-81e52ce9417a nwtN_23284bea-3467-44d3-a7b6-127b36b3ddb4 42762489-0d53-8580-3fae-7ff19225df8a dfbd5e35-8f70-b2c6-b624-7dafb362b0fb nwtN_d6241e3f-0611-4c73-be72-472e4acfb4a5 nwtN_f8dfed66-f9af-42c1-820d-f95302ad8c48 nwtN_2e386777-30e2-4b28-beeb-5b5e2ea7d9e9 7c8c8f39-b1ef-85de-e555-7763faac2d3c 8c1c4571-af95-523f-c24a-51cec918a915">
-            <g stroke="color_5" stroke-width="1.25" fill="color_3" background-opacity="1"/>
+          <style id="nodeffffff5555551.2511" idList="nwtN_cd03a475-a95a-4a3e-ad5b-cb4c579f7008 nwtN_f5d43cbb-2cb9-4c01-b712-209c33f9764a nwtN_45b39f7d-e488-4aa0-b6f4-2bc259355246 nwtN_674fa26a-01af-4eb5-9259-81e52ce9417a nwtN_23284bea-3467-44d3-a7b6-127b36b3ddb4 42762489-0d53-8580-3fae-7ff19225df8a dfbd5e35-8f70-b2c6-b624-7dafb362b0fb nwtN_d6241e3f-0611-4c73-be72-472e4acfb4a5 nwtN_f8dfed66-f9af-42c1-820d-f95302ad8c48 nwtN_2e386777-30e2-4b28-beeb-5b5e2ea7d9e9 7c8c8f39-b1ef-85de-e555-7763faac2d3c 8c1c4571-af95-523f-c24a-51cec918a915">
+            <g stroke="color_5" stroke-width="1.25" fill="color_3" background-image-opacity="1" background-opacity="1"/>
           </style>
-          <style id="nodeffffff000000312normalnormalHelvetica0000.5" idList="n162">
-            <g font-size="12" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000" stroke="color_2" stroke-width="3" fill="color_1" background-opacity="0.5"/>
+          <style id="nodeffffff000000312normalnormalHelvetica00010.5" idList="n162">
+            <g font-size="12" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000" stroke="color_2" stroke-width="3" fill="color_1" background-image-opacity="1" background-opacity="0.5"/>
           </style>
-          <style id="node7070705555551.251" idList="nwtN_d76f7a4b-9066-41f1-a36e-3c6535f91ed7">
-            <g stroke="color_5" stroke-width="1.25" fill="color_6" background-opacity="1"/>
+          <style id="nodeffffff5555551.2511normalnormalHelvetica00011" idList="5e961412-3b0e-fcfd-1bf0-fa503ec03d68 50347cb5-8d20-c686-8d74-c0b4095901fc 62e24d5f-c703-3ac7-a025-6d84a7bd6e92 11d1110b-2193-9972-04e3-53b97585ca9f nwtN_5ac98517-5e2f-4996-bf69-7e297e4b50e1 nwtN_bf7b95bd-1d5c-42a2-8b18-b4cf2fdf6bb0">
+            <g font-size="11" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000" stroke="color_5" stroke-width="1.25" fill="color_3" background-image-opacity="1" background-opacity="1"/>
           </style>
-          <style id="nodeffffff5555551.2511normalnormalHelvetica0001" idList="5e961412-3b0e-fcfd-1bf0-fa503ec03d68 nwtN_bf7b95bd-1d5c-42a2-8b18-b4cf2fdf6bb0 50347cb5-8d20-c686-8d74-c0b4095901fc 62e24d5f-c703-3ac7-a025-6d84a7bd6e92 11d1110b-2193-9972-04e3-53b97585ca9f nwtN_5ac98517-5e2f-4996-bf69-7e297e4b50e1">
-            <g font-size="11" font-family="Helvetica" font-weight="normal" font-style="normal" font-color="#000" stroke="color_5" stroke-width="1.25" fill="color_3" background-opacity="1"/>
+          <style id="node7070705555551.2511" idList="nwtN_d76f7a4b-9066-41f1-a36e-3c6535f91ed7">
+            <g stroke="color_5" stroke-width="1.25" fill="color_6" background-image-opacity="1" background-opacity="1"/>
           </style>
-          <style id="nodeffffff0000001141" idList="2d05d5d6-4929-9f22-bd27-debef0dd4796 e8221ce6-4ba4-0537-fee4-a999c3cf3f73">
-            <g font-size="14" stroke="color_2" stroke-width="1" fill="color_3" background-opacity="1"/>
+          <style id="nodeffffff00000011411" idList="2d05d5d6-4929-9f22-bd27-debef0dd4796 e8221ce6-4ba4-0537-fee4-a999c3cf3f73 9966055b-bb5b-7810-cb97-3546aa00a2e1">
+            <g font-size="14" stroke="color_2" stroke-width="1" fill="color_3" background-image-opacity="1" background-opacity="1"/>
+          </style>
+          <style id="edge0000001" idList="80477169-124f-8bd7-dbe4-9a20328ed71f 13f347d5-7051-2fe4-3cc5-af6dc255b2c7 46fc9e50-70c2-7463-6d84-fa2f5be56e63">
+            <g stroke="color_2" stroke-width="1"/>
           </style>
           <style id="edge5555551.25" idList="nwtE_66b4df31-defe-4edb-9bfd-92f8bb855542 nwtE_59f6a0d6-a9c8-43c8-a829-18b1c4cf5fe2 nwtE_2d8138e6-8cc2-4aa8-8e3a-4bdaadd32ba9 nwtE_96156b7a-0764-4a21-8f9d-5dece513ba96 nwtE_28df9488-9561-4460-9850-5bf917c5d413">
             <g stroke="color_5" stroke-width="1.25"/>
-          </style>
-          <style id="edge0000001" idList="13f347d5-7051-2fe4-3cc5-af6dc255b2c7 80477169-124f-8bd7-dbe4-9a20328ed71f">
-            <g stroke="color_2" stroke-width="1"/>
           </style>
         </listOfStyles>
       </renderInformation>
@@ -81,10 +81,10 @@
           <h>111.996315</h>
           <minW>90</minW>
           <minH>111.996315</minH>
-          <WLBias>5e-11</WLBias>
-          <WRBias>5e-11</WRBias>
-          <HTBias>4.066115702479338e-11</HTBias>
-          <HBBias>5.933884297520661e-11</HBBias>
+          <WLBias>5e-13</WLBias>
+          <WRBias>5e-13</WRBias>
+          <HTBias>4.0661157024793384e-13</HTBias>
+          <HBBias>5.933884297520661e-13</HBBias>
         </nwt:extraInfo>
       </extension>
       <bbox x="-60.72945116759119" y="312.6790336899298" w="100" h="121.996315"/>
@@ -101,11 +101,6 @@
       <label text="uncertain process"/>
       <bbox x="-228.7220345623969" y="661.9404796481064" w="100" h="40"/>
     </glyph>
-    <glyph id="nwtN_cd03a475-a95a-4a3e-ad5b-cb4c579f7008" class="uncertain process">
-      <bbox x="-309.4100034977442" y="671.2261939338207" w="21.42857142857143" h="21.42857142857143"/>
-      <port id="nwtN_cd03a475-a95a-4a3e-ad5b-cb4c579f7008.1" x="-313.69571778345846" y="681.9404796481064"/>
-      <port id="nwtN_cd03a475-a95a-4a3e-ad5b-cb4c579f7008.2" x="-283.69571778345846" y="681.9404796481064"/>
-    </glyph>
     <glyph id="7be45ba1-39d4-0626-60ca-e09bdceec67e" class="macromolecule">
       <label text="omitted process"/>
       <bbox x="46.55428221654155" y="661.9404796481064" w="100" h="40"/>
@@ -114,10 +109,10 @@
       <label text="process"/>
       <bbox x="46.55428221654155" y="599.6604247537413" w="100" h="40"/>
     </glyph>
-    <glyph id="nwtN_f5d43cbb-2cb9-4c01-b712-209c33f9764a" class="omitted process">
-      <bbox x="-21.44373688187691" y="671.2261939338207" w="21.42857142857143" h="21.42857142857143"/>
-      <port id="nwtN_f5d43cbb-2cb9-4c01-b712-209c33f9764a.1" x="-25.729451167591193" y="681.9404796481064"/>
-      <port id="nwtN_f5d43cbb-2cb9-4c01-b712-209c33f9764a.2" x="4.270548832408808" y="681.9404796481064"/>
+    <glyph id="nwtN_cd03a475-a95a-4a3e-ad5b-cb4c579f7008" class="uncertain process">
+      <bbox x="-309.4100034977442" y="671.2261939338207" w="21.42857142857143" h="21.42857142857143"/>
+      <port id="nwtN_cd03a475-a95a-4a3e-ad5b-cb4c579f7008.1" x="-313.69571778345846" y="681.9404796481064"/>
+      <port id="nwtN_cd03a475-a95a-4a3e-ad5b-cb4c579f7008.2" x="-283.69571778345846" y="681.9404796481064"/>
     </glyph>
     <glyph id="n162" class="compartment">
       <extension>
@@ -160,6 +155,11 @@
       <label text="macromolecule"/>
       <bbox x="-228.7220345623969" y="248.80349551769854" w="100" h="40"/>
     </glyph>
+    <glyph id="nwtN_f5d43cbb-2cb9-4c01-b712-209c33f9764a" class="omitted process">
+      <bbox x="-21.44373688187691" y="671.2261939338207" w="21.42857142857143" h="21.42857142857143"/>
+      <port id="nwtN_f5d43cbb-2cb9-4c01-b712-209c33f9764a.1" x="-25.729451167591193" y="681.9404796481064"/>
+      <port id="nwtN_f5d43cbb-2cb9-4c01-b712-209c33f9764a.2" x="4.270548832408808" y="681.9404796481064"/>
+    </glyph>
     <glyph id="nwtN_45b39f7d-e488-4aa0-b6f4-2bc259355246" class="process">
       <bbox x="-21.44373688187691" y="608.9461390394556" w="21.42857142857143" h="21.42857142857143"/>
       <port id="nwtN_45b39f7d-e488-4aa0-b6f4-2bc259355246.1" x="-25.729451167591193" y="619.6604247537413"/>
@@ -169,11 +169,6 @@
       <bbox x="-309.4100034977442" y="727.3344859095023" w="21.42857142857143" h="21.42857142857143"/>
       <port id="nwtN_674fa26a-01af-4eb5-9259-81e52ce9417a.1" x="-313.69571778345846" y="738.048771623788"/>
       <port id="nwtN_674fa26a-01af-4eb5-9259-81e52ce9417a.2" x="-283.69571778345846" y="738.048771623788"/>
-    </glyph>
-    <glyph id="nwtN_d76f7a4b-9066-41f1-a36e-3c6535f91ed7" class="association">
-      <bbox x="-21.44373688187691" y="727.3344859095023" w="21.42857142857143" h="21.42857142857143"/>
-      <port id="nwtN_d76f7a4b-9066-41f1-a36e-3c6535f91ed7.1" x="-25.729451167591193" y="738.048771623788"/>
-      <port id="nwtN_d76f7a4b-9066-41f1-a36e-3c6535f91ed7.2" x="4.270548832408808" y="738.048771623788"/>
     </glyph>
     <glyph id="nwtN_23284bea-3467-44d3-a7b6-127b36b3ddb4" class="process">
       <bbox x="304.6434894275948" y="384.864402079828" w="0.7142857142857143" h="0.7142857142857143"/>
@@ -194,8 +189,10 @@
     <glyph id="5e961412-3b0e-fcfd-1bf0-fa503ec03d68" class="macromolecule">
       <bbox x="199.14618237464734" y="616.1177981536908" w="1" h="1"/>
     </glyph>
-    <glyph id="nwtN_bf7b95bd-1d5c-42a2-8b18-b4cf2fdf6bb0" class="phenotype">
-      <bbox x="-328.69571778345846" y="534.2411492973431" w="60" h="30"/>
+    <glyph id="nwtN_d76f7a4b-9066-41f1-a36e-3c6535f91ed7" class="association">
+      <bbox x="-21.44373688187691" y="727.3344859095023" w="21.42857142857143" h="21.42857142857143"/>
+      <port id="nwtN_d76f7a4b-9066-41f1-a36e-3c6535f91ed7.1" x="-25.729451167591193" y="738.048771623788"/>
+      <port id="nwtN_d76f7a4b-9066-41f1-a36e-3c6535f91ed7.2" x="4.270548832408808" y="738.048771623788"/>
     </glyph>
     <glyph id="n19" class="nucleic acid feature">
       <label text="Gene"/>
@@ -347,6 +344,36 @@
     <glyph id="nwtN_5ac98517-5e2f-4996-bf69-7e297e4b50e1" class="macromolecule">
       <bbox x="199.14618237464734" y="384.7215449369708" w="1" h="1"/>
     </glyph>
+    <glyph id="nwtN_bf7b95bd-1d5c-42a2-8b18-b4cf2fdf6bb0" class="phenotype">
+      <bbox x="-328.69571778345846" y="534.2411492973431" w="60" h="30"/>
+    </glyph>
+    <glyph id="43e2b0aa-5004-f37a-eac8-e1aa412080a5" class="macromolecule">
+      <label text="consumption"/>
+      <bbox x="329.3705382724093" y="244.6775015133112" w="100" h="40"/>
+    </glyph>
+    <glyph id="0795452d-0a13-8624-6abb-f0b61f8696e4" class="macromolecule">
+      <bbox x="200.96049000308867" y="671.4776464490061" w="1" h="1"/>
+    </glyph>
+    <glyph id="9966055b-bb5b-7810-cb97-3546aa00a2e1" class="process">
+      <bbox x="306.56493991317893" y="671.7276464490061" w="0.5" h="0.5"/>
+      <port id="9966055b-bb5b-7810-cb97-3546aa00a2e1.1" x="306.31493991317893" y="671.9776464490061"/>
+      <port id="9966055b-bb5b-7810-cb97-3546aa00a2e1.2" x="307.31493991317893" y="671.9776464490061"/>
+    </glyph>
+    <glyph id="16a82899-8d27-a549-c588-6391fd7c0560" class="macromolecule">
+      <label text="consumption"/>
+      <bbox x="334.4737388332392" y="652.2637537367831" w="100" h="40"/>
+    </glyph>
+    <glyph id="0a5ace45-4e2d-c7a9-0698-2c8421ad10c2" class="macromolecule">
+      <label text="logic arc"/>
+      <bbox x="332.94818108154954" y="650.1604407244708" w="100" h="40"/>
+    </glyph>
+    <arc id="80477169-124f-8bd7-dbe4-9a20328ed71f" class="consumption" source="d2ba1a7b-4110-7091-9f22-74f8a529f765" target="e8221ce6-4ba4-0537-fee4-a999c3cf3f73.1">
+      <extension>
+        <curveStyle>bezier</curveStyle>
+      </extension>
+      <start x="200.64618237464734" y="267.37637482819594"/>
+      <end x="304.0006322847376" y="267.37637482819594"/>
+    </arc>
     <arc id="nwtE_66b4df31-defe-4edb-9bfd-92f8bb855542" class="catalysis" source="11d1110b-2193-9972-04e3-53b97585ca9f" target="7c8c8f39-b1ef-85de-e555-7763faac2d3c">
       <extension>
         <curveStyle>bezier</curveStyle>
@@ -389,12 +416,12 @@
       <start x="200.77118237464734" y="445.09092318166716"/>
       <end x="301.0006322847376" y="445.09092318166716"/>
     </arc>
-    <arc id="80477169-124f-8bd7-dbe4-9a20328ed71f" class="consumption" source="d2ba1a7b-4110-7091-9f22-74f8a529f765" target="e8221ce6-4ba4-0537-fee4-a999c3cf3f73.1">
+    <arc id="46fc9e50-70c2-7463-6d84-fa2f5be56e63" class="consumption" source="0795452d-0a13-8624-6abb-f0b61f8696e4" target="9966055b-bb5b-7810-cb97-3546aa00a2e1.1">
       <extension>
         <curveStyle>bezier</curveStyle>
       </extension>
-      <start x="200.64618237464734" y="267.37637482819594"/>
-      <end x="304.0006322847376" y="267.37637482819594"/>
+      <start x="202.46049000308867" y="671.9776464490061"/>
+      <end x="305.81493991317893" y="671.9776464490061"/>
     </arc>
   </map>
 </sbgn>

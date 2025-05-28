@@ -5,7 +5,7 @@ const convert = function (cy, mapLanguage) {
   const nodes = cy.nodes();
   const edges = cy.edges();
 
-  const xmlHeader = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n";
+  const xmlHeader = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>";
 
   let sbgn = new libsbgnjs.Sbgn({ xmlns: 'http://sbgn.org/libsbgn/0.2' });
 
@@ -14,7 +14,9 @@ const convert = function (cy, mapLanguage) {
   // get all glyphs
   let glyphList = [];
   nodes.forEach(function (ele, i) {
-    glyphList = glyphList.concat(getGlyphSbgnml(ele)); // returns potentially more than 1 glyph
+    if(childOfNone(ele, nodes)) {
+      glyphList = glyphList.concat(getGlyphSbgnml(ele)); // returns potentially more than 1 glyph
+    }
   });
 
   // add them to the map
@@ -206,6 +208,10 @@ const getArcSbgnml = function (edge) {
   }
 
   return arc;
+};
+
+let childOfNone = function (ele, nodes) {
+  return !ele.isChild() || nodes.getElementById(ele.data('parent')).length === 0;
 };
 
 export { convert };

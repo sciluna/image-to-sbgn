@@ -51,6 +51,12 @@ h1 {
   cursor: pointer;
 }
 
+#openNewt:hover {
+  background-color: #eaeaea !important;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
 #processData {
   background-color: #d67664;
 }

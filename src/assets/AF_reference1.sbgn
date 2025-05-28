@@ -1,41 +1,78 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-<sbgn xmlns="http://sbgn.org/libsbgn/0.2">
-  <map language="activity flow">
-    <glyph id="n1" class="biological activity">
-      <label text="increase in&#xA;membrane&#xA;potential"/>
-      <bbox x="1005.6323235615748" y="76.5" w="63.1953125" h="47"/>
-    </glyph>
-    <glyph id="n2" class="biological activity">
-      <label text="sodium&#xA;channel&#xA;activity"/>
-      <bbox x="1012.9638665303248" y="180.5" w="48.5322265625" h="47"/>
-    </glyph>
-    <glyph id="n3" class="biological activity">
-      <label text="depolarization"/>
-      <bbox x="997.9838860615748" y="297.5" w="78.4921875" h="25"/>
-    </glyph>
-    <glyph id="n4" class="biological activity">
-      <label text="potassium&#xA;channel&#xA;activity"/>
-      <bbox x="1007.1630852803248" y="380.5" w="60.1337890625" h="47"/>
-    </glyph>
-    <glyph id="n5" class="phenotype">
-      <label text="repolarization"/>
-      <bbox x="994.0362324672634" y="476.5000000000002" w="86.38749468862292" h="32.47677097969837"/>
-    </glyph>
-    <arc id="e1" class="positive influence" source="n1" target="n2">
-      <start x="1037.2299798115748" y="124.125"/>
-      <end x="1037.2299798115748" y="176.75"/>
-    </arc>
-    <arc id="e2" class="necessary stimulation" source="n2" target="n3">
-      <start x="1037.2299798115748" y="228.125"/>
-      <end x="1037.2299798115748" y="293.75"/>
-    </arc>
-    <arc id="e3" class="positive influence" source="n3" target="n4">
-      <start x="1037.2299798115748" y="323.125"/>
-      <end x="1037.2299798115748" y="376.75"/>
-    </arc>
-    <arc id="e4" class="necessary stimulation" source="n4" target="n5">
-      <start x="1037.2299798115748" y="428.125"/>
-      <end x="1037.2299798115748" y="472.7500000000002"/>
-    </arc>
-  </map>
+<sbgn
+	xmlns="http://sbgn.org/libsbgn/0.2">
+	<map language="AF">
+		<glyph id="7686e530-3d0a-4bae-9800-f0bd91c87ea2" class="compartment">
+			<label text="ER"/>
+			<bbox x="120" y="-25.75" w="329.75" h="465.75"/>
+		</glyph>
+		<glyph id="99515478-21dc-4a1d-8a7e-de29553a520e" class="biological activity" compartmentRef="7686e530-3d0a-4bae-9800-f0bd91c87ea2">
+			<label text="GNPTG"/>
+			<bbox x="152" y="-24" w="96" h="48"/>
+		</glyph>
+		<glyph id="233c3bbb-e170-4207-ba22-47887dd69446" class="biological activity" compartmentRef="7686e530-3d0a-4bae-9800-f0bd91c87ea2">
+			<label text="VWA5B2"/>
+			<bbox x="352" y="-24" w="96" h="48"/>
+		</glyph>
+		<glyph id="bbe38aec-ec41-43e3-a31a-9f2fc13018dc" class="biological activity" compartmentRef="7686e530-3d0a-4bae-9800-f0bd91c87ea2">
+			<label text="PSMD2"/>
+			<bbox x="352" y="176" w="96" h="48"/>
+		</glyph>
+		<glyph id="9d38131f-5d02-449b-b71b-d9ede05d32eb" class="phenotype" compartmentRef="7686e530-3d0a-4bae-9800-f0bd91c87ea2">
+			<label text="Inflammation"/>
+			<bbox x="130" y="370" w="140" h="60"/>
+		</glyph>
+		<glyph id="bbe38aec-ec41-43e3-a31a-9f2fc13018dc" class="biological activity" compartmentRef="7686e530-3d0a-4bae-9800-f0bd91c87ea2">
+			<label text="PSMD2"/>
+			<bbox x="352" y="176" w="96" h="48"/>
+		</glyph>
+		<glyph id="b35640e0-7d65-4ef7-9b48-a50e45ef873d" class="biological activity">
+			<label text="ASPRV1"/>
+			<bbox x="-48" y="176" w="96" h="48"/>
+		</glyph>
+		<glyph id="99515478-21dc-4a1d-8a7e-de29553a520e" class="biological activity" compartmentRef="7686e530-3d0a-4bae-9800-f0bd91c87ea2">
+			<label text="GNPTG"/>
+			<bbox x="152" y="-24" w="96" h="48"/>
+		</glyph>
+		<glyph id="233c3bbb-e170-4207-ba22-47887dd69446" class="biological activity" compartmentRef="7686e530-3d0a-4bae-9800-f0bd91c87ea2">
+			<label text="VWA5B2"/>
+			<bbox x="352" y="-24" w="96" h="48"/>
+		</glyph>
+		<glyph id="9d38131f-5d02-449b-b71b-d9ede05d32eb" class="phenotype" compartmentRef="7686e530-3d0a-4bae-9800-f0bd91c87ea2">
+			<label text="Inflammation"/>
+			<bbox x="130" y="370" w="140" h="60"/>
+		</glyph>
+		<glyph id="1fe5fc7f-652f-4a60-bc8e-0665cb4a940d" class="biological activity">
+			<label text="SYN3"/>
+			<bbox x="552" y="376" w="96" h="48"/>
+		</glyph>
+		<glyph id="2e0edffe-6852-4e08-9a5c-01e749b3adfd" class="biological activity">
+			<label text="CCKBR"/>
+			<bbox x="-48" y="576" w="96" h="48"/>
+		</glyph>
+		<arc id="fde974ad-4f03-4c58-8532-010e9641283c" class="unknown influence" source="2e0edffe-6852-4e08-9a5c-01e749b3adfd" target="9d38131f-5d02-449b-b71b-d9ede05d32eb">
+			<start x="24.75" y="575.25"/>
+			<end x="161" y="439"/>
+		</arc>
+		<arc id="11c5271b-95d0-404c-a0cf-9ca4f0ead631" class="unknown influence" source="bbe38aec-ec41-43e3-a31a-9f2fc13018dc" target="1fe5fc7f-652f-4a60-bc8e-0665cb4a940d">
+			<start x="424.75" y="224.75"/>
+			<end x="575.25" y="375.25"/>
+		</arc>
+		<arc id="b81e0e80-93cf-4f5f-b426-a1d916edbaa7" class="unknown influence" source="99515478-21dc-4a1d-8a7e-de29553a520e" target="bbe38aec-ec41-43e3-a31a-9f2fc13018dc">
+			<start x="224.74999999999997" y="24.74999999999997"/>
+			<end x="375.25" y="175.25"/>
+		</arc>
+		<arc id="59da271f-9405-4a32-a6b4-14ce479a0f6c" class="necessary stimulation" source="bbe38aec-ec41-43e3-a31a-9f2fc13018dc" target="9d38131f-5d02-449b-b71b-d9ede05d32eb">
+			<start x="375.25" y="224.75"/>
+			<end x="238.99999999999991" y="361.0000000000001"/>
+		</arc>
+		<arc id="36032be7-1dc3-4ae8-837b-aca2136c9097" class="necessary stimulation" source="99515478-21dc-4a1d-8a7e-de29553a520e" target="233c3bbb-e170-4207-ba22-47887dd69446">
+			<start x="248.74999999999997" y="0"/>
+			<end x="351.25" y="0"/>
+		</arc>
+		<arc id="4eb7c157-ad5c-4f8a-9629-0f0ffc61b2b6" class="negative influence" source="99515478-21dc-4a1d-8a7e-de29553a520e" target="b35640e0-7d65-4ef7-9b48-a50e45ef873d">
+			<start x="175.25000000000003" y="24.74999999999997"/>
+			<end x="25.457106781186553" y="174.54289321881345"/>
+		</arc>
+	</map>
 </sbgn>

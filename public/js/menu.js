@@ -1,12 +1,14 @@
 import { cy } from './cy-utilities.js';
 import convert from 'sbgnml-to-cytoscape';
-import { convert as cyJsonToSbgnml } from './cytoscape-to-sbgnml'
+import { convert as cytoscapeToSbgnml } from './cytoscape-to-sbgnml.js'
 import { saveAs } from 'file-saver';
+import format from 'xml-formatter';
 
 let base64data;
 let userInputText;
 let sbgnmlText;
 let img2sbgn = !(location.hostname === "localhost" || location.hostname === "127.0.0.1");
+let sbgnmlfilename = "";
 
 document.getElementById("samples").addEventListener("change", function (event) {
 	let sample = event.target.value;
@@ -101,6 +103,10 @@ $("#load-file").on("click", function (e) {
 	$("#file-input").trigger('click');
 });
 
+$("#upload-file").on("click", function (e) {
+	$("#file-input-cy").trigger('click');
+});
+
 document.getElementById("file-input").addEventListener("change", async function (file) {
 	let input = file.target;
 	let reader = new FileReader();
@@ -115,10 +121,42 @@ document.getElementById("file-input").addEventListener("change", async function 
 	reader.readAsDataURL(input.files[0]);
 });
 
+document.getElementById("file-input-cy").addEventListener("change", async function (event) {
+	const files = Array.from(event.target.files);
+
+	files.forEach(async (file) => {
+    if (file.name.endsWith('.json')) {
+      const text = await file.text();
+      try {
+        const json = JSON.parse(text);
+        cy.elements().remove();
+        cy.json({elements: json.elements});
+				cy.layout({name: "preset"}).run();
+				let finalSbgnml = cytoscapeToSbgnml(cy, "activity flow");
+				finalSbgnml = format(finalSbgnml);
+				let blob = new Blob([finalSbgnml], { type: "text/xml" });
+				saveAs(blob, file.name.replace(/\.[^/.]+$/, "") + ".sbgnml");
+
+      } catch (err) {
+        console.error(`Failed to parse ${file.name}:`, err);
+      }
+    }
+	});
+
+/* 	let input = file.target;
+	let reader = new FileReader();
+	reader.onload = function () {
+		let cyJson = JSON.parse(reader.result);
+		cy.json({elements: cyJson.elements});
+	};
+	reader.readAsText(input.files[0]); */
+});
+
 document.getElementById("downloadSbgnml").addEventListener("click", function () {
-	let finalSbgnml = cyJsonToSbgnml(cy, getMapType());
+	let finalSbgnml = cytoscapeToSbgnml(cy, getMapType());
+	finalSbgnml = format(finalSbgnml);
 	let blob = new Blob([finalSbgnml], { type: "text/xml" });
-	saveAs(blob, "newFile.sbgnml");
+	saveAs(blob, sbgnmlfilename);
 });
 
 document.getElementById("processData").addEventListener("click", function (e) {
@@ -145,6 +183,12 @@ document.getElementById("processData").addEventListener("click", function (e) {
 
 document.getElementById("applyLayout").addEventListener("click", function () {
 	cy.layout({ name: 'fcose', randomize: false, initialEnergyOnIncremental: 0.5 }).run();
+});
+
+document.getElementById("openNewt").addEventListener("click", async function () {
+	let finalSbgnml = cytoscapeToSbgnml(cy, getMapType());
+	finalSbgnml = format(finalSbgnml);
+	const filename = await openInNewtAndDelete(finalSbgnml);
 });
 
 // evaluate positions
@@ -185,10 +229,6 @@ let communicate = async function (pngBase64, userInputText) {
 };
 
 let sendRequestToGPT = async function (data) {
-	let url = "http://localhost:4000/gpt/";
-	if (img2sbgn) {
-		url = "http://ec2-3-87-167-56.compute-1.amazonaws.com/gpt/";
-	}
 	const settings = {
 		method: 'POST',
 		headers: {
@@ -198,7 +238,7 @@ let sendRequestToGPT = async function (data) {
 		body: JSON.stringify(data)
 	};
 
-	let res = await fetch(url, settings)
+	let res = await fetch('/gpt', settings)
 		.then(response => response.json())
 		.then(result => {
 			return result;
@@ -310,10 +350,7 @@ let mapIdentifiers = async function (nodesToQuery) {
 		data.push({ text: item });
 	});
 	data = JSON.stringify(data);
-	let url = "http://localhost:4000/anno/";
-	if (img2sbgn) {
-		url = "http://ec2-3-87-167-56.compute-1.amazonaws.com/anno/";
-	}
+
 	const settings = {
 		method: 'POST',
 		headers: {
@@ -323,7 +360,7 @@ let mapIdentifiers = async function (nodesToQuery) {
 		body: data
 	};
 
-	let identifiers = await fetch(url, settings)
+	let identifiers = await fetch('/anno', settings)
 		.then(response => response.json())
 		.then(result => {
 			return result;
@@ -424,6 +461,42 @@ cy.on("unselect", "node", function (evt) {
 		objectView.removeChild(objectData);
 	}
 });
+
+async function openInNewtAndDelete(sbgnContent) {
+	let filename = 'diagram_' + Date.now() + '.sbgnml';
+  const response = await fetch('/upload', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      filename: filename,
+      content: sbgnContent,
+    }),
+  });
+
+  const data = await response.json();
+  if (data.url) {
+    // Redirect to Newt Editor with the file URL
+    window.open(`https://web.newteditor.org/?URL=${data.url}`, '_blank');
+
+		setTimeout(() => {
+			fetch('/delete', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ filename }),
+			})
+				.then((res) => res.json())
+				.then((data) => {
+					console.log('File deletion result:', data);
+				})
+				.catch((err) => {
+					console.error('Failed to delete file:', err);
+				});
+		}, 5000); // 5000 ms = 5 seconds
+  }
+	return data.filename;
+}
 
 document.getElementById("inputImage").addEventListener("click", function () {
 	let imageContent = document.getElementById("imageContent");

@@ -24,8 +24,9 @@
     "libsbgn.js": "github:sbgn/libsbgn.js#master",
     "openai": "^4.52.0",
     "sbgnml-to-cytoscape": "https://github.com/hasanbalci/sbgnml-to-cytoscape.git",
-    "token.js": "^0.4.7",
-    "util": "^0.12.5"
+    "token.js": "^0.7.1",
+    "util": "^0.12.5",
+    "xml-formatter": "^3.6.6"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

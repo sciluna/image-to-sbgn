@@ -23,7 +23,7 @@
 				</div>
 			</div>
 			<div class="row" style="padding-bottom: 0; padding-top: 0;">
-				<div class="four wide column">
+				<div class="four wide column" style="padding-right: 0;">
 					<h3 class="ui header" style="margin-bottom: 5px;">File</h3>
 					<div class="ui small form">
 						<div class="field">
@@ -46,9 +46,14 @@
 							<div class="ui button" id="load-file" tabindex="0">
 								Open File...
 							</div>
+							<div class="ui button" id="upload-file" tabindex="0" style="display:none" >
+								Load File...
+							</div>
 						</div>
 					</div>
 					<input id="file-input" type="file" accept="image/*"
+						style="display:none" />
+					<input id="file-input-cy" type="file" multiple
 						style="display:none" />
 					<span class="input-file" id="file-name"
 						style="overflow: hidden; text-overflow:ellipsis; margin-top: 10px; width:250px; font-weight: bold; display:inline-block;"></span>
@@ -79,13 +84,13 @@
 								<div class="field">
 									<div class="ui radio checkbox">
 										<input type="radio" id="openai" name="model" checked="checked">
-										<label>GPT-4o</label>
+										<label>GPT-4.1</label>
 									</div>
 								</div>
 								<div class="field">
 									<div class="ui radio checkbox">
 										<input type="radio" id="gemini" name="model">
-										<label>Gemini 1.5 Pro</label>
+										<label>Gemini 2.0 Flash</label>
 									</div>
 								</div>
 							</div>
@@ -118,6 +123,7 @@
 								<h3 class="ui header" style="margin-bottom: -3px; margin-right: 7.5px; padding: 2.5px;">Graph View</h3>
 								<img class="ui image" id="downloadSbgnml" src="img/download.svg" title="Download as SBGNML" style="height: 25px; width: 25px; padding: 2.5px;">&nbsp;
 								<img class="ui image" id="applyLayout" src="img/layout.svg" title="Apply Layout" style="height: 25px; width: 25px; padding: 2.5px;">
+								<img class="ui image" id="openNewt" src="img/newt-icon.png" title="Open in Newt" style="height: 25px; width: 25px; padding: 2.5px;">
 								<a class="tooltip"><img class="ui image" id="contextMenuInfo" src="img/info.svg" style="height: 25px; width: 25px; padding: 2.5px;">
 									<span class="tooltiptext">Right click to nodes, edges or viewport for quick edit!</span></a>&nbsp;
 							</div>
