@@ -26,6 +26,9 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 app.use(express.static(path.join(__dirname, "../public/")));
+
+const tempFilesPath = path.join(__dirname, 'public'); // this is src/public
+app.use('/temp', express.static(path.join(tempFilesPath, 'temp')));
 app.use(cors());
 
 // Define a route to handle llm query
