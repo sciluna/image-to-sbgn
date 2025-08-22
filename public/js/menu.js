@@ -34,7 +34,7 @@ document.getElementById("samples").addEventListener("change", function (event) {
 	else if (sample == "sample7") {
 		filename = "AF_sample2.png";
 	}
-	loadSample('../examples/' + filename);
+	loadSample('examples/' + filename);
 
 	const selectedSample = this.value;
 
