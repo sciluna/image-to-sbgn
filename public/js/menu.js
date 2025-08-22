@@ -34,7 +34,7 @@ document.getElementById("samples").addEventListener("change", function (event) {
 	else if (sample == "sample7") {
 		filename = "AF_sample2.png";
 	}
-	loadSample('../../examples/' + filename);
+	loadSample('../examples/' + filename);
 
 	const selectedSample = this.value;
 
@@ -218,7 +218,7 @@ let communicate = async function (pngBase64, userInputText) {
 		sbgnmlText = sbgnmlText.replaceAll('\"', '"');
 		sbgnmlText = sbgnmlText.replaceAll('\n', '');
 		sbgnmlText = sbgnmlText.replaceAll('empty set', 'source and sink');
-		console.log(sbgnmlText);
+		//console.log(sbgnmlText);
 		await generateCyGraph();
 	} catch (error) {
 		alert("Output SBGNML from GPT is not in the correct format! Please try again!");
