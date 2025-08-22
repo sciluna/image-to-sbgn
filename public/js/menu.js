@@ -238,7 +238,7 @@ let sendRequestToGPT = async function (data) {
 		body: JSON.stringify(data)
 	};
 
-	let res = await fetch('/gpt', settings)
+	let res = await fetch('gpt', settings)
 		.then(response => response.json())
 		.then(result => {
 			return result;
@@ -360,7 +360,7 @@ let mapIdentifiers = async function (nodesToQuery) {
 		body: data
 	};
 
-	let identifiers = await fetch('/anno', settings)
+	let identifiers = await fetch('anno', settings)
 		.then(response => response.json())
 		.then(result => {
 			return result;
@@ -464,7 +464,7 @@ cy.on("unselect", "node", function (evt) {
 
 async function openInNewtAndDelete(sbgnContent) {
 	let filename = 'diagram_' + Date.now() + '.sbgnml';
-  const response = await fetch('/upload', {
+  const response = await fetch('upload', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -481,7 +481,7 @@ async function openInNewtAndDelete(sbgnContent) {
     window.open(`https://web.newteditor.org/?URL=${data.url}`, '_blank');
 
 		setTimeout(() => {
-			fetch('/delete', {
+			fetch('delete', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ filename }),
