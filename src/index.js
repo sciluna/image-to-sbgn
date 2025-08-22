@@ -153,7 +153,7 @@ app.post('/upload', async (req, res) => {
 			}
 
 			// Return full public URL to the saved file
-			const fileUrl = `${req.protocol}://${req.get('host')}/temp/${filename}`;
+			const fileUrl = `https://${req.get('host')}/temp/${filename}`;
 			res.status(200).json({ url: fileUrl, filename: filename });
 		});
 	});
@@ -184,7 +184,7 @@ app.post('/delete', async (req, res) => {
 			}
 
 			// Return full public URL to the saved file
-			const fileUrl = `${req.protocol}://${req.get('host')}/temp/${filename}`;
+			const fileUrl = `https://${req.get('host')}/temp/${filename}`;
 			res.status(200).json({ message: 'File deleted successfully' });
 		});
 	});
