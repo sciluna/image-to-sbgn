@@ -8,7 +8,8 @@
   "type": "module",
   "scripts": {
     "build": "webpack",
-    "start": "node src/app.js",
+    "start": "cross-env NODE_ENV=production node src/app.js",
+    "dev": "cross-env NODE_ENV=development node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hasan Balci",
@@ -32,6 +33,7 @@
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
     "babel-loader": "^9.2.1",
+    "cross-env": "^10.0.0",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
   }
