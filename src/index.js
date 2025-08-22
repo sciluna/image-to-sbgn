@@ -25,10 +25,15 @@ config();
 const app = express();
 const port = process.env.PORT || 4000;
 
-app.use(express.static(path.join(__dirname, "../public/")));
+const basePath = process.env.NODE_ENV === "production" ? "/image2sbgn" : "/";
 
-const tempFilesPath = path.join(__dirname, 'public'); // this is src/public
-app.use('/temp', express.static(path.join(tempFilesPath, 'temp')));
+// Serve main public folder
+app.use(basePath, express.static(path.join(__dirname, "../public")));
+
+// Serve temp folder at /temp relative to basePath
+const tempFilesPath = path.join(__dirname, "public", "temp"); // src/public/temp
+app.use(path.join(basePath, "temp"), express.static(tempFilesPath));
+
 app.use(cors());
 
 // Define a route to handle llm query
