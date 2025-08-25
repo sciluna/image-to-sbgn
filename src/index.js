@@ -25,6 +25,8 @@ config();
 const app = express();
 const port = process.env.PORT || 4000;
 
+app.use(express.json());
+
 app.use(express.static(path.join(__dirname, "../public/")));
 
 const tempFilesPath = path.join(__dirname, 'public'); // this is src/public
@@ -130,34 +132,19 @@ const uploadDir = path.join(__dirname, 'public', 'temp');
 
 // Define a route to handle uploaded file query
 app.post('/upload', async (req, res) => {
-	let body = "";
-	req.on('data', data => {
-		body += data;
-	});
+  const { filename, content } = req.body;
+  if (!filename || !content) return res.status(400).json({ error: 'Missing filename or content' });
 
-	req.on('end', async () => {
+  const filePath = path.join(uploadDir, filename);
 
-		body = JSON.parse(body);
-		let filename = body["filename"];
-		let sbgnContent = body["content"];
+  fs.writeFile(filePath, content, 'utf8', (err) => {
+    if (err) return res.status(500).json({ error: 'Failed to save file' });
 
-		if (!filename || !sbgnContent) {
-			return res.status(400).json({ error: 'Missing filename or content' });
-		}
+    const basePath = process.env.NODE_ENV === 'production' ? '/image2sbgn' : '';
+    const fileUrl = `https://${req.get('host')}${basePath}/temp/${filename}`;
 
-		const filePath = path.join(uploadDir, filename);
-
-		fs.writeFile(filePath, sbgnContent, 'utf8', (err) => {
-			if (err) {
-				console.error('File write error:', err);
-				return res.status(500).json({ error: 'Failed to save file' });
-			}
-
-		    // Prepend /image2sbgn in production
-		    const basePath = process.env.NODE_ENV === "production" ? "/image2sbgn" : "";
-		    const fileUrl = `https://${req.get('host')}${basePath}/temp/${filename}`;
-		});
-	});
+    res.status(200).json({ url: fileUrl, filename });
+  });
 });
 
 // Define a route to delete uploaded file query
