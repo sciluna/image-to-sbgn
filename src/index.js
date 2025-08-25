@@ -25,6 +25,18 @@ config();
 const app = express();
 const port = process.env.PORT || 4000;
 
+const isProd = process.env.NODE_ENV === "production";
+
+// Force trailing slash on /image2sbgn
+if (isProd) {
+  app.use((req, res, next) => {
+    if (req.originalUrl === "/image2sbgn") {
+      return res.redirect(301, "/image2sbgn/");
+    }
+    next();
+  });
+}
+
 app.use(express.static(path.join(__dirname, "../public/")));
 
 const tempFilesPath = path.join(__dirname, 'public'); // this is src/public
