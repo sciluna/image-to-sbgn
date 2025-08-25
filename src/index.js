@@ -149,34 +149,26 @@ app.post('/upload', async (req, res) => {
 
 // Define a route to delete uploaded file query
 app.post('/delete', async (req, res) => {
-	let body = "";
-	req.on('data', data => {
-		body += data;
-	});
+  const { filename } = req.body;
 
-	req.on('end', async () => {
+  if (!filename) {
+    return res.status(400).json({ error: 'Missing filename' });
+  }
 
-		body = JSON.parse(body);
-		let filename = body["filename"];
+  const filePath = path.join(uploadDir, filename);
 
-		if (!filename) {
-			return res.status(400).json({ error: 'Missing filename' });
-		}
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error('File delete error:', err);
+      return res.status(500).json({ error: 'Failed to delete file' });
+    }
 
-		const filePath = path.join(uploadDir, filename);
+    // Optional: construct the public URL if needed
+    const basePath = process.env.NODE_ENV === "production" ? "/image2sbgn" : "";
+    const fileUrl = `https://${req.get('host')}${basePath}/temp/${filename}`;
 
-		fs.unlink(filePath, (err) => {
-			if (err) {
-				console.error('File delete error:', err);
-				return res.status(500).json({ error: 'Failed to delete file' });
-			}
-
-		    // Prepend /image2sbgn in production
-		    const basePath = process.env.NODE_ENV === "production" ? "/image2sbgn" : "";
-		    const fileUrl = `https://${req.get('host')}${basePath}/temp/${filename}`;
-			res.status(200).json({ message: 'File deleted successfully' });
-		});
-	});
+    res.status(200).json({ message: 'File deleted successfully', url: fileUrl });
+  });
 });
 
 const convertImage = (imgPath) => {
