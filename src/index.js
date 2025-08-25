@@ -25,10 +25,23 @@ config();
 const app = express();
 const port = process.env.PORT || 4000;
 
+const isProd = process.env.NODE_ENV === 'production';
+
+if (isProd) {
+  // Redirect /image2sbgn → /image2sbgn/ in production
+  app.use((req, res, next) => {
+    if (req.path === '/image2sbgn') {
+      return res.redirect(req.path + '/');
+    }
+    next();
+  });
+}
+
 app.use(express.static(path.join(__dirname, "../public/")));
 
 const tempFilesPath = path.join(__dirname, 'public'); // this is src/public
 app.use('/temp', express.static(path.join(tempFilesPath, 'temp')));
+
 app.use(cors());
 
 // Define a route to handle llm query
