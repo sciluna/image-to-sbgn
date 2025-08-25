@@ -153,9 +153,9 @@ app.post('/upload', async (req, res) => {
 				return res.status(500).json({ error: 'Failed to save file' });
 			}
 
-			// Return full public URL to the saved file
-			const fileUrl = `https://${req.get('host')}/temp/${filename}`;
-			res.status(200).json({ url: fileUrl, filename: filename });
+		    // Prepend /image2sbgn in production
+		    const basePath = process.env.NODE_ENV === "production" ? "/image2sbgn" : "";
+		    const fileUrl = `https://${req.get('host')}${basePath}/temp/${filename}`;
 		});
 	});
 });
@@ -184,8 +184,9 @@ app.post('/delete', async (req, res) => {
 				return res.status(500).json({ error: 'Failed to delete file' });
 			}
 
-			// Return full public URL to the saved file
-			const fileUrl = `https://${req.get('host')}/temp/${filename}`;
+		    // Prepend /image2sbgn in production
+		    const basePath = process.env.NODE_ENV === "production" ? "/image2sbgn" : "";
+		    const fileUrl = `https://${req.get('host')}${basePath}/temp/${filename}`;
 			res.status(200).json({ message: 'File deleted successfully' });
 		});
 	});
