@@ -7,17 +7,7 @@ Convert hand-drawn SBGN (Systems Biology Graphical Notation) maps to digital SBG
 
 ## 🌟 Overview
 
-**image-to-sbgn** is a web-based tool that leverages Large Language Models (LLMs) to automatically convert hand-drawn biological network diagrams into machine-readable SBGNML files. This tool bridges the gap between sketching biological pathways on paper and creating formal, standardized digital representations.
-
-### Key Features
-
-- **AI-Powered Conversion**: Uses state-of-the-art vision language models (GPT-4, Gemini, Bedrock) to analyze hand-drawn diagrams
-- **SBGN Standard Support**: Supports both Process Description (PD) and Activity Flow (AF) languages
-- **Interactive Editor**: Built-in Cytoscape.js-based editor for viewing and refining converted networks
-- **Biological Entity Grounding**: Integration with INDRA for automatic annotation of biological entities
-- **Export Options**: Export to SBGNML format for use in other SBGN tools
-- **Multiple Model Providers**: Choose from OpenAI, Google Gemini, AWS Bedrock, or OpenAI-compatible APIs
-- **Real-time Visualization**: Immediate visual feedback of the converted network
+**image-to-sbgn** is a web-service with a demo application that leverages Large Language Models (LLMs) to automatically convert hand-drawn biological network diagrams into machine-readable SBGNML files. This tool bridges the gap between sketching biological pathways on paper and creating formal, standardized digital representations.
 
 ## 🚀 Demo
 
@@ -28,13 +18,9 @@ Try the live demo: [https://dev.sciluna.com/image2sbgn/](https://dev.sciluna.com
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
-- [Technology Stack](#technology-stack)
-- [Project Structure](#project-structure)
-- [Development](#development)
 - [Docker Deployment](#docker-deployment)
 - [Contributing](#contributing)
 - [License](#license)
-- [Acknowledgments](#acknowledgments)
 
 ## 🛠️ Installation
 
@@ -67,8 +53,6 @@ NODE_ENV=development
 # API Keys (configure based on your chosen provider)
 OPENAI_API_KEY=your_openai_key
 GEMINI_API_KEY=your_gemini_key
-AWS_ACCESS_KEY_ID=your_aws_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret
 ```
 
 4. Build the client bundle:
@@ -105,12 +89,10 @@ The application will be available at `http://localhost:4000`
 3. **Select AI Model Provider**:
    - OpenAI (GPT-4)
    - Google Gemini
-   - AWS Bedrock
-   - OpenAI-compatible APIs
 
 4. **Add Optional Comments**: Provide additional context or instructions for the AI
 
-5. **Generate**: Click the convert button to process your diagram
+5. **Generate**: Click the "Process Data" button to process your diagram
 
 6. **Review and Edit**: 
    - View the converted network in the interactive editor
@@ -119,15 +101,11 @@ The application will be available at `http://localhost:4000`
 
 7. **Export**: Download the SBGNML file for use in other tools
 
-### Supported SBGN Elements
+### Unsupported SBGN Elements
 
-#### Process Description (PD)
-- **Node Types**: Macromolecule, Simple Chemical, Complex, Nucleic Acid Feature, Perturbing Agent, Unspecified Entity, Compartment, Submap, Empty Set, Phenotype, Process, Omitted Process, Uncertain Process, Association, Dissociation, AND, OR, NOT
-- **Edge Types**: Consumption, Production, Modulation, Stimulation, Catalysis, Inhibition, Necessary Stimulation, Logic Arc
-
-#### Activity Flow (AF)
-- **Node Types**: Biological Activity, Phenotype, AND, OR, NOT, Delay
-- **Edge Types**: Positive Influence, Negative Influence, Unknown Influence, Necessary Stimulation, Logic Arc
+The following SBGN elements are currently not supported:
+- **Submap**
+- **Ports**
 
 ## 🔌 API Endpoints
 
@@ -140,7 +118,7 @@ Convert hand-drawn SBGN image to SBGNML format.
 {
   "image": "base64_encoded_image_or_url",
   "language": "PD",  // or "AF"
-  "model": "openai",  // or "gemini", "bedrock", "openai-compatible"
+  "model": "openai",  // or "gemini"
   "comment": "Optional additional instructions"
 }
 ```
@@ -178,109 +156,6 @@ Ground biological entities using INDRA service.
 ]
 ```
 
-### POST `/upload`
-
-Upload and save SBGNML file to server.
-
-**Request Body:**
-```json
-{
-  "filename": "diagram.sbgn",
-  "content": "SBGNML content"
-}
-```
-
-**Response:**
-```json
-{
-  "url": "https://hostname/temp/diagram.sbgn",
-  "filename": "diagram.sbgn"
-}
-```
-
-### POST `/delete`
-
-Delete uploaded file from server.
-
-**Request Body:**
-```json
-{
-  "filename": "diagram.sbgn"
-}
-```
-
-## 🏗️ Technology Stack
-
-### Backend
-- **Node.js** with Express.js
-- **Token.js**: Multi-provider LLM client library
-- **OpenAI API**: Vision language model integration
-- **CORS**: Cross-origin resource sharing
-
-### Frontend
-- **Cytoscape.js**: Network visualization
-- **cytoscape-sbgn-stylesheet**: SBGN-specific styling
-- **sbgnml-to-cytoscape**: SBGNML parser
-- **libsbgn.js**: SBGN file manipulation
-- **Fomantic UI**: User interface components
-- **FileSaver.js**: Client-side file saving
-
-### Build Tools
-- **Webpack**: Module bundling
-- **Babel**: JavaScript transpilation
-
-## 📁 Project Structure
-
-```
-image-to-sbgn/
-├── src/
-│   ├── app.js              # Express server entry point
-│   ├── index.js            # API routes and LLM integration
-│   ├── prompts.js          # AI prompt templates
-│   └── assets/             # Reference images and SBGNML examples
-│       ├── sbgn_pd_stylesheet.png
-│       ├── sbgn_af_stylesheet.png
-│       ├── PD_reference*.png/.sbgn
-│       └── AF_reference*.png/.sbgn
-├── public/
-│   ├── index.html          # Main web interface
-│   ├── js/                 # Client-side JavaScript
-│   ├── css/                # Stylesheets
-│   ├── img/                # Images and icons
-│   ├── examples/           # Sample hand-drawn diagrams
-│   └── dist/               # Built bundles
-├── package.json            # Dependencies and scripts
-├── webpack.config.js       # Webpack configuration
-├── .babelrc               # Babel configuration
-├── Dockerfile             # Docker container definition
-└── README.md              # This file
-```
-
-## 💻 Development
-
-### Building the Project
-
-```bash
-npm run build
-```
-
-This uses Webpack to bundle the client-side code into `public/dist/bundle.js`.
-
-### Running in Development Mode
-
-```bash
-npm run dev
-```
-
-This starts the server with `NODE_ENV=development` which affects base paths and logging.
-
-### Code Structure
-
-- **Frontend Logic** (`public/js/`): Handles user interactions, file uploads, network visualization
-- **Backend API** (`src/index.js`): Processes requests, communicates with LLM APIs
-- **Prompt Engineering** (`src/prompts.js`): Contains carefully crafted prompts for optimal AI performance
-- **Reference Materials** (`src/assets/`): Example images and SBGNML files used in few-shot learning
-
 ## 🐳 Docker Deployment
 
 Build and run using Docker:
@@ -317,24 +192,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Copyright (c) 2024 Hasan Balcı
 
-## 🙏 Acknowledgments
-
-- **Luna Lab** at [sciluna.com](https://sciluna.com) for project support
-- **SBGN Community** for the standardized notation system
-- **INDRA** for biological entity grounding services
-- Contributors to the open-source libraries used in this project
-
-## 📚 Related Resources
-
-- [SBGN Official Website](https://sbgn.github.io/)
-- [SBGN Specifications](https://sbgn.github.io/sbgn/specifications)
-- [Cytoscape.js](https://js.cytoscape.org/)
-- [Token.js Documentation](https://tokenjs.org/)
-
 ## 📧 Contact
 
-For questions or support, please open an issue on GitHub or contact the Luna Lab team.
-
----
-
-Made with ❤️ by [Luna Lab](https://github.com/sciluna)
+For questions or support, please open an issue on GitHub.
