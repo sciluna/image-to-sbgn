@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<sbgn xmlns="http://sbgn.org/libsbgn/0.2">
+  <map language="process description">
+    <glyph id="n1" class="compartment">
+      <label text="Cytosol"/>
+      <bbox x="1365.6" y="186.4" w="817.8" h="383.6"/>
+    </glyph>
+    <glyph id="n2" class="unspecified entity" compartmentRef="n1">
+      <label text="GSK3"/>
+      <bbox x="1752.3" y="282.3" w="60" h="30"/>
+    </glyph>
+    <glyph id="n3" class="macromolecule" compartmentRef="n1">
+      <label text="CST1"/>
+      <bbox x="1560.1" y="425.1" w="60" h="30"/>
+    </glyph>
+    <glyph id="n4" class="nucleic acid feature" compartmentRef="n1">
+      <label text="Tetm"/>
+      <bbox x="1559.2" y="516.0" w="60" h="30"/>
+    </glyph>
+    <glyph id="n5" class="complex" compartmentRef="n1">
+      <bbox x="1745.2" y="438.9" w="74" h="82"/>
+      <glyph id="n6" class="macromolecule">
+        <label text="CST1"/>
+        <bbox x="1752.9" y="445.5" w="60" h="30"/>
+      </glyph>
+      <glyph id="n7" class="nucleic acid feature">
+        <label text="Tetm"/>
+        <bbox x="1751.8" y="484.6" w="60" h="30"/>
+      </glyph>
+    </glyph>
+    <glyph id="n8" class="association" compartmentRef="n1">
+      <bbox x="1675.7" y="472.9" w="14" h="14"/>
+      <port id="n8.1" x="1672.8" y="480.1"/>
+      <port id="n8.2" x="1692.8" y="480.1"/>
+    </glyph>
+    <glyph id="n9" class="dissociation" compartmentRef="n1">
+      <bbox x="1874.4" y="472.9" w="14" h="14"/>
+      <port id="n9.1" x="1871.5" y="480.1"/>
+      <port id="n9.2" x="1891.5" y="480.1"/>
+    </glyph>
+    <glyph id="n10" class="macromolecule" compartmentRef="n1">
+      <label text="CST1"/>
+      <bbox x="1921.8" y="362.5" w="60" h="30"/>
+    </glyph>
+    <glyph id="n11" class="nucleic acid feature" compartmentRef="n1">
+      <label text="Tetm"/>
+      <bbox x="1921.8" y="521.9" w="60" h="30"/>
+    </glyph>
+    <glyph id="n12" class="simple chemical" compartmentRef="n1">
+      <label text="Citrate"/>
+      <bbox x="1568.3" y="318.2" w="42" h="25"/>
+    </glyph>
+    <glyph id="n13" class="and" compartmentRef="n1">
+      <bbox x="1666.9" y="366.8" w="21" h="21"/>
+      <port id="n13.1" x="1662.6" y="377.5"/>
+      <port id="n13.2" x="1692.6" y="377.5"/>
+    </glyph>
+    <glyph id="n14" class="process" compartmentRef="n1">
+      <bbox x="1775.2" y="370.4" w="14" h="14"/>
+      <port id="n14.1" x="1772.3" y="377.5"/>
+      <port id="n14.2" x="1792.3" y="377.5"/>
+    </glyph>
+    <glyph id="n15" class="tag" compartmentRef="n1">
+      <label text="Tetm"/>
+      <bbox x="2035.7" y="519.4" w="35" h="35"/>
+    </glyph>
+    <glyph id="n16" class="phenotype" compartmentRef="n1">
+      <label text="Atrophy"/>
+      <bbox x="2107.9" y="362.5" w="60" h="30"/>
+    </glyph>
+    <glyph id="n17" class="not" compartmentRef="n1">
+      <bbox x="2031.3" y="366.8" w="21" h="21"/>
+      <port id="n17.1" x="2027.0" y="377.5"/>
+      <port id="n17.2" x="2057.0" y="377.5"/>
+    </glyph>
+    <glyph id="n18" class="or" compartmentRef="n1">
+      <bbox x="1474.1" y="469.3" w="21" h="21"/>
+      <port id="n18.1" x="1469.8" y="480.1"/>
+      <port id="n18.2" x="1499.8" y="480.1"/>
+    </glyph>
+    <glyph id="n19" class="omitted process" compartmentRef="n1">
+      <bbox x="1477.6" y="370.4" w="14" h="14"/>
+      <port id="n19.1" x="1474.8" y="377.5"/>
+      <port id="n19.2" x="1494.8" y="377.5"/>
+    </glyph>
+    <glyph id="n20" class="empty set" compartmentRef="n1">
+      <bbox x="1381.3" y="366.5" w="22" h="22"/>
+    </glyph>
+    <glyph id="n21" class="uncertain process" compartmentRef="n1">
+      <bbox x="1944.6" y="290.1" w="14" h="14"/>
+      <port id="n21.1" x="1941.8" y="297.3"/>
+      <port id="n21.2" x="1961.8" y="297.3"/>
+    </glyph>
+    <glyph id="n22" class="perturbing agent" compartmentRef="n1">
+      <label text="Cytokine"/>
+      <bbox x="1921.8" y="202.0" w="60" h="30"/>
+    </glyph>
+    <arc id="e1" class="consumption" source="n3" target="n8.1">
+      <start x="1619.0" y="452.6"/>
+      <end x="1673.0" y="475.8"/>
+    </arc>
+    <arc id="e2" class="modulation" source="n13.2" target="n14">
+      <start x="1693.2" y="377.5"/>
+      <end x="1770.2" y="377.5"/>
+    </arc>
+    <arc id="e3" class="equivalence arc" source="n11" target="n15">
+      <start x="1982.4" y="536.9"/>
+      <end x="2035.1" y="536.9"/>
+    </arc>
+    <arc id="e4" class="production" source="n19.2" target="n12">
+      <start x="1495.4" y="372.8"/>
+      <end x="1569.2" y="339.8"/>
+    </arc>
+    <arc id="e5" class="consumption" source="n2" target="n21.1">
+      <start x="1813.0" y="297.3"/>
+      <end x="1941.1" y="297.3"/>
+    </arc>
+    <arc id="e6" class="necessary stimulation" source="n22" target="n21">
+      <start x="1951.8" y="232.6"/>
+      <end x="1951.8" y="283.5"/>
+    </arc>
+    <arc id="e7" class="production" source="n9.2" target="n10">
+      <start x="1887.5" y="471.3"/>
+      <end x="1939.3" y="395.7"/>
+    </arc>
+    <arc id="e8" class="catalysis" source="n18.2" target="n19">
+      <start x="1484.8" y="464.4"/>
+      <end x="1484.8" y="391.3"/>
+    </arc>
+    <arc id="e9" class="stimulation" source="n17.2" target="n16">
+      <start x="2057.7" y="377.5"/>
+      <end x="2104.1" y="377.5"/>
+    </arc>
+    <arc id="e10" class="production" source="n8.2" target="n5">
+      <start x="1693.4" y="480.1"/>
+      <end x="1741.4" y="480.1"/>
+    </arc>
+    <arc id="e11" class="consumption" source="n20" target="n19.1">
+      <start x="1403.9" y="377.5"/>
+      <end x="1474.1" y="377.5"/>
+    </arc>
+    <arc id="e12" class="logic arc" source="n3" target="n18.1">
+      <start x="1560.4" y="451.4"/>
+      <end x="1499.4" y="474.5"/>
+    </arc>
+    <arc id="e13" class="consumption" source="n5" target="n9.1">
+      <start x="1820.2" y="480.1"/>
+      <end x="1870.9" y="480.1"/>
+    </arc>
+    <arc id="e14" class="production" source="n21.2" target="n10">
+      <start x="1951.8" y="307.9"/>
+      <end x="1951.8" y="358.8"/>
+    </arc>
+    <arc id="e15" class="logic arc" source="n12" target="n13.1">
+      <start x="1605.9" y="339.4"/>
+      <end x="1663.8" y="370.2"/>
+    </arc>
+    <arc id="e16" class="consumption" source="n10" target="n14">
+      <start x="1921.1" y="377.5"/>
+      <end x="1794.0" y="377.5"/>
+    </arc>
+    <arc id="e17" class="logic arc" source="n3" target="n13.1">
+      <start x="1611.9" y="424.5"/>
+      <end x="1664.9" y="386.6"/>
+    </arc>
+    <arc id="e18" class="production" source="n14.2" target="n2">
+      <start x="1782.3" y="366.9"/>
+      <end x="1782.3" y="316.0"/>
+    </arc>
+    <arc id="e19" class="inhibition" source="n5" target="n14.1">
+      <start x="1782.3" y="438.3"/>
+      <end x="1782.3" y="388.1"/>
+    </arc>
+    <arc id="e20" class="consumption" source="n4" target="n8.1">
+      <start x="1617.9" y="515.3"/>
+      <end x="1673.5" y="485.1"/>
+    </arc>
+    <arc id="e21" class="logic arc" source="n4" target="n18.1">
+      <start x="1561.3" y="517.4"/>
+      <end x="1498.8" y="486.9"/>
+    </arc>
+    <arc id="e22" class="logic arc" source="n10" target="n17.1">
+      <start x="1982.4" y="377.5"/>
+      <end x="2026.4" y="377.5"/>
+    </arc>
+    <arc id="e23" class="production" source="n9.2" target="n11">
+      <start x="1889.8" y="486.7"/>
+      <end x="1930.0" y="519.3"/>
+    </arc>
+  </map>
+</sbgn>

@@ -67,9 +67,9 @@ function getMapType() {
 	return null; // If none are checked
 }
 
-function getModelType() {
+function getProviderType() {
 	// Get all radio buttons with the name 'model'
-	const radios = document.getElementsByName('model');
+	const radios = document.getElementsByName('provider');
 
 	// Loop through the radio buttons and return the one that's checked
 	for (let i = 0; i < radios.length; i++) {
@@ -202,11 +202,16 @@ let communicate = async function (pngBase64, userInputText) {
 		}; */
 
 	let language = getMapType();
-	let model = getModelType();
+	let provider = getProviderType();
+	let model = "gpt-5.2";
+/* 	if(provider == "gemini") {
+		model = "gemini-2.0-flash-001";
+	} */
 	let data = {
 		comment: userInputText,
 		image: pngBase64,
 		language: language,
+		//provider: provider,
 		model: model
 	};
 

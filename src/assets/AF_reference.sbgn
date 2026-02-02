@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<sbgn xmlns="http://sbgn.org/libsbgn/0.2">
+  <map language="activity flow">
+    <glyph id="n1" class="compartment">
+      <label text="Cytoplasm"/>
+      <bbox x="660.9" y="91.7" w="431.4" h="418.7"/>
+    </glyph>
+    <glyph id="n2" class="tag" compartmentRef="n1">
+      <label text="TCN2"/>
+      <bbox x="1041.7" y="220.3" w="35" h="35"/>
+    </glyph>
+    <glyph id="n3" class="biological activity" compartmentRef="n1">
+      <label text="CD14"/>
+      <bbox x="676.6" y="222.8" w="60" h="30"/>
+    </glyph>
+    <glyph id="n4" class="biological activity" compartmentRef="n1">
+      <label text="FXYD1"/>
+      <bbox x="807.1" y="222.8" w="60" h="30"/>
+    </glyph>
+    <glyph id="n5" class="biological activity" compartmentRef="n1">
+      <label text="TCN2"/>
+      <bbox x="927.2" y="222.8" w="60" h="30"/>
+    </glyph>
+    <glyph id="n6" class="phenotype" compartmentRef="n1">
+      <label text="Autophagy"/>
+      <bbox x="834.5" y="464.7" w="60" h="30"/>
+    </glyph>
+    <glyph id="n7" class="and" compartmentRef="n1">
+      <bbox x="853.8" y="387.6" w="21" h="21"/>
+      <port id="n7.1" x="849.5" y="398.3"/>
+      <port id="n7.2" x="879.5" y="398.3"/>
+    </glyph>
+    <glyph id="n8" class="or" compartmentRef="n1">
+      <bbox x="761.1" y="324.4" w="21" h="21"/>
+      <port id="n8.1" x="771.8" y="320.1"/>
+      <port id="n8.2" x="771.8" y="350.1"/>
+    </glyph>
+    <glyph id="n9" class="not" compartmentRef="n1">
+      <bbox x="946.5" y="324.4" w="21" h="21"/>
+      <port id="n9.1" x="942.2" y="335.1"/>
+      <port id="n9.2" x="972.2" y="335.1"/>
+    </glyph>
+    <glyph id="n10" class="delay" compartmentRef="n1">
+      <bbox x="946.544057176788" y="149.7" w="21" h="21"/>
+      <port id="n10.1" x="942.2" y="160.5"/>
+      <port id="n10.2" x="972.2" y="160.5"/>
+    </glyph>
+    <glyph id="n11" class="biological activity" compartmentRef="n1">
+      <label text="MYP17"/>
+      <bbox x="807.1" y="107.3" w="60" h="30"/>
+    </glyph>
+    <arc id="e1" class="equivalence arc" source="n5" target="n2">
+      <start x="987.8" y="237.8"/>
+      <end x="1041.1" y="237.8"/>
+    </arc>
+    <arc id="e2" class="logic arc" source="n3" target="n8.1">
+      <start x="717.1" y="253.4"/>
+      <end x="763.1" y="322.1"/>
+    </arc>
+    <arc id="e3" class="necessary stimulation" source="n11" target="n3">
+      <start x="819.5" y="137.9"/>
+      <end x="726.6" y="220.1"/>
+    </arc>
+    <arc id="e4" class="logic arc" source="n4" target="n8.1">
+      <start x="826.6" y="253.4"/>
+      <end x="780.6" y="322.1"/>
+    </arc>
+    <arc id="e5" class="unknown influence" source="n11" target="n4">
+      <start x="837.1" y="137.9"/>
+      <end x="837.1" y="220.6"/>
+    </arc>
+    <arc id="e6" class="logic arc" source="n5" target="n9.1">
+      <start x="957.2" y="253.4"/>
+      <end x="957.2" y="319.4"/>
+    </arc>
+    <arc id="e7" class="negative influence" source="n10.2" target="n5">
+      <start x="957.2" y="176.1"/>
+      <end x="957.2" y="221.2"/>
+    </arc>
+    <arc id="e8" class="positive influence" source="n7.2" target="n6">
+      <start x="864.5" y="414.0"/>
+      <end x="864.5" y="461.0"/>
+    </arc>
+    <arc id="e9" class="logic arc" source="n9.2" target="n7.1">
+      <start x="944.3" y="343.9"/>
+      <end x="877.4" y="389.5"/>
+    </arc>
+    <arc id="e10" class="logic arc" source="n8.2" target="n7.1">
+      <start x="784.8" y="343.9"/>
+      <end x="851.6" y="389.5"/>
+    </arc>
+    <arc id="e11" class="logic arc" source="n11" target="n10.1">
+      <start x="867.8" y="132.0"/>
+      <end x="942.3" y="155.7"/>
+    </arc>
+  </map>
+</sbgn>
