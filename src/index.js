@@ -86,21 +86,6 @@ app.post('/gpt', async (req, res) => {
 			model = "gemini-2.0-flash-001";
 		} */
 
-/* 		let messagesArray0 = generateMessage0(language, image, comment);
-		async function main0() {
-			const response = await tokenjs.chat.completions.create({
-				provider: provider,
-				model: model,
-				messages: messagesArray0
-			});
-			let answer = response.choices[0]["message"]["content"];
-			console.log(answer);
-			answer = answer.replaceAll('```json', '');
-			answer = answer.replaceAll('```', '');
-			return res.status(200).send(JSON.stringify(answer));
-		}
-		let nodeData = await main0(); */
-
 		const client = new OpenAI({
 			apiKey: process.env.OPENAI_API_KEY
 		});
@@ -108,13 +93,19 @@ app.post('/gpt', async (req, res) => {
 		let messagesArray = generateMessage(language, image, comment);
 		//generateMessagesForFT();
 		async function main() {
-			const response = await client.chat.completions.create({
+			const response = await client.responses.create({
 				model: model,
-				messages: messagesArray,
-				temperature: 0
+				input: messagesArray,
+				temperature: 0,
+				reasoning: {
+					effort: "none"
+				},
+				text: {
+					verbosity: "low"
+				}
 			});
 			logTokenUsage(response.usage);
-			let answer = response.choices[0]["message"]["content"];
+			let answer = response.output_text;
 			console.log(answer);
 			answer = answer.replaceAll('```json', '');
 			answer = answer.replaceAll('```', '');
@@ -197,29 +188,6 @@ app.post('/delete', async (req, res) => {
   });
 });
 
-const generateMessage0 = function (language, image, comment) {
-	if (language == "PD") {
-		let messagesArray = [
-			{
-				role: 'system', content: 'You are a helpful and professional assistant to analyze hand drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) Process Description (PD) language. You will be given an input hand-drawn biological network in SBGN, you will analyze it and generate the corresponding node information. Please provide your final answer in JSON format. Do not return any answer outside of this format. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, and make sure that you are returning a valid JSON (this is important).'
-			},
-			{
-				role: "user",
-				content: [
-					{ type: 'text', text: "Please generate the node (glyph) information for this hand-drawn SBGN PD diagram. Please note that SBGN PD has the following node classes: macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not. I want you to extract the node class from the label of the node. If a node doesn't have a label you can infer its class from its shape or position or connections. There can be more than one node with same label, please provide each separately. Take your time and act with careful consideration. I want you to provide your answer in JSON format. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important)." },
-					{
-						type: 'image_url', image_url: { "url": image }
-					}
-				]
-			}
-		];
-		return messagesArray;
-	}
-};
-
-
-
-
 // for fine tuning
 
 const sbgnmlLinks = [
@@ -245,7 +213,7 @@ const sbgnmlLinks = [
 	"https://github.com/sciluna/image-to-sbgn-analysis/blob/main/dataset/fine-tuning/sampleAF10_ft_hd.png?raw=true",
 ];
 
-const generateMessagesForFT = function () {
+cconst generateMessagesForFT = function () {
 	let finalContent = [];
 	
 	for (let i = 0; i < 20; i++) {

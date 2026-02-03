@@ -320,7 +320,14 @@ let generateCyGraph = async function () {
 	nodesToQuery = nodesToQuery.filter((value, index, array) => {
 		return array.indexOf(value) === index;
 	});
-	let identifiers = await mapIdentifiers(nodesToQuery);
+	await setIdentifiers(nodesToQuery);
+
+	document.getElementById("processData").style.backgroundColor = "#d67664";
+	document.getElementById("processData").classList.remove("loading");
+};
+
+async function setIdentifiers (nodeLabelArray){
+	let identifiers = await mapIdentifiers(nodeLabelArray);
 
 	let identifiersMap = new Map();
 	identifiers.forEach(item => {
@@ -345,8 +352,6 @@ let generateCyGraph = async function () {
 			cyNode.data("identifierData", value);
 		});
 	});
-	document.getElementById("processData").style.backgroundColor = "#d67664";
-	document.getElementById("processData").classList.remove("loading");
 };
 
 let mapIdentifiers = async function (nodesToQuery) {
@@ -400,11 +405,14 @@ let generateObjectContent = function (node, identifierData) {
 		labelInput.setAttribute("id", "labelInput");
 		labelInput.value = title.textContent; // Set the current label text as input value
 
-		labelInput.addEventListener('keydown', (event) => {
+		labelInput.addEventListener('keydown', async (event) => {
 			if (event.key === 'Enter') {
 				title.textContent = labelInput.value;
 				div.replaceChild(title, labelInput);
 				node.data('label', title.textContent);
+				await setIdentifiers([node.data('label')]);
+				node.unselect();
+				node.select();
 			}
 		});
 
