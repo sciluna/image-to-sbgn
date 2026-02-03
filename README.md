@@ -104,6 +104,13 @@ Or, after installing dependencies:
 OPENAI_API_KEY=your_openai_key npm run cli -- --image ./diagram.png --language PD --output ./diagram.sbgn
 ```
 
+Global install from a local checkout:
+
+```bash
+npm install -g /path/to/image-to-sbgn
+image-to-sbgn --image ./diagram.png --language PD --output ./diagram.sbgn
+```
+
 Notes:
 - `--image` accepts a local file path or a URL.
 - `--output` is optional; omit it to print SBGNML to stdout.
