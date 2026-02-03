@@ -8,6 +8,7 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { promptsPD, promptsAF } from './prompts.js';
+import { convertSBGNML, generateMessage } from './sbgn.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,6 +18,29 @@ const tempDir = './src/public/temp';
 if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir, { recursive: true });
 }
+
+const formatTokens = (value) => {
+	if (value == null || Number.isNaN(value)) {
+		return '0';
+	}
+	if (value >= 10000) {
+		return `${(value / 1000).toFixed(1).replace(/\\.0$/, '')}K`;
+	}
+	if (value >= 1000) {
+		return `${(value / 1000).toFixed(2).replace(/0+$/, '').replace(/\\.$/, '')}K`;
+	}
+	return `${value}`;
+};
+
+const logTokenUsage = (usage) => {
+	if (!usage) {
+		return;
+	}
+	const total = formatTokens(usage.total_tokens);
+	const prompt = formatTokens(usage.prompt_tokens);
+	const completion = formatTokens(usage.completion_tokens);
+	console.log(`Tokens: ${total} total (${prompt} input + ${completion} output)`);
+};
 
 // Load environment variables
 config();
@@ -89,6 +113,7 @@ app.post('/gpt', async (req, res) => {
 				messages: messagesArray,
 				temperature: 0
 			});
+			logTokenUsage(response.usage);
 			let answer = response.choices[0]["message"]["content"];
 			console.log(answer);
 			answer = answer.replaceAll('```json', '');
@@ -172,25 +197,6 @@ app.post('/delete', async (req, res) => {
   });
 });
 
-const convertImage = (imgPath) => {
-	// read image file
-	let data = fs.readFileSync(imgPath);
-
-	// convert image file to base64-encoded string
-	const base64Image = Buffer.from(data, 'binary').toString('base64');
-
-	// combine all strings
-	const base64ImageStr = `data:image/png;base64,${base64Image}`;
-	return base64ImageStr;
-};
-
-const convertSBGNML = (sbgnmlPath) => {
-	// read sbgnml file
-	let data = fs.readFileSync(sbgnmlPath, 'utf8');
-
-	return data;
-};
-
 const generateMessage0 = function (language, image, comment) {
 	if (language == "PD") {
 		let messagesArray = [
@@ -201,118 +207,6 @@ const generateMessage0 = function (language, image, comment) {
 				role: "user",
 				content: [
 					{ type: 'text', text: "Please generate the node (glyph) information for this hand-drawn SBGN PD diagram. Please note that SBGN PD has the following node classes: macromolecule, simple cehmical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, submap, empty set, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not. I want you to extract the node class from the label of the node. If a node doesn't have a label you can infer its class from its shape or position or connections. There can be more than one node with same label, please provide each separately. Take your time and act with careful consideration. I want you to provide your answer in JSON format. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important)." },
-					{
-						type: 'image_url', image_url: { "url": image }
-					}
-				]
-			}
-		];
-		return messagesArray;
-	}
-};
-
-const generateMessage = function (language, image, comment) {
-	if (language == "PD") {
-		let stylesheetImage = convertImage(path.join(__dirname, "assets/sbgn_pd_stylesheet.png"));
-/* 		let firstSampleImage = convertImage(path.join(__dirname, "assets/PD_reference1.png"));
-		let secondSampleImage = convertImage(path.join(__dirname, "assets/PD_reference2.png"));
-		let thirdSampleImage = convertImage(path.join(__dirname, "assets/PD_reference3.png")); */
-		let sampleImage = convertImage(path.join(__dirname, "assets/PD_reference.png"));
-
-/* 		let firstSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/PD_reference1.sbgn"));
-		let secondSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/PD_reference2.sbgn"));
-		let thirdSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/PD_reference3.sbgn")); */
-		let sampleSBGNML = convertSBGNML(path.join(__dirname, "assets/PD_reference.sbgn"));
-
-		console.log("here is pd");
-    let userPrompt = 'Please generate the SBGNML for this hand-drawn SBGN-PD diagram. Please note that macromolecule, simple chemical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, empty set, tag, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with "glyph" tag in SBGNML PD and consumption, production, modulation, stimulation, catalysis, inhibition, necessary stimulation, logic arc and equivalence arc are represented with "arc" tag in SBGNML PD. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).';
-		let userPromptWithComment = userPrompt;
-		if (comment) {
-			userPromptWithComment = userPrompt + " Additionally, please also consider the following comment during your process: " + comment;
-		}
-
-		let messagesArray = [
-			{
-				role: 'system', content: 'You are a helpful and professional assistant for converting hand-drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) Process Description (PD) language and producing the corresponding SBGNML files. For an input hand-drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format.'
-			},
-			{
-				role: "user",
-				content: [
-					{ type: 'text', text: "Here is a stylesheet (learner's card) of SBGN PD shapes (glyphs and arcs) and their corresponding classes written in their right."},
-					{
-						type: 'image_url', image_url: { "url": stylesheetImage }
-					}
-				]
-			},
-			{
-				role: "user",
-				content: [
-					{ type: 'text', text: userPrompt },
-					{
-						type: 'image_url', image_url: { "url": sampleImage }
-					}
-				]
-			},
-			{
-				role: "assistant",
-				content: JSON.stringify({ answer: sampleSBGNML })
-			},
-			{
-				role: "user",
-				content: [
-					{ type: 'text', text: userPromptWithComment },
-					{
-						type: 'image_url', image_url: { "url": image }
-					}
-				]
-			}
-		];
-		return messagesArray;
-	}
-	else if (language == "AF") {
-		let stylesheetImage = convertImage(path.join(__dirname, "assets/sbgn_af_stylesheet.png"));
-		//let firstSampleImage = convertImage(path.join(__dirname, "assets/AF_reference1.png"));
-		let sampleImage = convertImage(path.join(__dirname, "assets/AF_reference.png"));
-
-		//let firstSampleSBGNML = convertSBGNML(path.join(__dirname, "assets/AF_reference1.sbgn"));
-		let sampleSBGNML = convertSBGNML(path.join(__dirname, "assets/AF_reference.sbgn"));
-		console.log("here is af");
-		let userPrompt = 'Please generate the SBGNML for this hand-drawn SBGN-AF diagram. Please note that biological activity, phenotype, and, or, not, delay, tag nodes are represented with "glyph" tag in SBGNML AF and positive influence, negative influence, unknown influence, necessary simulation, logic arc and equivalence arc are represented with "arc" tag in SBGNML AF. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Take your time and act with careful consideration. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).';
-		let userPromptWithComment = userPrompt;
-		if (comment) {
-			userPromptWithComment = userPrompt + " Additionally, please also consider the following comment during your process: " + comment;
-		}
-
-		let messagesArray = [
-			{
-				role: 'system', content: 'You are a helpful and professional assistant for converting hand-drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) Activity Flow (AF) language and producing the corresponding SBGNML files. For an input hand-drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format.'
-			},
-			{
-				role: "user",
-				content: [
-					{ type: 'text', text: "Here is a stylesheet (learner's card) of SBGN AF shapes (glyphs and arcs) and their corresponding classes written in their right." },
-					{
-						type: 'image_url', image_url: { "url": stylesheetImage }
-					}
-				]
-			},
-			{
-				role: "user",
-				content: [
-					{ type: 'text', text: userPrompt },
-					{
-						type: 'image_url', image_url: { "url": sampleImage }
-					}
-				]
-			},
-			{
-				role: "assistant",
-				content: JSON.stringify({ answer: sampleSBGNML })
-			},
-			{
-				role: "user",
-				content: [
-					{ type: 'text', text: userPromptWithComment },
 					{
 						type: 'image_url', image_url: { "url": image }
 					}
