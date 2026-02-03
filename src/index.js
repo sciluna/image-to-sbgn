@@ -99,9 +99,6 @@ app.post('/gpt', async (req, res) => {
 				temperature: 0,
 				reasoning: {
 					effort: "none"
-				},
-				text: {
-					verbosity: "low"
 				}
 			});
 			logTokenUsage(response.usage);
@@ -213,7 +210,7 @@ const sbgnmlLinks = [
 	"https://github.com/sciluna/image-to-sbgn-analysis/blob/main/dataset/fine-tuning/sampleAF10_ft_hd.png?raw=true",
 ];
 
-cconst generateMessagesForFT = function () {
+const generateMessagesForFT = function () {
 	let finalContent = [];
 	
 	for (let i = 0; i < 20; i++) {

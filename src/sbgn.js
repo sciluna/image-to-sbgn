@@ -40,15 +40,15 @@ const generateMessage = (language, image, comment) => {
       {
         role: 'user',
         content: [
-          { type: 'text', text: "Here is a stylesheet (learner's card) of SBGN PD shapes (glyphs and arcs) and their corresponding classes written in their right." },
-          { type: 'image_url', image_url: { url: stylesheetImage } }
+          { type: 'input_text', text: "Here is a stylesheet (learner's card) of SBGN PD shapes (glyphs and arcs) and their corresponding classes written in their right." },
+          { type: 'input_image', image_url: stylesheetImage }
         ]
       },
       {
         role: 'user',
         content: [
-          { type: 'text', text: userPrompt },
-          { type: 'image_url', image_url: { url: sampleImage } }
+          { type: 'input_text', text: userPrompt },
+          { type: 'input_image', image_url: sampleImage }
         ]
       },
       {
@@ -58,8 +58,8 @@ const generateMessage = (language, image, comment) => {
       {
         role: 'user',
         content: [
-          { type: 'text', text: userPromptWithComment },
-          { type: 'image_url', image_url: { url: image } }
+          { type: 'input_text', text: userPromptWithComment },
+          { type: 'input_image', image_url: image }
         ]
       }
     ];
@@ -86,15 +86,15 @@ const generateMessage = (language, image, comment) => {
       {
         role: 'user',
         content: [
-          { type: 'text', text: "Here is a stylesheet (learner's card) of SBGN AF shapes (glyphs and arcs) and their corresponding classes written in their right." },
-          { type: 'image_url', image_url: { url: stylesheetImage } }
+          { type: 'input_text', text: "Here is a stylesheet (learner's card) of SBGN AF shapes (glyphs and arcs) and their corresponding classes written in their right." },
+          { type: 'input_image', image_url: stylesheetImage }
         ]
       },
       {
         role: 'user',
         content: [
-          { type: 'text', text: userPrompt },
-          { type: 'image_url', image_url: { url: sampleImage } }
+          { type: 'input_text', text: userPrompt },
+          { type: 'input_image', image_url: sampleImage }
         ]
       },
       {
@@ -104,8 +104,8 @@ const generateMessage = (language, image, comment) => {
       {
         role: 'user',
         content: [
-          { type: 'text', text: userPromptWithComment },
-          { type: 'image_url', image_url: { url: image } }
+          { type: 'input_text', text: userPromptWithComment },
+          { type: 'input_image', image_url: image }
         ]
       }
     ];

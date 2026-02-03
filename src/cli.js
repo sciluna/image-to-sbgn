@@ -217,14 +217,17 @@ const main = async () => {
   const messages = generateMessage(options.language, imageInput, options.comment);
 
   const client = new OpenAI({ apiKey });
-  const response = await client.chat.completions.create({
+  const response = await client.responses.create({
     model: options.model,
-    messages,
-    temperature: 0
+    input: messages,
+    temperature: 0,
+    reasoning: {
+      effort: "none"
+    }
   });
 
   logTokenUsage(response.usage);
-  const content = response?.choices?.[0]?.message?.content || '';
+  const content = response.output_text || '';
   const answer = extractAnswer(content);
   writeOutput(options.output, answer);
 };
