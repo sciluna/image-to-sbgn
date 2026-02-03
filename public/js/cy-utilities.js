@@ -12,6 +12,20 @@ let cy = window.cy = cytoscape({
 	style: sbgnStylesheet(cytoscape)
 });
 
+let nodeClassesWithoutLabel = ["process", "omitted process", "uncertain process", "association", "dissociation"];
+
+cy.style().selector('node')
+	.style({
+		'content': (node) => {
+			if(nodeClassesWithoutLabel.includes(node.data("class"))) {
+				return "";
+			} else {
+				return node.data("label");
+			}
+		}
+	})
+	.update();
+
 var contextMenuOptions = {
 	evtType: 'cxttap',
 	// List of initial menu items
