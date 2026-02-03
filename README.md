@@ -90,6 +90,32 @@ docker run -p 4000:4000 \
 
 7. **Export**: Download the SBGNML file for use in other tools
 
+### CLI usage
+
+You can also convert images without the web UI:
+
+```bash
+OPENAI_API_KEY=your_openai_key node src/cli.js --image ./diagram.png --language PD --output ./diagram.sbgn
+```
+
+Or, after installing dependencies:
+
+```bash
+OPENAI_API_KEY=your_openai_key npm run cli -- --image ./diagram.png --language PD --output ./diagram.sbgn
+```
+
+Global install from a local checkout:
+
+```bash
+npm install -g /path/to/image-to-sbgn
+image-to-sbgn --image ./diagram.png --language PD --output ./diagram.sbgn
+```
+
+Notes:
+- `--image` accepts a local file path or a URL.
+- `--output` is optional; omit it to print SBGNML to stdout.
+- `--language` supports `PD` and `AF` (default: `PD`).
+
 ### Unsupported SBGN Elements
 
 The following SBGN elements are currently not supported:

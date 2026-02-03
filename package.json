@@ -5,9 +5,13 @@
   "main": "public/dist/bundle.js",
   "module": "public/dist/bundle.js",
   "browser": "public/dist/bundle.js",
+  "bin": {
+    "image-to-sbgn": "src/cli.js"
+  },
   "type": "module",
   "scripts": {
     "build": "webpack",
+    "cli": "node src/cli.js",
     "start": "cross-env NODE_ENV=production node src/app.js",
     "dev": "cross-env NODE_ENV=development node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
