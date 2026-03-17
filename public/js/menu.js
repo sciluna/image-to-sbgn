@@ -208,11 +208,10 @@ let communicate = async function (pngBase64, userInputText) {
 		model = "gemini-2.0-flash-001";
 	} */
 	let data = {
-		comment: userInputText,
 		image: pngBase64,
-		language: language,
-		//provider: provider,
-		model: model
+		sbgn_language: language,
+		model: model,
+		context: userInputText,
 	};
 
 	let response = await sendRequestToGPT(data);
@@ -243,7 +242,7 @@ let sendRequestToGPT = async function (data) {
 		body: JSON.stringify(data)
 	};
 
-	let res = await fetch('gpt', settings)
+	let res = await fetch('sbgnml/from-image', settings)
 		.then(response => response.json())
 		.then(result => {
 			return result;

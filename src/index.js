@@ -8,7 +8,7 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { promptsPD, promptsAF } from './prompts.js';
-import { convertSBGNML, generateMessage } from './sbgn.js';
+import { convertSBGNML, generateMessageForImageInput, generateMessageForTextInput, generateMessageForEdit } from './sbgn.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,29 +18,6 @@ const tempDir = './src/public/temp';
 if (!fs.existsSync(tempDir)) {
   fs.mkdirSync(tempDir, { recursive: true });
 }
-
-const formatTokens = (value) => {
-	if (value == null || Number.isNaN(value)) {
-		return '0';
-	}
-	if (value >= 10000) {
-		return `${(value / 1000).toFixed(1).replace(/\\.0$/, '')}K`;
-	}
-	if (value >= 1000) {
-		return `${(value / 1000).toFixed(2).replace(/0+$/, '').replace(/\\.$/, '')}K`;
-	}
-	return `${value}`;
-};
-
-const logTokenUsage = (usage) => {
-	if (!usage) {
-		return;
-	}
-	const total = formatTokens(usage.total_tokens);
-	const prompt = formatTokens(usage.prompt_tokens);
-	const completion = formatTokens(usage.completion_tokens);
-	console.log(`Tokens: ${total} total (${prompt} input + ${completion} output)`);
-};
 
 // Load environment variables
 config();
@@ -58,8 +35,12 @@ app.use('/temp', express.static(path.join(tempFilesPath, 'temp')));
 
 app.use(cors());
 
-// Define a route to handle llm query
-app.post('/gpt', async (req, res) => {
+const client = new OpenAI({
+	apiKey: process.env.OPENAI_API_KEY
+});
+
+// Define a route to handle generation from image
+app.post('/sbgnml/from-image', async (req, res) => {
 	let body = "";
 	req.on('data', data => {
 		body += data;
@@ -67,18 +48,18 @@ app.post('/gpt', async (req, res) => {
 
 	req.on('end', async () => {
 		body = JSON.parse(body);
-		let comment = body["comment"];
 		let image = body["image"];
-		let language = body["language"];
+		let language = body["sbgn_language"];
 		//let provider = body["provider"];
 		let model = body["model"];
-
-		// Create the Token.js client
-/* 		const tokenjs = new TokenJS({
+		let context = body["context"];
+		console.log(language);
+/* 		// Create the Token.js client
+		const tokenjs = new TokenJS({
 			//baseURL: 'http://127.0.0.1:11434/v1/'
-		}); */
+		});
 
-/* 		let model = "";
+		let model = "";
 
 		if (provider == "openai") {
 			model = "gpt-4.1";
@@ -86,29 +67,55 @@ app.post('/gpt', async (req, res) => {
 			model = "gemini-2.0-flash-001";
 		} */
 
+		let messagesArray = generateMessageForImageInput(language, image, context);
+
+		let answer = await makeQuery(client, model, messagesArray);
+		return res.status(200).send(JSON.stringify(answer));
+	});
+});
+
+// Define a route to handle generation from text
+app.post('/sbgnml/from-text', async (req, res) => {
+	let body = "";
+	req.on('data', data => {
+		body += data;
+	});
+
+	req.on('end', async () => {
+		body = JSON.parse(body);
+		let text = body["text"];
+		let language = body["sbgn_language"];
+		let model = body["model"];
+
+		let messagesArray = generateMessageForTextInput(language, text);
+
+		let answer = await makeQuery(client, model, messagesArray);
+		return res.status(200).send(JSON.stringify(answer));
+	});
+});
+
+// Define a route to handle editing of SBGNML
+app.post('/sbgnml/edit', async (req, res) => {
+	let body = "";
+	req.on('data', data => {
+		body += data;
+	});
+
+	req.on('end', async () => {
+		body = JSON.parse(body);
+		let sbgnml = body["sbgnml"];
+		let language = body["sbgn_language"];
+		let model = body["model"];
+		let instructions = body["instructions"];
+
 		const client = new OpenAI({
 			apiKey: process.env.OPENAI_API_KEY
 		});
 
-		let messagesArray = generateMessage(language, image, comment);
-		//generateMessagesForFT();
-		async function main() {
-			const response = await client.responses.create({
-				model: model,
-				input: messagesArray,
-				temperature: 0,
-				reasoning: {
-					effort: "none"
-				}
-			});
-			logTokenUsage(response.usage);
-			let answer = response.output_text;
-			console.log(answer);
-			answer = answer.replaceAll('```json', '');
-			answer = answer.replaceAll('```', '');
-			return res.status(200).send(JSON.stringify(answer));
-		}
-		main();
+		let messagesArray = generateMessageForEdit(language, sbgnml, instructions);
+
+		let answer = await makeQuery(client, model, messagesArray);
+		return res.status(200).send(JSON.stringify(answer));
 	});
 });
 
@@ -141,6 +148,23 @@ app.post('/anno', async (req, res) => {
 		return res.status(200).send(JSON.stringify(result, null, 2));
 	});
 });
+
+let makeQuery = async function(client, model, messagesArray) {
+	const response = await client.responses.create({
+		model: model,
+		input: messagesArray,
+		temperature: 0,
+		reasoning: {
+			effort: "none"
+		}
+	});
+	logTokenUsage(response.usage);
+	let answer = response.output_text;
+	console.log(answer);
+	answer = answer.replaceAll('```json', '');
+	answer = answer.replaceAll('```', '');
+	return answer;
+};
 
 const uploadDir = path.join(__dirname, 'public', 'temp');
 
@@ -185,6 +209,77 @@ app.post('/delete', async (req, res) => {
   });
 });
 
+const formatTokens = (value) => {
+	if (value == null || Number.isNaN(value)) {
+		return '0';
+	}
+	if (value >= 10000) {
+		return `${(value / 1000).toFixed(1).replace(/\\.0$/, '')}K`;
+	}
+	if (value >= 1000) {
+		return `${(value / 1000).toFixed(2).replace(/0+$/, '').replace(/\\.$/, '')}K`;
+	}
+	return `${value}`;
+};
+
+const logTokenUsage = (usage) => {
+	if (!usage) {
+		return;
+	}
+	const total = formatTokens(usage.total_tokens);
+	const prompt = formatTokens(usage.prompt_tokens);
+	const completion = formatTokens(usage.completion_tokens);
+	console.log(`Tokens: ${total} total (${prompt} input + ${completion} output)`);
+};
+
+// Define a route to handle annotation query
+app.post('/pd2af', async (req, res) => {
+	let body = "";
+	req.on('data', async (data) => {
+		body += data;
+	});
+
+	req.on('end', async () => {
+		body = JSON.parse(body);
+		let pd_sbgnml = body["pd_sbgnml"];
+		let provider = body["model"];
+
+		// Create the Token.js client
+		const tokenjs = new TokenJS({
+			//baseURL: 'http://127.0.0.1:11434/v1/'
+		});
+
+		let model = "";
+
+		if (provider == "openai") {
+			model = "gpt-4.1";
+		} else if (provider == "gemini") {
+			model = "gemini-2.0-flash-001";
+		} else if (provider == "bedrock") {
+			model = "meta.llama3-8b-instruct-v1:0";
+		} else if (provider == "openai-compatible") {
+			model = "llama3.2-vision";
+		}
+
+		let messagesArray = generateMessageForPD2AF(pd_sbgnml);
+		console.log(messagesArray[1].content);
+
+		async function main() {
+			const response = await tokenjs.chat.completions.create({
+				provider: provider,
+				model: model,
+				messages: messagesArray
+			});
+			let answer = response.choices[0]["message"]["content"];
+			console.log(answer);
+			answer = answer.replaceAll('```json', '');
+			answer = answer.replaceAll('```', '');
+			return res.status(200).send(JSON.stringify(answer));
+		}
+		main();
+	});
+});
+
 // for fine tuning
 
 const sbgnmlLinks = [
@@ -221,7 +316,7 @@ const generateMessagesForFT = function () {
 	}
 
 	finalContent = finalContent.join("\n"); 
-	console.l
+
 	const filePath = "output.jsonl";
 
 	fs.writeFile(filePath, finalContent, (err) => {
