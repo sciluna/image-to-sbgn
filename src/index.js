@@ -49,7 +49,7 @@ app.post('/sbgnml/from-image', async (req, res) => {
 	req.on('end', async () => {
 		body = JSON.parse(body);
 		let image = body["image"];
-		let language = body["sbgn_language"];
+		let language = body["language"];
 		//let provider = body["provider"];
 		let model = body["model"];
 		let context = body["context"];
@@ -84,7 +84,7 @@ app.post('/sbgnml/from-text', async (req, res) => {
 	req.on('end', async () => {
 		body = JSON.parse(body);
 		let text = body["text"];
-		let language = body["sbgn_language"];
+		let language = body["language"];
 		let model = body["model"];
 
 		let messagesArray = generateMessageForTextInput(language, text);
@@ -104,7 +104,7 @@ app.post('/sbgnml/edit', async (req, res) => {
 	req.on('end', async () => {
 		body = JSON.parse(body);
 		let sbgnml = body["sbgnml"];
-		let language = body["sbgn_language"];
+		let language = body["language"];
 		let model = body["model"];
 		let instructions = body["instructions"];
 

@@ -209,7 +209,7 @@ let communicate = async function (pngBase64, userInputText) {
 	} */
 	let data = {
 		image: pngBase64,
-		sbgn_language: language,
+		language: language,
 		model: model,
 		context: userInputText,
 	};
