@@ -128,6 +128,36 @@ app.post('/sbgnml/edit', async (req, res) => {
 	});
 });
 
+// Define a route to handle annotation query
+app.post('/anno', async (req, res) => {
+	let body = "";
+	req.on('data', async (data) => {
+		body += data;
+	});
+	req.on('end', async () => {
+		let url = "http://grounding.indra.bio/ground_multi";
+		const settings = {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: body
+		};
+
+		let result = await fetch(url, settings)
+			.then(response => response.json())
+			.then(result => {
+				return result;
+			})
+			.catch(e => {
+				console.log("Error!");
+			});
+		return res.status(200).send(JSON.stringify(result, null, 2));
+	});
+});
+
+
 let makeQuery = async function(client, model, messagesArray) {
 	const response = await client.responses.create({
 		model: model,
