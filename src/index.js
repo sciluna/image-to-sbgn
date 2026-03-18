@@ -124,7 +124,7 @@ app.post('/sbgnml/edit', async (req, res) => {
 		let messagesArray = generateMessageForEdit(language, sbgnml, instructions);
 
 		let answer = await makeQuery(client, model, messagesArray);
-		return res.status(200).json(answer);
+		return res.status(200).json(JSON.parse(answer));
 	});
 });
 
