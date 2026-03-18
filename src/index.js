@@ -9,6 +9,8 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { promptsPD, promptsAF } from './prompts.js';
 import { convertSBGNML, generateMessageForImageInput, generateMessageForTextInput, generateMessageForEdit } from './sbgn.js';
+import { addAnnotations } from './annotation.js';
+import format from "xml-formatter";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -53,7 +55,8 @@ app.post('/sbgnml/from-image', async (req, res) => {
 		//let provider = body["provider"];
 		let model = body["model"];
 		let context = body["context"];
-		console.log(language);
+		let annotate = body["annotate"] || false;
+
 /* 		// Create the Token.js client
 		const tokenjs = new TokenJS({
 			//baseURL: 'http://127.0.0.1:11434/v1/'
@@ -69,8 +72,14 @@ app.post('/sbgnml/from-image', async (req, res) => {
 
 		let messagesArray = generateMessageForImageInput(language, image, context);
 
-		let answer = await makeQuery(client, model, messagesArray);
-		return res.status(200).send(JSON.stringify(answer));
+		let response = await makeQuery(client, model, messagesArray);
+		if(annotate) {	// add annotations
+			response = await addAnnotations(JSON.parse(response).answer);
+		} else {
+			response = JSON.parse(response).answer;
+		}
+		response = format(response, {indentation: '  '});
+		return res.status(200).json({answer: response});
 	});
 });
 
@@ -90,7 +99,7 @@ app.post('/sbgnml/from-text', async (req, res) => {
 		let messagesArray = generateMessageForTextInput(language, text);
 
 		let answer = await makeQuery(client, model, messagesArray);
-		return res.status(200).send(JSON.stringify(answer));
+		return res.status(200).json(answer);
 	});
 });
 
@@ -115,37 +124,7 @@ app.post('/sbgnml/edit', async (req, res) => {
 		let messagesArray = generateMessageForEdit(language, sbgnml, instructions);
 
 		let answer = await makeQuery(client, model, messagesArray);
-		return res.status(200).send(JSON.stringify(answer));
-	});
-});
-
-// Define a route to handle annotation query
-app.post('/anno', async (req, res) => {
-	let body = "";
-	req.on('data', async (data) => {
-		body += data;
-	});
-
-	req.on('end', async () => {
-		let url = "http://grounding.indra.bio/ground_multi";
-		const settings = {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json'
-			},
-			body: body
-		};
-
-		let result = await fetch(url, settings)
-			.then(response => response.json())
-			.then(result => {
-				return result;
-			})
-			.catch(e => {
-				console.log("Error!");
-			});
-		return res.status(200).send(JSON.stringify(result, null, 2));
+		return res.status(200).json(answer);
 	});
 });
 
@@ -160,7 +139,7 @@ let makeQuery = async function(client, model, messagesArray) {
 	});
 	logTokenUsage(response.usage);
 	let answer = response.output_text;
-	console.log(answer);
+	//console.log(answer);
 	answer = answer.replaceAll('```json', '');
 	answer = answer.replaceAll('```', '');
 	return answer;
