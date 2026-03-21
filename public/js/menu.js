@@ -2,6 +2,7 @@ import { cy } from './cy-utilities.js';
 import convert from 'sbgnml-to-cytoscape';
 import { convert as cytoscapeToSbgnml } from './cytoscape-to-sbgnml.js'
 import { saveAs } from 'file-saver';
+import { initializeProviderAvailability } from './provider-availability.js';
 import format from 'xml-formatter';
 
 let base64data;
@@ -9,6 +10,11 @@ let userInputText;
 let sbgnmlText;
 let img2sbgn = !(location.hostname === "localhost" || location.hostname === "127.0.0.1");
 let sbgnmlfilename = "";
+
+const processDataButton = document.getElementById("processData");
+const fileTypeElement = document.getElementById("file-type");
+
+initializeProviderAvailability(processDataButton, fileTypeElement);
 
 document.getElementById("samples").addEventListener("change", function (event) {
 	let sample = event.target.value;
@@ -74,7 +80,7 @@ function getProviderType() {
 	// Loop through the radio buttons and return the one that's checked
 	for (let i = 0; i < radios.length; i++) {
 		if (radios[i].checked) {
-			return radios[i].id; // Get the model id (openai or gemini)
+			return radios[i].id; // Get the model id (openai, gemini, etc.)
 		}
 	}
 	return null; // If none are checked
@@ -199,9 +205,13 @@ let communicate = async function (pngBase64, userInputText) {
 	let language = getMapType();
 	let provider = getProviderType();
 	let model = "gpt-5.2";
-/* 	if(provider == "gemini") {
-		model = "gemini-2.0-flash-001";
-	} */
+ 	if(provider == "gemini") {
+		model = "gemini-2.5-flash";
+	} else if (provider == "claude") {
+		model = "claude-sonnet-4-20250514";
+	} else if (provider == "claude-opus") {
+		model = "claude-opus-4-1-20250805";
+	}
 	let data = {
 		image: pngBase64,
 		language: language,

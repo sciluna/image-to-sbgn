@@ -10,6 +10,8 @@ import { dirname } from 'path';
 import { promptsPD, promptsAF } from './prompts.js';
 import { convertSBGNML, generateMessageForImageInput, generateMessageForTextInput, generateMessageForEdit } from './sbgn.js';
 import { addAnnotations } from './annotation.js';
+import { makeQuery } from './model-query.js';
+import { getProviderAvailability } from './utils/provider-config.js';
 import format from "xml-formatter";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,6 +38,10 @@ const tempFilesPath = path.join(__dirname, 'public'); // this is src/public
 app.use('/temp', express.static(path.join(tempFilesPath, 'temp')));
 
 app.use(cors());
+
+app.get('/config/providers', (req, res) => {
+	res.status(200).json(getProviderAvailability());
+});
 
 const client = new OpenAI({
 	apiKey: process.env.OPENAI_API_KEY
@@ -157,24 +163,6 @@ app.post('/anno', async (req, res) => {
 	});
 });
 
-
-let makeQuery = async function(client, model, messagesArray) {
-	const response = await client.responses.create({
-		model: model,
-		input: messagesArray,
-		temperature: 0,
-		reasoning: {
-			effort: "none"
-		}
-	});
-	logTokenUsage(response.usage);
-	let answer = response.output_text;
-	//console.log(answer);
-	answer = answer.replaceAll('```json', '');
-	answer = answer.replaceAll('```', '');
-	return answer;
-};
-
 const uploadDir = path.join(__dirname, 'public', 'temp');
 
 // Define a route to handle uploaded file query
@@ -218,28 +206,6 @@ app.post('/delete', async (req, res) => {
   });
 });
 
-const formatTokens = (value) => {
-	if (value == null || Number.isNaN(value)) {
-		return '0';
-	}
-	if (value >= 10000) {
-		return `${(value / 1000).toFixed(1).replace(/\\.0$/, '')}K`;
-	}
-	if (value >= 1000) {
-		return `${(value / 1000).toFixed(2).replace(/0+$/, '').replace(/\\.$/, '')}K`;
-	}
-	return `${value}`;
-};
-
-const logTokenUsage = (usage) => {
-	if (!usage) {
-		return;
-	}
-	const total = formatTokens(usage.total_tokens);
-	const prompt = formatTokens(usage.prompt_tokens);
-	const completion = formatTokens(usage.completion_tokens);
-	console.log(`Tokens: ${total} total (${prompt} input + ${completion} output)`);
-};
 
 // Define a route to handle annotation query
 app.post('/pd2af', async (req, res) => {
@@ -263,7 +229,7 @@ app.post('/pd2af', async (req, res) => {
 		if (provider == "openai") {
 			model = "gpt-4.1";
 		} else if (provider == "gemini") {
-			model = "gemini-2.0-flash-001";
+			model = "gemini-2.5-flash";
 		} else if (provider == "bedrock") {
 			model = "meta.llama3-8b-instruct-v1:0";
 		} else if (provider == "openai-compatible") {
