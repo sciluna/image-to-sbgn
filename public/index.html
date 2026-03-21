@@ -11,6 +11,12 @@
 	<link href="css/style.css" rel="stylesheet">
 	<link href="css/cytoscape-context-menus.css" rel="stylesheet" type="text/css" />
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
@@ -19,7 +25,7 @@
 			<div class="row" style="padding-bottom: 0; margin-top: 10px;">
 				<div class="four wide column" style="display: flex; align-items: center;">
 					<a href="https://github.com/sciluna" target="_blank" style="color: #d67664">
-						<h2>Luna Lab</h2>
+						<h2 >Luna Lab</h2>
 					</a>
 				</div>
 				<div class="eight wide column">
@@ -76,10 +82,11 @@
 						style="margin-top: 10px; margin-bottom: 5px;">Settings</h3>
 					<div class="ui small form">
 						<div class="field">
-							<div class="inline fields"
-								style="margin-top: 0px; margin-bottom: 5px;">
+							<div class="inline fields"  id="map"
+								style="margin-top: 0px; margin-bottom: 5px;
+								">
 								<label style="margin-top: 5px;
-								font-size:15px;">Map Type</label>
+								font-size:15px;" for="map">Map Type</label>
 								<div class="field">
 									<!-- <div class="ui radio checkbox">
 										<input type="radio" id="radioPD" name="language" checked="checked">
