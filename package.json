@@ -19,6 +19,7 @@
   "author": "Hasan Balci",
   "license": "MIT",
   "dependencies": {
+    "@google/genai": "^1.46.0",
     "cors": "^2.8.5",
     "cytoscape-context-menus": "^4.2.1",
     "cytoscape-fcose": "^2.2.0",

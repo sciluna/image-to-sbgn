@@ -8,22 +8,24 @@ const __dirname = dirname(__filename);
 
 const assetsDir = path.join(__dirname, 'assets');
 
-const convertImageToBase64 = (imgPath) => {
+const convertImageToBase64 = (imgPath, llm) => {
   const data = fs.readFileSync(imgPath);
-  const base64Image = Buffer.from(data, 'binary').toString('base64');
-  return `data:image/png;base64,${base64Image}`;
+  if(llm == "openai"){
+    const base64Image = Buffer.from(data, 'binary').toString('base64');
+    return `data:image/png;base64,${base64Image}`;
+  } else if(llm == "gemini") {
+    return data.toString("base64");
+  }
 };
 
 const convertSBGNML = (sbgnmlPath) => {
   return fs.readFileSync(sbgnmlPath, 'utf8');
 };
 
-const generateMessageForImageInput = (language, image, comment) => {
+const generateMessageForImageInputGPT = (language, image, comment) => {
   if (language === 'PD') {
-    const stylesheetImage = convertImageToBase64(
-      path.join(assetsDir, 'sbgn_pd_ref_card.png')
-    );
-    const sampleImage = convertImageToBase64(path.join(assetsDir, 'PD_sample.png'));
+    const stylesheetImage = convertImageToBase64(path.join(assetsDir, 'sbgn_pd_ref_card.png'), "openai");
+    const sampleImage = convertImageToBase64(path.join(assetsDir, 'PD_sample.png'), "openai");
     const sampleSBGNML = convertSBGNML(path.join(assetsDir, 'PD_sample.sbgn'));
 
     let userPrompt = 'Please generate the SBGNML for this hand-drawn SBGN-PD diagram. Please note that macromolecule, simple chemical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, empty set, tag, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with "glyph" tag in SBGNML PD and consumption, production, modulation, stimulation, catalysis, inhibition, necessary stimulation, logic arc and equivalence arc are represented with "arc" tag in SBGNML PD. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).';
@@ -66,10 +68,8 @@ const generateMessageForImageInput = (language, image, comment) => {
   }
 
   if (language === 'AF') {
-    const stylesheetImage = convertImageToBase64(
-      path.join(assetsDir, 'sbgn_af_ref_card.png')
-    );
-    const sampleImage = convertImageToBase64(path.join(assetsDir, 'AF_sample.png'));
+    const stylesheetImage = convertImageToBase64(path.join(assetsDir, 'sbgn_af_ref_card.png'), "openai");
+    const sampleImage = convertImageToBase64(path.join(assetsDir, 'AF_sample.png'), "openai");
     const sampleSBGNML = convertSBGNML(path.join(assetsDir, 'AF_sample.sbgn'));
 
     let userPrompt = 'Please generate the SBGNML for this hand-drawn SBGN-AF diagram. Please note that biological activity, phenotype, and, or, not, delay, tag nodes are represented with "glyph" tag in SBGNML AF and positive influence, negative influence, unknown influence, necessary simulation, logic arc and equivalence arc are represented with "arc" tag in SBGNML AF. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).';
@@ -106,6 +106,130 @@ const generateMessageForImageInput = (language, image, comment) => {
         content: [
           { type: 'input_text', text: userPromptWithComment },
           { type: 'input_image', image_url: image }
+        ]
+      }
+    ];
+  }
+
+  throw new Error(`Unsupported language: ${language}`);
+};
+
+const generateMessageForImageInputGemini = (language, image, comment) => {
+  if (image.startsWith('data:')) {
+    image = image.split(',')[1];
+  }
+  if (language === 'PD') {
+    const stylesheetImage = convertImageToBase64(path.join(assetsDir, 'sbgn_pd_ref_card.png'), "gemini");
+    const sampleImage = convertImageToBase64(path.join(assetsDir, 'PD_sample.png'), "gemini");
+    const sampleSBGNML = convertSBGNML(path.join(assetsDir, 'PD_sample.sbgn'));
+
+    let userPrompt = 'Please generate the SBGNML for this hand-drawn SBGN-PD diagram. Please note that macromolecule, simple chemical, complex, nucleic acid feature, perturbing agent, unspecified entity, compartment, empty set, tag, phenotype, process, omitted process, uncertain process, association, dissociation, and, or, not nodes are represented with "glyph" tag in SBGNML PD and consumption, production, modulation, stimulation, catalysis, inhibition, necessary stimulation, logic arc and equivalence arc are represented with "arc" tag in SBGNML PD. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). While reasoning, you can try to estimate node labels from your biology knowledge if handwriting is not clear. Also you can estimate node classes from node labels if the node shape is not clear to decide. However, for arc classes, do not make estimations from biological literature because these graphs are randomly generated and do not represent real biological relations. Instead, give special attention to the arrow heads, since they are important to differentiate arc classes. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).';
+    let userPromptWithComment = userPrompt;
+    if (comment) {
+      userPromptWithComment = `${userPrompt} Additionally, please also consider the following comment during your process: ${comment}`;
+    }
+    return [
+      {
+        role: 'user',
+        parts: [
+          { text: "Here is a stylesheet (learner's card) of SBGN PD shapes (glyphs and arcs) and their corresponding classes written in their right." },
+          { 
+            inlineData: {
+              mimeType: "image/png",
+              data: stylesheetImage
+            }
+          }
+        ]
+      },
+      {
+        role: 'user',
+        parts: [
+          { text: userPrompt },
+          { 
+            inlineData: {
+              mimeType: "image/png",
+              data: sampleImage
+            }
+          }
+        ]
+      },
+      {
+        role: 'model',
+        parts: [
+          {
+            text: JSON.stringify({ answer: sampleSBGNML })
+          }
+        ]
+      },
+      {
+        role: 'user',
+        parts: [
+          { text: userPromptWithComment },
+          {
+            inlineData: {
+              mimeType: "image/png",
+              data: image,
+            }
+          }
+        ]
+      }
+    ];
+  }
+
+  if (language === 'AF') {
+    const stylesheetImage = convertImageToBase64(path.join(assetsDir, 'sbgn_af_ref_card.png'), "gemini");
+    const sampleImage = convertImageToBase64(path.join(assetsDir, 'AF_sample.png'), "gemini");
+    const sampleSBGNML = convertSBGNML(path.join(assetsDir, 'AF_sample.sbgn'));
+
+    let userPrompt = 'Please generate the SBGNML for this hand-drawn SBGN-AF diagram. Please note that biological activity, phenotype, and, or, not, delay, tag nodes are represented with "glyph" tag in SBGNML AF and positive influence, negative influence, unknown influence, necessary simulation, logic arc and equivalence arc are represented with "arc" tag in SBGNML AF. Make sure that each element in the graph has the correct tag, this is very inportant. Please also make sure that each glyph has a label and bbox subtags and each arc has source and target defined as attribute inside arc tag (not as subtags). While reasoning, you can try to estimate node labels from your biology knowledge if handwriting is not clear. Also you can estimate node classes from node labels if the node shape is not clear to decide. However, for arc classes, do not make estimations from biological literature because these graphs are randomly generated and do not represent real biological relations. Instead, give special attention to the arrow heads, since they are important to differentiate arc classes. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).';
+    let userPromptWithComment = userPrompt;
+    if (comment) {
+      userPromptWithComment = `${userPrompt} Additionally, please also consider the following comment during your process: ${comment}`;
+    }
+
+    return [
+      {
+        role: 'user',
+        parts: [
+          { text: "Here is a stylesheet (learner's card) of SBGN AF shapes (glyphs and arcs) and their corresponding classes written in their right." },
+          {
+            inlineData: {
+              mimeType: "image/png",
+              data: stylesheetImage,
+            }
+          }
+        ]
+      },
+      {
+        role: 'user',
+        parts: [
+          { text: userPrompt },
+          {
+            inlineData: {
+              mimeType: "image/png",
+              data: sampleImage,
+            }
+          }
+        ]
+      },
+      {
+        role: 'model',
+        parts: [
+          {
+            text: JSON.stringify({ answer: sampleSBGNML })
+          }
+        ]
+      },
+      {
+        role: 'user',
+        parts: [
+          { text: userPromptWithComment },
+          {
+            inlineData: {
+              mimeType: "image/png",
+              data: image,
+            } 
+          }
         ]
       }
     ];
@@ -152,7 +276,7 @@ const generateMessageForTextInput = (language, text) => {
   throw new Error(`Unsupported language: ${language}`);
 };
 
-const generateMessageForEdit = (language, sbgnml, instructions) => {
+const generateMessageForEditGPT = (language, sbgnml, instructions) => {
   let userPrompt = 'Please update this SBGNML content: \n' + sbgnml + '\n based on these instructions: \n' + instructions + '/n Do not make any changes other than the given instructions. If edit requires change in color/style of glyphs and/or arcs, you can do it by adding a renderInformation element as a child of the extension element of the Map if it does not exist already, which is the similar format described in the SBML Level 3 Render Package. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).';
 
   return [
@@ -169,4 +293,17 @@ const generateMessageForEdit = (language, sbgnml, instructions) => {
   ];
 };
 
-export { convertImageToBase64, convertSBGNML, generateMessageForImageInput, generateMessageForTextInput, generateMessageForEdit };
+const generateMessageForEditGemini = (language, sbgnml, instructions) => {
+  let userPrompt = 'Please update this SBGNML content: \n' + sbgnml + '\n based on these instructions: \n' + instructions + '/n Do not make any changes other than the given instructions. If edit requires change in color/style of glyphs and/or arcs, you can do it by adding a renderInformation element as a child of the extension element of the Map if it does not exist already, which is the similar format described in the SBML Level 3 Render Package. Please provide your final answer in JSON format. Do not return any answer outside of this format. A template looks like this: {"answer": "SBGNML content as a STRING so that we can parse it (This is very important)"}. DO NOT enclose the JSON output in markdown code blocks like ```json and ```, make sure that you are returning a valid JSON (this is important).';
+
+  return [
+    {
+      role: 'user',
+      parts: [
+        { text: userPrompt }
+      ]
+    }
+  ];
+};
+
+export { convertImageToBase64, convertSBGNML, generateMessageForImageInputGPT, generateMessageForImageInputGemini, generateMessageForTextInput, generateMessageForEditGPT, generateMessageForEditGemini };

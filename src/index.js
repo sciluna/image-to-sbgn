@@ -2,13 +2,13 @@ import express from 'express';
 import { config } from 'dotenv';
 import { TokenJS } from 'token.js'
 import { OpenAI } from 'openai';
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import fs from 'fs';
 import path from 'path';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { promptsPD, promptsAF } from './prompts.js';
-import { convertSBGNML, generateMessageForImageInput, generateMessageForTextInput, generateMessageForEdit } from './sbgn.js';
+import { convertSBGNML, generateMessageForImageInputGPT, generateMessageForImageInputGemini, generateMessageForTextInput, generateMessageForEditGPT, generateMessageForEditGemini } from './sbgn.js';
 import { addAnnotations } from './annotation.js';
 import format from "xml-formatter";
 
@@ -36,10 +36,6 @@ const tempFilesPath = path.join(__dirname, 'public'); // this is src/public
 app.use('/temp', express.static(path.join(tempFilesPath, 'temp')));
 
 app.use(cors());
-
-const client = new OpenAI({
-	apiKey: process.env.OPENAI_API_KEY
-});
 
 // Define a route to handle generation from image
 app.post('/sbgnml/from-image', async (req, res) => {
@@ -70,9 +66,22 @@ app.post('/sbgnml/from-image', async (req, res) => {
 			model = "gemini-2.0-flash-001";
 		} */
 
-		let messagesArray = generateMessageForImageInput(language, image, context);
+		let client = undefined;
+		let messagesArray = undefined;
+		let systemPrompt = undefined;
+		if (model.startsWith("gpt")) {
+			client = new OpenAI({
+				apiKey: process.env.OPENAI_API_KEY
+			});
+			messagesArray = generateMessageForImageInputGPT(language, image, context);
+		} else if(model.startsWith("gemini")) {
+			client = new GoogleGenAI({});
+			messagesArray = generateMessageForImageInputGemini(language, image, context);
+			systemPrompt = "You are a helpful and professional assistant for converting hand-drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) and producing the corresponding SBGNML files. For an input hand-drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format.";
+		}
 
-		let response = await makeQuery(client, model, messagesArray);
+		let response = await makeQuery(client, model, messagesArray, systemPrompt);
+
 		if(annotate) {	// add annotations
 			response = await addAnnotations(JSON.parse(response).answer);
 		} else {
@@ -117,13 +126,21 @@ app.post('/sbgnml/edit', async (req, res) => {
 		let model = body["model"];
 		let instructions = body["instructions"];
 
-		const client = new OpenAI({
-			apiKey: process.env.OPENAI_API_KEY
-		});
+		let client = undefined;
+		let messagesArray = undefined;
+		let systemPrompt = undefined;
+		if (model.startsWith("gpt")) {
+			client = new OpenAI({
+				apiKey: process.env.OPENAI_API_KEY
+			});
+			messagesArray = generateMessageForEditGPT(language, sbgnml, instructions);
+		} else if(model.startsWith("gemini")) {
+			client = new GoogleGenAI({});
+			messagesArray = generateMessageForEditGemini(language, sbgnml, instructions);
+			systemPrompt = "You are a helpful and professional assistant for editing SBGNML files which are used to store biological maps generated in Systems Biology Graphical Notation (SBGN) based on given textual instructions and producing the updated SBGNML files. Given an input SBGNML content and textual instructions, you will analyze the instructions and generate the updated SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format.";
+		}
 
-		let messagesArray = generateMessageForEdit(language, sbgnml, instructions);
-
-		let answer = await makeQuery(client, model, messagesArray);
+		let answer = await makeQuery(client, model, messagesArray, systemPrompt);
 		return res.status(200).json(JSON.parse(answer));
 	});
 });
@@ -157,22 +174,39 @@ app.post('/anno', async (req, res) => {
 	});
 });
 
-
-let makeQuery = async function(client, model, messagesArray) {
-	const response = await client.responses.create({
-		model: model,
-		input: messagesArray,
-		temperature: 0,
-		reasoning: {
-			effort: "none"
-		}
-	});
-	logTokenUsage(response.usage);
-	let answer = response.output_text;
-	//console.log(answer);
-	answer = answer.replaceAll('```json', '');
-	answer = answer.replaceAll('```', '');
-	return answer;
+let makeQuery = async function(client, model, messagesArray, systemPrompt) {
+	let response = undefined;
+	if (model.startsWith("gpt")) {
+		response = await client.responses.create({
+			model: model,
+			input: messagesArray,
+			temperature: 0,
+			reasoning: {
+				effort: "none"
+			}
+		});
+		logTokenUsage(response.usage);
+		let answer = response.output_text;
+		//console.log(answer);
+		answer = answer.replaceAll('```json', '');
+		answer = answer.replaceAll('```', '');
+		return answer;
+	} else if(model.startsWith("gemini")) {
+		response = await client.models.generateContent({
+			model: model,
+			contents: messagesArray,
+			config: {
+				systemInstruction: [systemPrompt],
+				thinkingConfig: {
+					thinkingLevel: ThinkingLevel.LOW,
+				},
+			}
+		});
+		let answer = response.candidates?.[0]?.content?.parts?.[0]?.text;
+		answer = answer.replaceAll('```json', '');
+		answer = answer.replaceAll('```', '');
+		return answer;
+	}
 };
 
 const uploadDir = path.join(__dirname, 'public', 'temp');

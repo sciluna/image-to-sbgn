@@ -199,9 +199,12 @@ let communicate = async function (pngBase64, userInputText) {
 	let language = getMapType();
 	let provider = getProviderType();
 	let model = "gpt-5.2";
-/* 	if(provider == "gemini") {
-		model = "gemini-2.0-flash-001";
-	} */
+	if(provider == "openai") {
+		model = "gpt-5.2";
+	}
+	if(provider == "gemini") {
+		model = "gemini-3-flash-preview";
+	}
 	let data = {
 		image: pngBase64,
 		language: language,
@@ -215,7 +218,7 @@ let communicate = async function (pngBase64, userInputText) {
 	try {
 		sbgnmlText = response.answer;
 		sbgnmlText = sbgnmlText.replaceAll('empty set', 'source and sink');
-		console.log(sbgnmlText);
+		//console.log(sbgnmlText);
 		await generateCyGraph();
 	} catch (error) {
 		alert("Output SBGNML from GPT is not in the correct format! Please try again!");
