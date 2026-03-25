@@ -97,16 +97,8 @@ h1 {
   margin-bottom: 0px;
 }
 
-h2{
+h2, .ui.header {
+  font-family: 'Inter', sans-serif !important;
   font-weight : 700;
-}
-
-
-h2 {
-  font-family: "Inter", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  text-decoration : none;
-  
 }
 
