@@ -205,6 +205,7 @@ let makeQuery = async function(client, model, messagesArray, systemPrompt) {
 		let answer = response.candidates?.[0]?.content?.parts?.[0]?.text;
 		answer = answer.replaceAll('```json', '');
 		answer = answer.replaceAll('```', '');
+		answer = answer.trim().replace(/\\+$/, ""); // adds backslash to answer for some reason, this is to remove it
 		return answer;
 	}
 };
