@@ -106,3 +106,7 @@ h2, .ui.header {
   font-weight: bold;
 }
 
+#model .ui.radio.checkbox input:checked ~ label {
+  font-weight: bold;
+}
+
