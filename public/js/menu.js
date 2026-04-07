@@ -203,7 +203,7 @@ let communicate = async function (pngBase64, userInputText) {
 		model = "gpt-5.2";
 	}
 	if(provider == "gemini") {
-		model = "gemini-3-flash-preview";
+		model = "gemini-3.1-pro-preview";
 	}
 	let data = {
 		image: pngBase64,
