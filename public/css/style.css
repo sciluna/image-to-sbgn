@@ -100,6 +100,11 @@ h1 {
 h2, .ui.header {
   font-family: 'Inter', sans-serif !important;
   font-weight : 700;
+  
+}
+
+.h2:hover {
+    text-decoration: underline;
 }
 
 #map .ui.radio.checkbox input:checked ~ label {
