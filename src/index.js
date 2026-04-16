@@ -80,7 +80,7 @@ app.post('/sbgnml/from-image', async (req, res) => {
 			systemPrompt = "You are a helpful and professional assistant for converting hand-drawn biological networks drawn in Systems Biology Graphical Notation (SBGN) and producing the corresponding SBGNML files. For an input hand-drawn biological network, you will analyze it and generate the corresponding SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format.";
 		}
 
-		let response = await makeQuery(client, model, messagesArray, systemPrompt);
+		let { answer: response, totalTokens } = await makeQuery(client, model, messagesArray, systemPrompt);
 
 		if(annotate) {	// add annotations
 			response = await addAnnotations(JSON.parse(response).answer);
@@ -88,7 +88,7 @@ app.post('/sbgnml/from-image', async (req, res) => {
 			response = JSON.parse(response).answer;
 		}
 		response = format(response, {indentation: '  '});
-		return res.status(200).json({answer: response});
+		return res.status(200).json({answer: response, totalTokens: totalTokens});
 	});
 });
 
@@ -107,8 +107,8 @@ app.post('/sbgnml/from-text', async (req, res) => {
 
 		let messagesArray = generateMessageForTextInput(language, text);
 
-		let answer = await makeQuery(client, model, messagesArray);
-		return res.status(200).json(answer);
+		let { answer, totalTokens } = await makeQuery(client, model, messagesArray);
+		return res.status(200).json({answer: answer, totalTokens: totalTokens});
 	});
 });
 
@@ -140,8 +140,8 @@ app.post('/sbgnml/edit', async (req, res) => {
 			systemPrompt = "You are a helpful and professional assistant for editing SBGNML files which are used to store biological maps generated in Systems Biology Graphical Notation (SBGN) based on given textual instructions and producing the updated SBGNML files. Given an input SBGNML content and textual instructions, you will analyze the instructions and generate the updated SBGNML content. Please provide your final answer in JSON format. Do not return any answer outside of this format.";
 		}
 
-		let answer = await makeQuery(client, model, messagesArray, systemPrompt);
-		return res.status(200).json(JSON.parse(answer));
+		let { answer, totalTokens } = await makeQuery(client, model, messagesArray, systemPrompt);
+		return res.status(200).json({...JSON.parse(answer), totalTokens});
 	});
 });
 
@@ -180,17 +180,18 @@ let makeQuery = async function(client, model, messagesArray, systemPrompt) {
 		response = await client.responses.create({
 			model: model,
 			input: messagesArray,
-			temperature: 0,
+			//temperature: 0,
 			reasoning: {
-				effort: "none"
+				effort: "low"
 			}
 		});
 		logTokenUsage(response.usage);
 		let answer = response.output_text;
+		let totalTokens = response.usage.total_tokens;
 		//console.log(answer);
 		answer = answer.replaceAll('```json', '');
 		answer = answer.replaceAll('```', '');
-		return answer;
+		return {answer, totalTokens};
 	} else if(model.startsWith("gemini")) {
 		response = await client.models.generateContent({
 			model: model,
@@ -206,7 +207,8 @@ let makeQuery = async function(client, model, messagesArray, systemPrompt) {
 		answer = answer.replaceAll('```json', '');
 		answer = answer.replaceAll('```', '');
 		answer = answer.trim().replace(/\\+$/, ""); // adds backslash to answer for some reason, this is to remove it
-		return answer;
+		let totalTokens = response.usageMetadata.totalTokenCount;
+		return {answer, totalTokens};
 	}
 };
 
@@ -273,7 +275,7 @@ const logTokenUsage = (usage) => {
 	const total = formatTokens(usage.total_tokens);
 	const prompt = formatTokens(usage.prompt_tokens);
 	const completion = formatTokens(usage.completion_tokens);
-	console.log(`Tokens: ${total} total (${prompt} input + ${completion} output)`);
+	//console.log(`Tokens: ${total} total (${prompt} input + ${completion} output)`);
 };
 
 // Define a route to handle annotation query
@@ -306,7 +308,7 @@ app.post('/pd2af', async (req, res) => {
 		}
 
 		let messagesArray = generateMessageForPD2AF(pd_sbgnml);
-		console.log(messagesArray[1].content);
+		//console.log(messagesArray[1].content);
 
 		async function main() {
 			const response = await tokenjs.chat.completions.create({
@@ -315,7 +317,7 @@ app.post('/pd2af', async (req, res) => {
 				messages: messagesArray
 			});
 			let answer = response.choices[0]["message"]["content"];
-			console.log(answer);
+			//console.log(answer);
 			answer = answer.replaceAll('```json', '');
 			answer = answer.replaceAll('```', '');
 			return res.status(200).send(JSON.stringify(answer));
