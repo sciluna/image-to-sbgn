@@ -3,15 +3,28 @@
   top: 65;
   width: 700;
 }
+#imageArea {
+  background-image: cover;
+}
 
 #inputImage {
   max-width: 100%;
   max-height: 300px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  display: block;
 }
 
-#imageContent {
-  max-width: 100%;
-  max-height: 100%;
+#imageInput {
+  width: auto;
+  height: 225px;
+  margin-top: -3px;
+  padding: 0;
+  border-radius: 0;
+  border: 0.1px solid black;
+  overflow: hidden;
 }
 
 #cySection {
